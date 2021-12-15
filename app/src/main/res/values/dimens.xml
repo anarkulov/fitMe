@@ -1,0 +1,55 @@
+<resources>
+
+    <!--Paddings & margins-->
+    <dimen name="small_margin">4dp</dimen>
+    <dimen name="element_margin">8dp</dimen>
+    <dimen name="medium_margin">12dp</dimen>
+    <dimen name="page_margin">16dp</dimen>
+    <dimen name="big_margin">24dp</dimen>
+    <dimen name="big_margin_half">20dp</dimen>
+    <dimen name="page_margin_x2">32dp</dimen>
+    <dimen name="page_margin_x3">48dp</dimen>
+
+    <!--Corners-->
+    <dimen name="radius_primary">10dp</dimen>
+    <dimen name="radius_medium">8dp</dimen>
+    <dimen name="radius_button_primary">38dp</dimen>
+    <dimen name="radius_button_big">42dp</dimen>
+    <dimen name="radius_content">14dp</dimen>
+    <dimen name="radius_edit_text">16dp</dimen>
+    <dimen name="radius_small_view">4dp</dimen>
+    <dimen name="radius_text_button">40dp</dimen>
+
+    <dimen name="text_small">14sp</dimen>
+    <dimen name="text_tiny">12sp</dimen>
+
+    <!--Sizes-->
+    <dimen name="tool_bar_icon">46dp</dimen>
+    <dimen name="tool_bar_height">52dp</dimen>
+    <dimen name="loader_medium">34dp</dimen>
+    <dimen name="edit_text_height">56dp</dimen>
+    <dimen name="car_card_height">140dp</dimen>
+    <dimen name="car_picture_small">42dp</dimen>
+    <dimen name="size_user_avatar">52dp</dimen>
+
+    <!--Elevations-->
+    <dimen name="card_view_elevation">6dp</dimen>
+    <dimen name="button_elevation">4dp</dimen>
+
+    <dimen name="text_normal">17sp</dimen>
+
+    <!-- New one -->
+
+    <!--Texts-->
+    <dimen name="text_headline_1">30sp</dimen>
+    <dimen name="text_headline_2">20sp</dimen>
+    <dimen name="text_headline_3">18sp</dimen>
+    <dimen name="text_normal_1">17sp</dimen>
+    <dimen name="text_normal_2">16sp</dimen>
+    <dimen name="text_normal_3">15sp</dimen>
+    <dimen name="text_normal_4">14sp</dimen>
+    <dimen name="text_mini_2">13sp</dimen>
+    <dimen name="text_mini_3">12sp</dimen>
+    <dimen name="text_shadow">6</dimen>
+
+</resources>
