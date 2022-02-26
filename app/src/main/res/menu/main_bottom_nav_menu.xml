@@ -6,10 +6,10 @@
         android:icon="@drawable/ic_home"
         android:title="Home" />
 
-<!--    <item-->
-<!--        android:id="@+id/basketFragment"-->
-<!--        android:icon="@drawable/ic_nav_basket_state"-->
-<!--        android:title="@string/nav_basket" />-->
+    <item
+        android:id="@+id/alarmFragment"
+        android:icon="@drawable/ic_alarm_clock"
+        android:title="@string/alarm" />
 
     <item
         android:id="@+id/profileFragment"

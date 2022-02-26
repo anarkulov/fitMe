@@ -4,7 +4,7 @@ import timber.log.Timber
 import timber.log.Timber.DebugTree
 
 object Log {
-    private const val TAG = "Nooken"
+    private const val TAG = "FitMeTag"
 
     fun init() {
         Timber.plant(DebugTree())

@@ -16,17 +16,21 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.example.fitme.data.models.Person
 import com.example.fitme.tf.VisualizationUtils
 import com.example.fitme.tf.YuvToRgbConverter
-import com.example.fitme.data.models.Person
 import com.example.fitme.tf.ml.MoveNetMultiPose
 import com.example.fitme.tf.ml.PoseClassifier
 import com.example.fitme.tf.ml.PoseDetector
 import com.example.fitme.tf.ml.TrackerType
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.util.*
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+
+//val cameraSourceModule = module {
+//    factory { CameraSource(get(), get()) }
+//}
 
 class CameraSource(
     private val surfaceView: SurfaceView,

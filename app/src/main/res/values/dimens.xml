@@ -5,15 +5,15 @@
     <dimen name="element_margin">8dp</dimen>
     <dimen name="medium_margin">12dp</dimen>
     <dimen name="page_margin">16dp</dimen>
-    <dimen name="big_margin">24dp</dimen>
+    <dimen name="big_margin">30dp</dimen>
     <dimen name="big_margin_half">20dp</dimen>
-    <dimen name="page_margin_x2">32dp</dimen>
-    <dimen name="page_margin_x3">48dp</dimen>
+    <dimen name="page_margin_x2">60dp</dimen>
+    <dimen name="page_margin_x3">90dp</dimen>
 
     <!--Corners-->
     <dimen name="radius_primary">10dp</dimen>
     <dimen name="radius_medium">8dp</dimen>
-    <dimen name="radius_button_primary">38dp</dimen>
+    <dimen name="radius_button_primary">12dp</dimen>
     <dimen name="radius_button_big">42dp</dimen>
     <dimen name="radius_content">14dp</dimen>
     <dimen name="radius_edit_text">16dp</dimen>
@@ -36,20 +36,20 @@
     <dimen name="card_view_elevation">6dp</dimen>
     <dimen name="button_elevation">4dp</dimen>
 
-    <dimen name="text_normal">17sp</dimen>
-
     <!-- New one -->
 
     <!--Texts-->
-    <dimen name="text_headline_1">30sp</dimen>
-    <dimen name="text_headline_2">20sp</dimen>
-    <dimen name="text_headline_3">18sp</dimen>
-    <dimen name="text_normal_1">17sp</dimen>
+    <dimen name="text_headline_1">26sp</dimen>
+    <dimen name="text_headline_2">24sp</dimen>
+    <dimen name="text_headline_3">22sp</dimen>
+    <dimen name="text_headline_4">20sp</dimen>
+
+    <dimen name="text_normal_1">18sp</dimen>
     <dimen name="text_normal_2">16sp</dimen>
-    <dimen name="text_normal_3">15sp</dimen>
-    <dimen name="text_normal_4">14sp</dimen>
-    <dimen name="text_mini_2">13sp</dimen>
-    <dimen name="text_mini_3">12sp</dimen>
-    <dimen name="text_shadow">6</dimen>
+    <dimen name="text_normal_3">14sp</dimen>
+
+    <dimen name="text_mini_1">12sp</dimen>
+    <dimen name="text_mini_2">10sp</dimen>
+    <dimen name="text_mini_3">8sp</dimen>
 
 </resources>

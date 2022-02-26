@@ -1,4 +1,4 @@
-package com.autocare.core.network.result
+package com.example.fitme.core.network.result
 
 enum class Status {
     SUCCESS,

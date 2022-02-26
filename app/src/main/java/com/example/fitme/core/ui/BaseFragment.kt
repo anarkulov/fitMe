@@ -11,7 +11,7 @@ import androidx.viewbinding.ViewBinding
 abstract class BaseFragment<VM: ViewModel, VB: ViewBinding> : Fragment() {
 
     protected abstract val viewModel: VM
-    protected lateinit var viewBinding: VB
+    protected lateinit var binding: VB
     private var _view: View? = null //cached view
 
     protected abstract fun inflateViewBinding(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): VB
@@ -21,10 +21,10 @@ abstract class BaseFragment<VM: ViewModel, VB: ViewBinding> : Fragment() {
         setHasOptionsMenu(true)
 
         if(_view == null) {
-            viewBinding = inflateViewBinding(inflater, container, savedInstanceState)
-            _view = viewBinding.root
+            binding = inflateViewBinding(inflater, container, savedInstanceState)
+            _view = binding.root
         } else {
-            viewBinding = bindViewBinding(_view!!)
+            binding = bindViewBinding(_view!!)
         }
         return _view
     }

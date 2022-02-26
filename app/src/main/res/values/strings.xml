@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">FitMe</string>
     <string name="get_started">Get started</string>
+    <string name="resend_in">Resend in %d</string>
+    <string name="email">Email</string>
+    <string name="empty">Field error</string>
+    <string name="email_invalid">Email is not valid</string>
+    <string name="password_length">Password length should be more than 6 characters</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="password">Password</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="sign_in">Sign In</string>
+    <string name="log_in">Log In</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="alarm">Alarm</string>
 </resources>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        style="@style/Loader.Medium"
+        android:layout_marginTop="@dimen/element_margin"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tucasa_your_home"
+        style="@style/Text.H1.Bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/big_margin"
+        android:layout_marginTop="@dimen/page_margin_x2"
+        android:text="Sign Up"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/sign_up_description"
+        style="@style/Text.Regular.Normal_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/big_margin"
+        android:layout_marginTop="@dimen/page_margin"
+        android:text="Description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tucasa_your_home" />
+
+    <RelativeLayout
+        android:id="@+id/phone_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/page_margin"
+        android:layout_marginTop="@dimen/medium_margin"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_description">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_email"
+            style="@style/TextInputLayout.FilledBox"
+            android:layout_width="match_parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_email"
+                style="@style/EditText.FilledBox"
+                android:drawableEnd="@null"
+                android:hint="@string/email"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:paddingStart="@dimen/page_margin"
+                android:paddingEnd="@dimen/medium_margin" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_password"
+            style="@style/TextInputLayout.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/til_email"
+            app:passwordToggleEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_password"
+                style="@style/EditText.FilledBox.Phone"
+                android:drawableEnd="@null"
+                android:hint="Password"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/iv_clear"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_alignTop="@id/til_email"
+            android:layout_alignBottom="@id/til_email"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/page_margin"
+            android:src="@drawable/ic_clear"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+    </RelativeLayout>
+
+<!--    <RelativeLayout-->
+<!--        android:id="@+id/phone_container"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="@dimen/page_margin"-->
+<!--        android:layout_marginTop="@dimen/medium_margin"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/sign_up_description">-->
+<!--        -->
+<!--        -->
+
+        <!--        <com.google.android.material.textfield.TextInputLayout-->
+        <!--            android:id="@+id/til_phone_number"-->
+        <!--            style="@style/TextInputLayout.FilledBox"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:hint="Hint"-->
+        <!--            app:hintEnabled="false">-->
+
+        <!--            <com.google.android.material.textfield.TextInputEditText-->
+        <!--                android:id="@+id/et_phone_number"-->
+        <!--                style="@style/EditText.FilledBox.Phone"-->
+        <!--                android:drawableEnd="@null"-->
+        <!--                android:hint="Phone number"-->
+        <!--                android:imeOptions="actionDone"-->
+        <!--                android:importantForAutofill="no"-->
+        <!--                android:inputType="phone"-->
+        <!--                android:paddingEnd="@dimen/medium_margin"/>-->
+        <!--        </com.google.android.material.textfield.TextInputLayout>-->
+
+        <!--        <ImageView-->
+        <!--            android:id="@+id/iv_clear"-->
+        <!--            android:layout_width="18dp"-->
+        <!--            android:layout_height="18dp"-->
+        <!--            android:layout_alignBottom="@id/til_phone_number"-->
+        <!--            android:layout_alignParentEnd="true"-->
+        <!--            android:layout_marginBottom="@dimen/medium_margin"-->
+        <!--            android:layout_marginEnd="@dimen/big_margin"-->
+        <!--            android:src="@drawable/ic_clear"-->
+        <!--            android:visibility="gone"-->
+        <!--            tools:visibility="visible" />-->
+
+<!--    </RelativeLayout>-->
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_next"
+        style="@style/Button"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="@dimen/big_margin"
+        android:layout_marginTop="@dimen/page_margin_x2"
+        android:background="@drawable/bg_button"
+        android:text="Sign Up"
+        app:layout_constraintTop_toBottomOf="@+id/phone_container" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!--
+    <?xml version="1.0" encoding="utf-8"?>
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        xmlns:tools="http://schemas.android.com/tools">
+
+        <com.tucasa.core.ui.widgets.MainToolbar
+            android:id="@+id/tool_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:elevation="0dp"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            style="@style/Text.H1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/page_margin"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            app:layout_constraintTop_toBottomOf="@id/tool_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/sign_in"/>
+
+        <TextView
+            android:id="@+id/tv_description"
+            style="@style/Text.Regular.Normal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/big_margin"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            app:layout_constraintTop_toBottomOf="@id/tv_title"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/sign_in_description"/>
+
+        <TextView
+            android:id="@+id/tv_phone_prefix"
+            style="@style/Text.H1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/phone_code"
+            android:layout_marginStart="@dimen/page_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/til_phone"
+            app:layout_constraintBottom_toBottomOf="@id/til_phone"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_phone"
+            style="@style/TextInputLayout"
+            android:layout_width="0dp"
+            app:layout_constraintStart_toEndOf="@id/tv_phone_prefix"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="@dimen/page_margin"
+            android:layout_marginTop="@dimen/page_margin"
+            android:layout_margin="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_description">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_phone"
+                style="@style/EditText.Login"
+                android:hint="@string/phone_hint"
+                android:importantForAutofill="no"
+                android:inputType="phone" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_next"
+            style="@style/Button.Green"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            android:layout_marginBottom="@dimen/page_margin"
+            android:text="@string/action_get_code"
+            android:visibility="gone"
+            tools:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    -->

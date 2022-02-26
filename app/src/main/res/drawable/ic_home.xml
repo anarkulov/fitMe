@@ -1,5 +1,10 @@
-<vector android:height="24dp" android:tint="#50AC74"
-    android:viewportHeight="24" android:viewportWidth="24"
-    android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
-    <path android:fillColor="@android:color/white" android:pathData="M12,5.69l5,4.5V18h-2v-6H9v6H7v-7.81l5,-4.5M12,3L2,12h3v8h6v-6h2v6h6v-8h3L12,3z"/>
-</vector>
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_focused="true"
+        android:state_window_focused="true"
+        android:state_selected="true"
+        android:drawable="@drawable/ic_home_active" />
+
+    <item android:drawable="@drawable/ic_home_inactive" />
+</selector>

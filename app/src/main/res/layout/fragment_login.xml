@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/title"
+        style="@style/Text.H1.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/big_margin"
+        android:text="Welcome Back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <RelativeLayout
+        android:id="@+id/phone_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/page_margin"
+        android:layout_marginTop="@dimen/big_margin"
+        android:layout_marginEnd="@dimen/page_margin"
+        app:layout_constraintTop_toBottomOf="@+id/title">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_field"
+            android:drawableStart="@drawable/ic_message"
+            android:drawablePadding="@dimen/page_margin"
+            android:hint="@string/email"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/page_margin"
+            android:paddingVertical="@dimen/medium_margin"
+            android:textSize="@dimen/text_normal_3" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/et_email"
+            android:layout_marginTop="@dimen/element_margin"
+            android:background="@drawable/bg_input_field"
+            android:drawableStart="@drawable/ic_lock"
+            android:drawablePadding="@dimen/page_margin"
+            android:hint="@string/password"
+            android:imeOptions="actionDone"
+            android:importantForAutofill="no"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/page_margin"
+            android:paddingVertical="@dimen/medium_margin"
+            android:textSize="@dimen/text_normal_3" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/btn_forgot_password"
+        style="@style/Text.Regular.Mini_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/element_margin"
+        android:layout_marginEnd="@dimen/page_margin"
+        android:text="@string/forgot_your_password"
+        android:textColor="@color/text_caption"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phone_container" />
+
+    <TextView
+        style="@style/Text.Regular.Mini_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/element_margin"
+        android:text="Already have an account?"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_sign_up"
+        app:layout_constraintEnd_toStartOf="@+id/btn_sign_up"
+        app:layout_constraintTop_toTopOf="@+id/btn_sign_up" />
+
+    <TextView
+        android:id="@+id/btn_sign_up"
+        style="@style/Text.Medium.Mini_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/element_margin"
+        android:layout_marginEnd="@dimen/page_margin"
+        android:text="Sign Up"
+        android:textColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_forgot_password" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_login"
+        style="@style/Button"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="@dimen/big_margin"
+        android:layout_marginBottom="@dimen/big_margin"
+        android:background="@drawable/bg_button"
+        android:text="Sign In"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

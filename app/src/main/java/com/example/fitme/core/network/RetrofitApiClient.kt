@@ -1,10 +1,9 @@
 package com.example.fitme.core.network
 
-import com.readystatesoftware.chuck.ChuckInterceptor
-import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.example.fitme.data.remote.ApiService
 import com.example.fitme.data.remote.RemoteDataSource
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
@@ -14,8 +13,7 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 val networkModule = module {
     factory { AuthInterceptor(get(), androidContext()) }
-    factory { ChuckInterceptor(androidContext()) }
-    factory { provideOkHttpClient(get(), get()) }
+    factory { provideOkHttpClient(get()) }
     factory { provideApi(get()) }
     factory { provideMoshi() }
     single { provideRetrofit(get(), get()) }
@@ -24,22 +22,20 @@ val networkModule = module {
 
 fun provideRetrofit(okHttpClient: OkHttpClient, moshi: Moshi): Retrofit {
     return Retrofit.Builder()
-        .baseUrl("BASE_URL")
+        .baseUrl("https://jsonplaceholder.typicode.com/")
         .client(okHttpClient)
         .addConverterFactory(MoshiConverterFactory.create(moshi))
         .build()
 }
 
 fun provideOkHttpClient(
-    authInterceptor: AuthInterceptor,
-    chuckInterceptor: ChuckInterceptor
+    authInterceptor: AuthInterceptor
 ): OkHttpClient {
     val interceptor = HttpLoggingInterceptor()
     interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 
     return OkHttpClient().newBuilder()
         .addInterceptor(authInterceptor)
-        //.addInterceptor(chuckInterceptor)
         .addInterceptor(interceptor)
         .build()
 }

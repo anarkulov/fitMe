@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "697368792175",
+    "project_id": "fitme-dc727",
+    "storage_bucket": "fitme-dc727.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697368792175:android:c1d9a4d8063b3799b4d19a",
+        "android_client_info": {
+          "package_name": "com.example.fitme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "697368792175-hifc35asggbal3860g8kt5pibuf27thc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.fitme",
+            "certificate_hash": "5702efa5c6a59c11e42eb0805d700e6088f1400a"
+          }
+        },
+        {
+          "client_id": "697368792175-jlaut3sgm0g7o0ms00dlni4odpac8ioq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmdf78MadAkl6ih7LsKW3QQmlLIblvDmw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "697368792175-jlaut3sgm0g7o0ms00dlni4odpac8ioq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

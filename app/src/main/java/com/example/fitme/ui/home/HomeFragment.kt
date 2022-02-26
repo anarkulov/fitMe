@@ -6,24 +6,17 @@ import android.app.Dialog
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Process
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
-import android.view.SurfaceView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.lifecycleScope
-import com.example.fitme.R
 import com.example.fitme.camera.CameraSource
-import com.example.fitme.core.extentions.showToast
-import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.ui.BaseNavFragment
-import com.example.fitme.core.ui.widgets.MainToolbar
 import com.example.fitme.data.models.Device
 import com.example.fitme.databinding.FragmentHomeBinding
 import com.example.fitme.tf.ml.*
@@ -55,6 +48,34 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             }
         }
 
+    private var cameraSourceListener = object : CameraSource.CameraSourceListener {
+        override fun onFPSListener(fps: Int) {
+
+        }
+
+        override fun onDetectedInfo(
+            personScore: Float?,
+            poseLabels: List<Pair<String, Float>>?,
+        ) {
+//                            tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
+            poseLabels?.sortedByDescending { it.second }?.let {
+//                                tvClassificationValue1.text = getString(
+//                                    R.string.tfe_pe_tv_classification_value,
+//                                    convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
+//                                )
+//                                tvClassificationValue2.text = getString(
+//                                    R.string.tfe_pe_tv_classification_value,
+//                                    convertPoseLabels(if (it.size >= 2) it[1] else null)
+//                                )
+//                                tvClassificationValue3.text = getString(
+//                                    R.string.tfe_pe_tv_classification_value,
+//                                    convertPoseLabels(if (it.size >= 3) it[2] else null)
+//                                )
+            }
+        }
+
+    }
+
     private var changeModelListener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {}
 
@@ -62,7 +83,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             parent: AdapterView<*>?,
             view: View?,
             position: Int,
-            id: Long
+            id: Long,
         ) {
             changeModel(position)
         }
@@ -193,33 +214,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         if (isCameraPermissionGranted()) {
             if (cameraSource == null) {
                 cameraSource =
-                    CameraSource(binding.surfaceView, object : CameraSource.CameraSourceListener {
-                        override fun onFPSListener(fps: Int) {
-
-                        }
-
-                        override fun onDetectedInfo(
-                            personScore: Float?,
-                            poseLabels: List<Pair<String, Float>>?
-                        ) {
-//                            tvScore.text = getString(R.string.tfe_pe_tv_score, personScore ?: 0f)
-                            poseLabels?.sortedByDescending { it.second }?.let {
-//                                tvClassificationValue1.text = getString(
-//                                    R.string.tfe_pe_tv_classification_value,
-//                                    convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-//                                )
-//                                tvClassificationValue2.text = getString(
-//                                    R.string.tfe_pe_tv_classification_value,
-//                                    convertPoseLabels(if (it.size >= 2) it[1] else null)
-//                                )
-//                                tvClassificationValue3.text = getString(
-//                                    R.string.tfe_pe_tv_classification_value,
-//                                    convertPoseLabels(if (it.size >= 3) it[2] else null)
-//                                )
-                            }
-                        }
-
-                    }).apply {
+                    CameraSource(binding.surfaceView, cameraSourceListener).apply {
                         prepareCamera()
                     }
                 isPoseClassifier()
@@ -258,7 +253,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             ContextCompat.checkSelfPermission(
                 requireContext(),
                 Manifest.permission.CAMERA
-            ) -> {
+            ),
+            -> {
                 openCamera()
             }
             else -> {
@@ -340,20 +336,23 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         openCamera()
     }
 
+    override fun onResume() {
+        super.onResume()
+        cameraSource?.resume()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        cameraSource?.close()
+        cameraSource = null
+    }
+
     override fun inflateViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): FragmentHomeBinding {
-        val view = FragmentHomeBinding.inflate(inflater, container, false)
-//        view.toolbar.bind(
-//            leftButton = MainToolbar.ActionInfo(
-//                onClick = {
-//                    requireActivity().onBackPressed()
-//                }
-//            )
-//        )
-        return view
+        return FragmentHomeBinding.inflate(inflater, container, false)
     }
 
     override fun bindViewBinding(view: View): FragmentHomeBinding {

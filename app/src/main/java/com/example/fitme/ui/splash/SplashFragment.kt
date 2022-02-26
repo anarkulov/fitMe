@@ -5,56 +5,38 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.example.fitme.core.extentions.runAfter
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.databinding.FragmentSplashBinding
 import com.example.fitme.ui.auth.AuthViewModel
 import com.example.fitme.ui.main.MainActivity
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import com.google.firebase.auth.FirebaseAuth
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SplashFragment : BaseNavFragment<AuthViewModel, FragmentSplashBinding>() {
 
-    override val viewModel: AuthViewModel by viewModel()
+    override val viewModel: AuthViewModel by sharedViewModel()
 
     override fun initView() {
         super.initView()
 
+        val currentUser = FirebaseAuth.getInstance().currentUser
 
-//        runAfter(if (BuildConfig.DEBUG) 1000 else 1500) {
-//            if (viewModel.getRefreshToken() != null){
-//                viewModel.getRefreshToken()?.let {
-//                    authClient.renewAuth(it)
-//                        .addParameter("scope", "openid profile offline_access")
-//                        .start(object: Callback<Credentials, AuthenticationException> {
-//
-//                            override fun onSuccess(result: Credentials) {
-//
-//                                viewModel.setAccessToken(result.accessToken)
-//                                result.refreshToken?.let { viewModel.setRefreshToken(it) }
-//
-//                                Log.d(result.accessToken, "accessToken")
-//                                Log.d(result.refreshToken, "refreshToken")
-//                                Log.d(result.idToken, "idToken")
-//                                showLoading(false)
-
-                                startActivity(Intent(requireActivity(), MainActivity::class.java))
-                                requireActivity().finish()
-//                            }
-//                            override fun onFailure(error: AuthenticationException) {
-//                                showLoading(false)
-//                            }
-//                        })
-//                }
-//            }else{
-//                navigate(SplashFragmentDirections.actionSplashFragmentToBoardingFragment())
-//            }
-//        }
+        runAfter(1500) {
+            if (currentUser != null) {
+                requireActivity().startActivity(Intent(requireContext(), MainActivity::class.java))
+                requireActivity().finish()
+            } else {
+                findNavController().navigate(SplashFragmentDirections.actionSplashFragmentToBoardingFragment())
+            }
+        }
     }
-
 
     override fun inflateViewBinding(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): FragmentSplashBinding {
         return FragmentSplashBinding.inflate(inflater, container, false)
     }
