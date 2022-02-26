@@ -1,2 +1,10 @@
+.gradle
 /build
-../.DS_Store
+/.idea
+*.iml
+local.properties
+.DS_Store
+*.iws
+bin/
+gen/
+Thumbs.db
