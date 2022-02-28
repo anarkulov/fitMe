@@ -16,6 +16,7 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
+import com.example.fitme.data.models.KeyPoint
 import com.example.fitme.data.models.Person
 import com.example.fitme.tf.VisualizationUtils
 import com.example.fitme.tf.YuvToRgbConverter
@@ -156,12 +157,26 @@ class CameraSource(
 
             // We don't use a front facing camera in this sample.
             val cameraDirection = characteristics.get(CameraCharacteristics.LENS_FACING)
-            if (cameraDirection != null &&
-                cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
+            if (cameraDirection != null
+                && cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
             ) {
                 continue
             }
             this.cameraId = cameraId
+        }
+    }
+
+    fun switchCamera() {
+        for (cameraId in cameraManager.cameraIdList) {
+            val characteristics = cameraManager.getCameraCharacteristics(cameraId)
+
+            val cameraDirection = characteristics.get(CameraCharacteristics.LENS_FACING)
+            if (cameraDirection != null &&
+                cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
+            ) {
+                this.cameraId = cameraId
+                return
+            }
         }
     }
 
@@ -252,7 +267,7 @@ class CameraSource(
 
         // if the model returns only one item, show that item's score.
         if (persons.isNotEmpty()) {
-            listener?.onDetectedInfo(persons[0].score, classificationResult)
+            listener?.onDetectedInfo(persons[0].score, persons[0].keyPoints,classificationResult)
         }
         visualize(persons, bitmap)
     }
@@ -310,6 +325,6 @@ class CameraSource(
     interface CameraSourceListener {
         fun onFPSListener(fps: Int)
 
-        fun onDetectedInfo(personScore: Float?, poseLabels: List<Pair<String, Float>>?)
+        fun onDetectedInfo(personScore: Float?, keyPoint: List<KeyPoint>?, poseLabels: List<Pair<String, Float>>?)
     }
 }

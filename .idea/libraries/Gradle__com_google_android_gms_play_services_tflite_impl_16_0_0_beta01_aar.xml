@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.android.gms:play-services-tflite-impl:16.0.0-beta01@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/52d5ce3f9f006c33e90047bd319d4a2a/transformed/jetified-play-services-tflite-impl-16.0.0-beta01/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/52d5ce3f9f006c33e90047bd319d4a2a/transformed/jetified-play-services-tflite-impl-16.0.0-beta01/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/52d5ce3f9f006c33e90047bd319d4a2a/transformed/jetified-play-services-tflite-impl-16.0.0-beta01/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-tflite-impl/16.0.0-beta01/aa04da2743d75cc44017c85469d6272baea7fa6/play-services-tflite-impl-16.0.0-beta01-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>

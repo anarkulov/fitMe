@@ -63,6 +63,8 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:5.0.0-alpha.2"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
+    implementation 'com.google.android.gms:play-services-fitness:21.0.1'
+    implementation 'androidx.test:monitor:1.4.0'
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshi_version"
     implementation "com.squareup.moshi:moshi-kotlin:$moshi_version"
     implementation "com.squareup.moshi:moshi:$moshi_version"
@@ -88,10 +90,14 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
 
-    // Tensorflow lit
+    // Tensorflow lite
     implementation 'org.tensorflow:tensorflow-lite:2.7.0'
     implementation 'org.tensorflow:tensorflow-lite-gpu:2.5.0'
     implementation 'org.tensorflow:tensorflow-lite-support:0.3.0'
+    // Tensorflow Lite dependencies for Google Play Services
+    implementation 'com.google.android.gms:play-services-tflite-java:16.0.0-beta01'
+    // Optional: include Tensorflow Lite Support Library
+    implementation 'com.google.android.gms:play-services-tflite-support:16.0.0-beta01'
 
     // Unit tests
     testImplementation 'junit:junit:4.13.2'

@@ -17,4 +17,6 @@
     <string name="log_in">Log In</string>
     <string name="sign_up">Sign Up</string>
     <string name="alarm">Alarm</string>
+    <string name="tv_score">Person Score: %.2f</string>
+    <string name="counter">Counter: </string>
 </resources>

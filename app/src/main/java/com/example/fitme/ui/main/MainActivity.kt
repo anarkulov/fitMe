@@ -1,5 +1,6 @@
 package com.example.fitme.ui.main
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -9,11 +10,17 @@ import com.example.fitme.core.extentions.fetchColor
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.ui.BaseActivity
 import com.example.fitme.databinding.ActivityMainBinding
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tflite.java.TfLite
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.tensorflow.lite.InterpreterApi
 
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
 
     private var navController: NavController? = null
+
+    private val initializeTask: Task<Void> by lazy { TfLite.initialize(this) }
+    private lateinit var interpreter: InterpreterApi
 
     override val viewModel: MainViewModel by viewModel()
 
@@ -28,6 +35,26 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
                 binding.navView.visible = true
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+//        initializeTask.addOnSuccessListener(object: OnSuccessListener {
+//            override fun onSuccess(response: DataReadResponse) {
+//                interpreter = InterpreterApi.create(modelBuffer, object: InterpreterApi.Options().setRuntime(
+//                        InterpreterApi.Options.TfLiteRuntime.FROM_SYSTEM_ONLY))
+//            }
+//        })
+//            .addOnFailureListener(object: OnFailureListener {
+//                override fun onFailure(ex: Exception) {
+//                    Log.e("Interpreter", "Cannot initialize interpreter", ex)
+//                }
+//            })
+//
+//        lifecycleScope.launchWhenStarted { // uses coroutine
+//            initializeTask.await()
+//        }
     }
 
     override fun initView() {

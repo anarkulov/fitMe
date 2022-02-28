@@ -1,8 +1,8 @@
 package com.example.fitme.tf.ml
 
 import android.content.Context
-import org.tensorflow.lite.Interpreter
 import com.example.fitme.data.models.Person
+import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
 
 class PoseClassifier(
@@ -41,12 +41,31 @@ class PoseClassifier(
             inputVector[index * 3 + 2] = keyPoint.score
         }
 
-        // Postprocess the model output to human readable class names
+        // Post process the model output to human readable class names
         val outputTensor = FloatArray(output[1])
         interpreter.run(arrayOf(inputVector), arrayOf(outputTensor))
         val output = mutableListOf<Pair<String, Float>>()
         outputTensor.forEachIndexed { index, score ->
             output.add(Pair(labels[index], score))
+        }
+        return output
+    }
+
+    fun classifyKeyPoint(person: Person?): List<Pair<Int, Float>> {
+        val inputVector = FloatArray(input[1])
+
+        person?.keyPoints?.forEachIndexed { index, keyPoint ->
+            inputVector[index * 3] = keyPoint.coordinate.y
+            inputVector[index * 3 + 1] = keyPoint.coordinate.x
+            inputVector[index * 3 + 2] = keyPoint.score
+        }
+
+        // Post process the model output to human readable class names
+        val outputTensor = FloatArray(output[1])
+        interpreter.run(arrayOf(inputVector), arrayOf(outputTensor))
+        val output = mutableListOf<Pair<Int, Float>>()
+        outputTensor.forEachIndexed { index, score ->
+            output.add(Pair(index, score))
         }
         return output
     }

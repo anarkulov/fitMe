@@ -6,13 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment">
 
-<!--    <com.example.fitme.core.ui.widgets.MainToolbar-->
-<!--        android:id="@+id/toolbar"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toTopOf="parent" />-->
+    <!--    <com.example.fitme.core.ui.widgets.MainToolbar-->
+    <!--        android:id="@+id/toolbar"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="parent" />-->
 
     <SurfaceView
         android:id="@+id/surfaceView"
@@ -20,5 +20,69 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/page_margin"
+        android:background="@drawable/bg_input_field"
+        android:paddingHorizontal="@dimen/element_margin"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/page_margin"
+        android:background="@drawable/bg_input_field"
+        android:paddingHorizontal="@dimen/element_margin"
+        android:text="@string/counter"
+        app:layout_constraintEnd_toStartOf="@+id/tv_counter"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/btn_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/page_margin"
+        android:background="@drawable/bg_input_field"
+        android:paddingHorizontal="@dimen/element_margin"
+        android:text="switch_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_counter" />
+
+    <TextView
+        android:id="@+id/tv_first_classification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/page_margin"
+        android:background="@drawable/bg_input_field"
+        android:paddingHorizontal="@dimen/element_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_switch" />
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/page_margin"
+        android:background="@drawable/bg_input_field"
+        android:paddingHorizontal="@dimen/element_margin"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_first_classification" />
+
+
+<!--    <TextView-->
+<!--        android:id="@+id/tv_third_classification"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="@dimen/page_margin"-->
+<!--        android:background="@drawable/bg_input_field"-->
+<!--        android:paddingHorizontal="@dimen/element_margin"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/tv_second_classification" />-->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
