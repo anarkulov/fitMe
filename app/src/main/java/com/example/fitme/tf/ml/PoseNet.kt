@@ -23,10 +23,10 @@ import android.os.SystemClock
 import android.util.Log
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
-import com.example.fitme.data.models.BodyPart
-import com.example.fitme.data.models.Device
-import com.example.fitme.data.models.KeyPoint
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.BodyPart
+import com.example.fitme.data.models.ml.Device
+import com.example.fitme.data.models.ml.KeyPoint
+import com.example.fitme.data.models.ml.Person
 import org.tensorflow.lite.gpu.GpuDelegate
 import org.tensorflow.lite.support.common.FileUtil
 import org.tensorflow.lite.support.common.ops.NormalizeOp

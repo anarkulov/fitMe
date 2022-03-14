@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.EnthuDai:SimpleChart-Kotlin:1.0.7@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/b6019bc203b5ef7e369b9fb77d0239b4/transformed/jetified-SimpleChart-Kotlin-1.0.7/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b6019bc203b5ef7e369b9fb77d0239b4/transformed/jetified-SimpleChart-Kotlin-1.0.7/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/b6019bc203b5ef7e369b9fb77d0239b4/transformed/jetified-SimpleChart-Kotlin-1.0.7/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.EnthuDai/SimpleChart-Kotlin/1.0.7/b8664e1855794c7c00e931ce0d2872bf36941fb5/SimpleChart-Kotlin-1.0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

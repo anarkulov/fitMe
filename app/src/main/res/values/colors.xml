@@ -14,7 +14,9 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="blue">#92A3FD</color>
-    <color name="purple">#92A3FD</color>
+    <color name="blue_50">#8092A3FD</color>
+    <color name="blue_30">#4D92A3FD</color>
+    <color name="purple">#C58BF2</color>
     <color name="splash_color">@color/blue</color>
     <color name="red">#FF564D</color>
 

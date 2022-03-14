@@ -11,7 +11,7 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
+        instance = this
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
 
         // Init Koin DI
@@ -22,5 +22,12 @@ class App : Application() {
 
         // Init Timber log
         Log.init()
+    }
+
+    companion object {
+        private var instance: App? = null
+        fun getInstance(): App {
+            return instance as App
+        }
     }
 }

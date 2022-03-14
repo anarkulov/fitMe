@@ -15,14 +15,12 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.example.fitme.R
-import com.example.fitme.data.local.Constants
 import com.example.fitme.data.local.Constants.Date.DATE_FORMAT
 import com.example.fitme.data.local.Constants.Date.DATE_FORMAT_SERVER
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.regex.Pattern
 import kotlin.math.ceil
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities
 
 open class  CoreUtils {
 
@@ -100,6 +98,17 @@ open class  CoreUtils {
     fun convertDateToTimestamp(date: String): Long {
         val date = SimpleDateFormat(DATE_FORMAT_SERVER, Locale.getDefault()).parse(date)
         return date.time
+    }
+
+    fun getDateTime(timestamp: Long): String? {
+        return try {
+            val format = "MM/dd/yyyy"
+            val sdf = SimpleDateFormat(format)
+            val netDate = Date(timestamp * 1000)
+            sdf.format(netDate)
+        } catch (e: Exception) {
+            e.toString()
+        }
     }
 
     fun getVersionName(context: Context): String {

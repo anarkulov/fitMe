@@ -1,7 +1,7 @@
 package com.example.fitme.tf.ml
 
 import android.content.Context
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.Person
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.common.FileUtil
 

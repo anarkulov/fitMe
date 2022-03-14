@@ -1,5 +1,6 @@
 package com.example.fitme.core.ui.widgets
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
@@ -12,10 +13,11 @@ import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import com.google.android.material.appbar.AppBarLayout
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
 import com.example.fitme.core.extentions.invisible
+import com.example.fitme.core.extentions.visible
+import com.google.android.material.appbar.AppBarLayout
 
 class MainToolbar : AppBarLayout {
 
@@ -25,7 +27,6 @@ class MainToolbar : AppBarLayout {
         set(value) {
             field = value
             findViewById<TextView>(R.id.title).text = value
-
         }
 
     private var textColor = 0
@@ -43,6 +44,14 @@ class MainToolbar : AppBarLayout {
             setBackgroundColor(value)
         }
 
+    var leftIconVisible = true
+        set(value) {
+            field = value
+            findViewById<ImageView>(R.id.action_left).visible = value
+        }
+
+    var leftIcon = findViewById<ImageView>(R.id.action_left)
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { init(attrs) }
 
@@ -52,21 +61,29 @@ class MainToolbar : AppBarLayout {
             title = ta.getString(R.styleable.MainToolbar_mt_title) ?: ""
             bgColor = ta.getInt(R.styleable.MainToolbar_mt_background, 0)
             textColor = ta.getInt(R.styleable.MainToolbar_mt_textColor, 0)
+            leftIconVisible = ta.getBoolean(R.styleable.MainToolbar_mt_left_visible, true)
         } finally {
             ta.recycle()
         }
     }
 
+    @SuppressLint("CutPasteId")
     override fun onFinishInflate() {
         super.onFinishInflate()
 
         setBackgroundColor(bgColor)
-        findViewById<TextView>(R.id.title).text = title
+        val tvTitle = findViewById<TextView>(R.id.title)
+
+        tvTitle.visible = title.isNotEmpty()
+        tvTitle.text = title
 
         if (textColor != 0) {
             findViewById<TextView>(R.id.title).setTextColor(textColor)
         }
+        findViewById<ImageView>(R.id.action_left).visible = leftIconVisible
     }
+
+    //endregion
 
     fun bind(
         leftButton: ActionInfo? = null,
@@ -75,7 +92,7 @@ class MainToolbar : AppBarLayout {
     ) {
         val ivButtonLeft = findViewById<ImageView>(R.id.action_left)
         val ivButtonRight = findViewById<ImageView>(R.id.action_right)
-        ivButtonLeft.invisible = leftButton == null
+        ivButtonLeft.visible = leftButton != null || leftIconVisible
         leftButton?.let {
             ivButtonLeft.setImageDrawable(getDrawable(it.iconRes))
             if (it.iconTint != 0) {
@@ -94,7 +111,9 @@ class MainToolbar : AppBarLayout {
                     ivButtonRight.imageTintList = ColorStateList.valueOf(context.fetchColor(it.iconTint))
                 }
             }
-            ivButtonRight.setOnClickListener { rightButton.onClick() }
+            ivButtonRight.setOnClickListener {
+                rightButton.onClick()
+            }
         }
 
         layout?.let {
@@ -122,7 +141,7 @@ class MainToolbar : AppBarLayout {
     )
 
     data class LayoutInfo(
-            @ColorRes val backgroundColor: Int = 0,
-            @StringRes val title: Int = 0
+        @ColorRes val backgroundColor: Int = 0,
+        @StringRes val title: Int = 0
     )
 }

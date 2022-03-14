@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/FitMe.iml" filepath="$PROJECT_DIR$/.idea/modules/FitMe.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/FitMe.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/FitMe.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/chart/FitMe.chart.iml" filepath="$PROJECT_DIR$/.idea/modules/chart/FitMe.chart.iml" />
     </modules>
   </component>
 </project>

@@ -2,7 +2,7 @@
 package com.example.fitme.tf.ml
 
 import android.graphics.Bitmap
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.Person
 
 interface PoseDetector : AutoCloseable {
 

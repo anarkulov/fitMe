@@ -16,8 +16,8 @@ import android.os.HandlerThread
 import android.util.Log
 import android.view.Surface
 import android.view.SurfaceView
-import com.example.fitme.data.models.KeyPoint
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.KeyPoint
+import com.example.fitme.data.models.ml.Person
 import com.example.fitme.tf.VisualizationUtils
 import com.example.fitme.tf.YuvToRgbConverter
 import com.example.fitme.tf.ml.MoveNetMultiPose
@@ -98,12 +98,14 @@ class CameraSource(
                 }
                 yuvConverter.yuvToRgb(image, imageBitmap)
                 // Create rotated version for portrait display
-                val rotateMatrix = Matrix()
-                rotateMatrix.postRotate(90.0f)
+                val rotateMatrix = Matrix().apply {
+                    postRotate(270f)
+                }
+//                if (cameraId == )
 
                 val rotatedBitmap = Bitmap.createBitmap(
                     imageBitmap, 0, 0, PREVIEW_WIDTH, PREVIEW_HEIGHT,
-                    rotateMatrix, false
+                    rotateMatrix, true
                 )
                 processImage(rotatedBitmap)
                 image.close()
@@ -158,7 +160,7 @@ class CameraSource(
             // We don't use a front facing camera in this sample.
             val cameraDirection = characteristics.get(CameraCharacteristics.LENS_FACING)
             if (cameraDirection != null
-                && cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
+                && cameraDirection == CameraCharacteristics.LENS_FACING_BACK
             ) {
                 continue
             }
@@ -171,9 +173,11 @@ class CameraSource(
             val characteristics = cameraManager.getCameraCharacteristics(cameraId)
 
             val cameraDirection = characteristics.get(CameraCharacteristics.LENS_FACING)
-            if (cameraDirection != null &&
-                cameraDirection == CameraCharacteristics.LENS_FACING_FRONT
+            if (cameraDirection != null
+                && cameraDirection != CameraCharacteristics.LENS_FACING_FRONT
             ) {
+                this.camera?.close()
+                this.camera = null
                 this.cameraId = cameraId
                 return
             }
