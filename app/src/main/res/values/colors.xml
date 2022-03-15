@@ -23,6 +23,8 @@
     <color name="gray">#979797</color>
     <color name="gray_1">#7B6F72</color>
     <color name="gray_2">#ADA4A5</color>
+    <color name="gray_3">#9BE6E6</color>
+    <color name="gray_4">#ADA4A5</color>
     <color name="gray_light">#F7F8F8</color>
 
 </resources>

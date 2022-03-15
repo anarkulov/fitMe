@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
+import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.databinding.FragmentAlarmBinding
 import com.example.fitme.managers.MyAlarmManager
@@ -17,12 +19,26 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
     override val viewModel: AlarmViewModel by viewModel()
 
     private val alarmList = ArrayList<Alarm>()
+    private val alarmAdapter = AlarmListRecycler(alarmList, this::onAlarmClick, this::onSwitchChecked)
+    private val myTag = "AlarmFragment"
 
 /*   Begin initViewModel */
 
     override fun initViewModel() {
         super.initViewModel()
 
+        viewModel.getAlarmList().observe(this) { response ->
+            when(response.status) {
+                Status.LOADING -> {}
+                Status.ERROR -> {}
+                Status.SUCCESS -> {
+                    response.data?.let {
+                        alarmAdapter.updateItems(it)
+                        Log.d("getAlarmList: $it", myTag)
+                    }
+                }
+            }
+        }
     }
 
 /* End initViewModel */
@@ -38,21 +54,19 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
     }
 
     private fun initAlarmList() {
-        for (i in 0 until 10) {
-            alarmList.add(Alarm("${i + i % (i + 1) * 2}",
-                System.currentTimeMillis().plus(40000),
-                "Alarm ${i.plus(1)}",
-                arrayOf((i + 1) % 6, (i + 2) % 6),
-                false,
-                null,
-                false)
-            )
-        }
-
-        val adapter = AlarmListRecycler(alarmList, this::onAlarmClick, this::onSwitchChecked)
+//        for (i in 0 until 10) {
+//            alarmList.add(Alarm("${i + i % (i + 1) * 2}",
+//                System.currentTimeMillis().plus(40000),
+//                "Alarm ${i.plus(1)}",
+//                arrayOf((i + 1) % 6, (i + 2) % 6),
+//                false,
+//                null,
+//                false)
+//            )
+//        }
 
         binding.recyclerView.apply {
-            this.adapter = adapter
+            this.adapter = alarmAdapter
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
@@ -75,11 +89,11 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
         findNavController().navigate(AlarmFragmentDirections.actionAlarmFragmentToAlarmDetails(alarm))
     }
 
-    private fun onSwitchChecked(title: String, time: Long, checked: Boolean) {
+    private fun onSwitchChecked(title: String, time: String, checked: Boolean) {
         if (checked) {
             MyAlarmManager.setAlarm3(requireContext(), "id", title, time)
         } else {
-            MyAlarmManager.cancelAlarm(requireContext(), 1)
+            MyAlarmManager.cancelAlarm3(requireContext())
         }
     }
 

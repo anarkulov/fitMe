@@ -8,10 +8,13 @@ import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.utils.Log
+import com.example.fitme.data.models.Alarm
 import com.example.fitme.data.models.User
 import com.example.fitme.utils.Constants.Collection.USERS
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.Query
 import com.google.firebase.storage.StorageReference
 import org.koin.dsl.module
 
@@ -22,6 +25,7 @@ val databaseModule = module {
 class UserDatabase : AppDatabase() {
 
     private val firebaseUser = MutableLiveData<FirebaseUser?>()
+    private val myTag = "UserDatabase"
 
     fun getProfile(): MutableLiveData<Resource<User>> {
 
@@ -301,6 +305,78 @@ class UserDatabase : AppDatabase() {
         return successAddUriImage
     }
 
+    fun getAlarmList(): MutableLiveData<Resource<List<Alarm>>> {
+        val liveData = MutableLiveData<Resource<List<Alarm>>>()
+        liveData.value = Resource.loading(null)
+
+        val alarmList = ArrayList<Alarm>()
+        firebaseAuth.uid?.let {
+            firestoreInstance.collection(ALARM_PATH)
+//                .document(it)
+                .orderBy(ALARM_TIMESTAMP_FIELD, Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (snapshots != null) {
+                        for (snapshot: DocumentSnapshot in snapshots) {
+                            val alarm : Alarm? = snapshot.toObject(Alarm::class.java)
+                            Log.d("snapshot: $alarm", myTag)
+                            alarm?.let { it1 ->
+                                alarmList.add(it1)
+                            }
+                        }
+                    }
+                    if (alarmList.isNotEmpty()) {
+                        liveData.value = Resource.success(alarmList)
+                    } else {
+                        liveData.value = Resource.error("Alarm list is empty", null, -1)
+                    }
+                }
+                .addOnFailureListener {
+                    liveData.value = Resource.error("Failed to get alarm list", null, -1)
+                }
+        }
+
+        return liveData
+    }
+
+    fun getUserId(): String? {
+        return firebaseUser.value?.uid
+    }
+
+    fun saveAlarm(alarm: Alarm): MutableLiveData<Resource<String>> {
+        val liveData = MutableLiveData<Resource<String>>()
+        liveData.value = Resource.loading(null)
+
+        val alarmMap = mapOf<String, Any>(
+            ALARM_ID_FIELD to alarm.id,
+            ALARM_TITLE_FIELD to alarm.title,
+            ALARM_TIMESTAMP_FIELD to alarm.timestamp,
+            ALARM_IS_TURN_ON_FIELD to alarm.isTurnedOn,
+            ALARM_TIME_IN_MS_FIELD to alarm.timeInMs,
+            ALARM_CHALLENGE_FIELD to alarm.challenge,
+            ALARM_DAYS_FIELD to alarm.days,
+            ALARM_USER_ID_FIELD to alarm.userId
+        )
+
+        try {
+            firestoreInstance
+                .collection(ALARM_PATH)
+                .add(alarmMap)
+                .addOnSuccessListener {
+                    Log.d("Successfully added: ${it.id}", myTag)
+                    liveData.postValue(Resource.success(it.id, 1))
+                }.addOnFailureListener {
+                    Log.d("Failure", myTag)
+                    liveData.postValue(Resource.error(it.message, null, -1))
+                }
+        } catch (e: NullPointerException) {
+            Log.d("NullPointerException", myTag)
+            liveData.postValue(Resource.error("NullPointerException", null, -1))
+        }
+
+        return liveData
+    }
+
 //    fun getUserPortfolios(userId: String): MutableLiveData<Resource<Portfolios>> {
 //        val liveData = MutableLiveData<Resource<Portfolios>>()
 //        firestoreInstance.collection(PORTFOLIO).document(userId).get().addOnSuccessListener {
@@ -362,4 +438,15 @@ class UserDatabase : AppDatabase() {
 //        return liveData
 //    }
 
+    companion object {
+        const val ALARM_PATH = "alarms"
+        const val ALARM_TIMESTAMP_FIELD = "timestamp"
+        const val ALARM_ID_FIELD = "id"
+        const val ALARM_TITLE_FIELD = "title"
+        const val ALARM_IS_TURN_ON_FIELD = "isTurnedOn"
+        const val ALARM_TIME_IN_MS_FIELD = "timeInMs"
+        const val ALARM_CHALLENGE_FIELD = "challenge"
+        const val ALARM_DAYS_FIELD = "days"
+        const val ALARM_USER_ID_FIELD = "userId"
+    }
 }

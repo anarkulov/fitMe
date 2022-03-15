@@ -5,11 +5,14 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import com.example.fitme.core.utils.Log
-import com.example.fitme.ui.alarm.AlarmActivity
+import com.example.fitme.data.local.AppPrefs
+import com.example.fitme.data.models.Alarm
+import java.util.*
 
 
-class MyAlarmManager: BroadcastReceiver() {
+class MyAlarmManager(private val prefs: AppPrefs): BroadcastReceiver() {
 
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d("Broadcast Received", myTag)
@@ -19,22 +22,35 @@ class MyAlarmManager: BroadcastReceiver() {
             val service = Intent(context, MyAlarmService::class.java).apply {
                 putExtra("title", title)
             }
+            if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
+                setTime()
+                return
+            }
             context.startService(service)
         }
+    }
+
+    private fun setTime() {
+
     }
 
     companion object {
         private const val myTag = "AlarmManager"
         private lateinit var alarmManager: AlarmManager
 
-        fun setAlarm3(context: Context, id: String, title: String, time: Long) {
+        fun setAlarm3(context: Context, id: String, title: String, time: String) {
             val intent = Intent(context, MyAlarmManager::class.java).apply {
                 putExtra("id", id)
                 putExtra("title", title)
             }
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.setExact(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+
+            val calendar = Calendar.getInstance()
+            calendar.set(Calendar.HOUR, time.split(":")[0].toInt())
+            calendar.set(Calendar.MINUTE, time.split(":")[1].toInt())
+
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
             Log.d("Alarm set for $time", myTag)
         }
 
@@ -46,41 +62,20 @@ class MyAlarmManager: BroadcastReceiver() {
             alarmManager.cancel(broadcast)
         }
 
-        fun setAlarm(context: Context, title: String, time: Long) {
-            alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val alarmClockInfo =
-                AlarmManager.AlarmClockInfo(time, getAlarmInfoPendingIntent(context))
-            alarmManager.setAlarmClock(alarmClockInfo, getAlarmActionPendingIntent(context))
-            Log.d("Alarm set for $time", myTag)
+        fun scheduleAlarm(context: Context, time: String, isRepeatable: Boolean, days: TreeMap<Int, String>, alarmId: Int) {
+            val timeInMs = Alarm().convertHMtoMS(time, isRepeatable, days)
+
+            val intent = Intent(context, MyAlarmManager::class.java)
+            val bundle = Bundle().apply {
+                putParcelable("ALARM_KEY", this)
+            }
+            intent.putExtra("ALARM_KEY", bundle)
+            val pendingIntent = PendingIntent.getBroadcast(context, alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager? ?: return
+
+            alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(timeInMs, pendingIntent), pendingIntent)
+            Log.d("Alarm set for $timeInMs", myTag)
         }
 
-        fun cancelAlarm(context: Context, id: Int) {
-            Log.d("cancelAlarm", myTag)
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val notificationIntent = Intent("android.media.action.DISPLAY_NOTIFICATION")
-            notificationIntent.addCategory("android.intent.category.DEFAULT")
-            val broadcast = PendingIntent.getBroadcast(context,
-                id,
-                notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            alarmManager.cancel(broadcast)
-        }
-
-        private fun getAlarmInfoPendingIntent(context: Context): PendingIntent? {
-            val alarmInfoIntent = Intent(context, AlarmActivity::class.java)
-            alarmInfoIntent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            return PendingIntent.getActivity(context,
-                0,
-                alarmInfoIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT)
-        }
-
-        private fun getAlarmActionPendingIntent(context: Context): PendingIntent? {
-            val intent = Intent(context, AlarmActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-            return PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        }
     }
-
-
 }

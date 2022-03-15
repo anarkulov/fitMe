@@ -4,39 +4,41 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitme.R
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.databinding.ItemAlarmBinding
-import com.example.fitme.utils.Utils
 
 class AlarmListRecycler(
-    private val items: ArrayList<Alarm>,
+    private var items: List<Alarm>,
     private val onAlarmClick: (id: Alarm) -> Unit,
-    private val onAlarmSwitch: (title: String, time: Long, on: Boolean) -> Unit,
+    private val onAlarmSwitch: (title: String, time: String, on: Boolean) -> Unit,
 ) : RecyclerView.Adapter<AlarmListRecycler.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemAlarmBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Alarm, onAlarmSwitch: (title: String, time: Long, on: Boolean) -> Unit) {
-            binding.tvAlarmTime.text = Utils.getDateTime(item.timestamp)
+        fun bind(item: Alarm, onAlarmSwitch: (title: String, time: String, on: Boolean) -> Unit) {
+            val splitTime = item.timestamp.split(":")
+            val hour = splitTime[0].toInt()
+            val minute = splitTime[1].toInt()
+            val time = "${itemView.context.getString(R.string.hour_format, hour)}:${itemView.context.getString(R.string.hour_format, minute)}"
+            binding.tvAlarmTime.text = time
             binding.tvAlarmTitle.text = item.title
-            binding.tvDuration.text =
-                when (item.frequency.size) {
-                    7 -> {
-                        item.frequency.sort()
-                        "${item.frequency[0]} - ${item.frequency[6]}"
-                    }
-                    else -> {
-                        var text = ""
-                        for ((index, day) in item.frequency.withIndex()) {
-                            if (index == item.frequency.size - 1) {
-                                text += day
-                            } else {
-                                text += "$day, "
-                            }
-                        }
-                        text
+
+            var days = ""
+            for ((index, day) in item.days.withIndex()) {
+                if (day) {
+                    when(index) {
+                        0 -> {days += "M"}
+                        1 -> {days += " T"}
+                        2 -> {days += " W"}
+                        3 -> {days += " Th"}
+                        4 -> {days += " F"}
+                        5 -> {days += " S"}
+                        6 -> {days += " S"}
                     }
                 }
+            }
 
+            binding.tvDuration.text = days.trim()
             binding.btnSwitch.isChecked = item.isTurnedOn
 
             binding.btnSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -65,7 +67,8 @@ class AlarmListRecycler(
     override fun getItemCount(): Int = items.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateItems() {
+    fun updateItems(item: List<Alarm>) {
+        items = item
         notifyDataSetChanged()
     }
 }
