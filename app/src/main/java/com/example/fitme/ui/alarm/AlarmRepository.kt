@@ -20,4 +20,8 @@ class AlarmRepository(
     fun saveAlarmData(alarm: Alarm): MutableLiveData<Resource<String>>  {
         return db.saveAlarm(alarm)
     }
+
+    fun updateAlarm(alarm: Alarm): MutableLiveData<Resource<Boolean>> {
+        return db.updateAlarm(alarm)
+    }
 }

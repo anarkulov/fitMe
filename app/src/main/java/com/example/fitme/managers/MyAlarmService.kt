@@ -71,10 +71,6 @@ class MyAlarmService : Service() {
         return START_NOT_STICKY
     }
 
-    private fun initAlarmSession() {
-
-    }
-
     private fun sendNotification(title: String?) {
         val channelId = "fitme_app"
         val alarmActivityIntent = Intent(this, AlarmActivity::class.java)

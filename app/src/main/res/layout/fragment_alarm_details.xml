@@ -27,7 +27,7 @@
         android:inputType="text"
         android:maxLines="2"
         android:paddingHorizontal="@dimen/page_margin"
-        android:text="Alarm Title"
+        android:text="Alarm"
         android:textSize="@dimen/text_headline_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.utils.Log
@@ -27,14 +28,22 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
     override fun initViewModel() {
         super.initViewModel()
 
+        viewModel.loading.observe(this) {
+            binding.loading.visible = it
+        }
+
         viewModel.getAlarmList().observe(this) { response ->
             when(response.status) {
-                Status.LOADING -> {}
-                Status.ERROR -> {}
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
                 Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
                     response.data?.let {
                         alarmAdapter.updateItems(it)
-                        Log.d("getAlarmList: $it", myTag)
                     }
                 }
             }
@@ -54,17 +63,6 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
     }
 
     private fun initAlarmList() {
-//        for (i in 0 until 10) {
-//            alarmList.add(Alarm("${i + i % (i + 1) * 2}",
-//                System.currentTimeMillis().plus(40000),
-//                "Alarm ${i.plus(1)}",
-//                arrayOf((i + 1) % 6, (i + 2) % 6),
-//                false,
-//                null,
-//                false)
-//            )
-//        }
-
         binding.recyclerView.apply {
             this.adapter = alarmAdapter
             layoutManager =
@@ -89,11 +87,32 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
         findNavController().navigate(AlarmFragmentDirections.actionAlarmFragmentToAlarmDetails(alarm))
     }
 
-    private fun onSwitchChecked(title: String, time: String, checked: Boolean) {
+    private fun onSwitchChecked(alarm: Alarm, checked:Boolean) {
+        updateOnFirebase(alarm)
+
         if (checked) {
-            MyAlarmManager.setAlarm3(requireContext(), "id", title, time)
+            MyAlarmManager.scheduleAlarm(requireContext(), alarm)
         } else {
             MyAlarmManager.cancelAlarm3(requireContext())
+        }
+    }
+
+    private fun updateOnFirebase(alarm: Alarm) {
+        viewModel.updateAlarm(alarm).observe(this) { response ->
+            when(response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    response.data?.let {
+                        Log.d("SUCCESS updated on db", myTag)
+                    }
+                }
+            }
         }
     }
 

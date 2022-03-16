@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.cardview.widget.CardView
+import androidx.core.widget.doAfterTextChanged
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.fitme.R
@@ -46,6 +47,7 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
     override fun initView() {
         super.initView()
         binding.time.setIs24HourView(true)
+        binding.btnSave.isEnabled = false
         setData()
     }
 
@@ -116,11 +118,15 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         }
 
         binding.btnSave.setOnClickListener {
-            if (navArgs.alarm == null) {
-                saveData()
-            } else {
-                updateData()
-            }
+            saveData()
+        }
+
+        binding.etAlarmName.doAfterTextChanged {
+            viewModel.isChanged.postValue(true)
+        }
+
+        binding.time.setOnTimeChangedListener { _, _, _ ->
+            viewModel.isChanged.postValue(true)
         }
 
         binding.cvMonday.setOnClickListener {
@@ -170,10 +176,8 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
     var pose = ""
     private fun poseSelect(pose: String) {
         this.pose = pose
-    }
-
-    private fun updateData() {
-
+        binding.tvPoseName.text = pose
+        viewModel.isChanged.postValue(true)
     }
 
     private fun saveData() {
@@ -186,36 +190,46 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         }
 
         var alarmTitle = binding.etAlarmName.text.toString()
-        if (alarmTitle.isEmpty()) {
+        if (alarmTitle.isEmpty() || alarmTitle == "Alarm") {
             alarmTitle = "Alarm ${Date().time.mod(12)}"
         }
 
         val repeatDays = ArrayList<Boolean>()
+        var isRepeatable = false
         for (i in 0 until 7) {
             if (days[i] == true) {
+                isRepeatable = true
                 repeatDays.add(true)
             } else {
                 repeatDays.add(false)
             }
         }
 
-        val challenge: String = if (pose.isEmpty()) {
+        val challenge: String = pose.ifEmpty {
             "none"
-        } else {
-            pose
         }
 
         val alarm =
             Alarm(System.currentTimeMillis().toString(),
-                "${timeHour}:${minute}",
-                alarmTitle,
-                repeatDays,
-                challenge,
-                false,
-                0,
-                viewModel.getUserId() ?: FirebaseAuth.getInstance().currentUser!!.uid
+                timestamp = "${timeHour}:${minute}",
+                docId = if (navArgs.alarm != null) navArgs.alarm!!.docId else "",
+                title = alarmTitle,
+                days = repeatDays,
+                challenge = challenge,
+                isTurnedOn = false,
+                isRepeatable = isRepeatable,
+                timeInMs = 0,
+                userId = viewModel.getUserId() ?: FirebaseAuth.getInstance().currentUser!!.uid
             )
 
+        if (navArgs.alarm == null) {
+            saveAlarm(alarm)
+        } else {
+            updateData(alarm)
+        }
+    }
+
+    private fun saveAlarm(alarm: Alarm) {
         viewModel.saveAlarmData(alarm).observe(this) { response ->
             when (response.status) {
                 Status.LOADING -> {
@@ -227,6 +241,25 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
                 Status.SUCCESS -> {
                     viewModel.loading.postValue(false)
                     requireActivity().showSnackBar("Alarm is added")
+                    findNavController().popBackStack()
+                }
+            }
+        }
+    }
+
+
+    private fun updateData(alarm: Alarm) {
+        viewModel.updateAlarm(alarm).observe(this) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    requireActivity().showSnackBar("Alarm is updated")
                     findNavController().popBackStack()
                 }
             }

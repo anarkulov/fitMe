@@ -9,6 +9,8 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -20,7 +22,7 @@
         android:theme="@style/Theme.FitMe"
         tools:targetApi="m">
 
-        <receiver android:name=".managers.MyAlarmManager" />
+        <receiver android:name=".managers.receivers.AlarmReceiver" />
         <service
             android:name=".managers.MyAlarmService"
             android:enabled="true"
@@ -32,6 +34,21 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>
         </service>
+
+        <receiver
+            android:name=".managers.receivers.BootUpReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+                <action android:name="refresh_alarm" />
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".ui.alarm.AlarmActivity"

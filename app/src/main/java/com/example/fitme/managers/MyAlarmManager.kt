@@ -2,40 +2,22 @@ package com.example.fitme.managers
 
 import android.app.AlarmManager
 import android.app.PendingIntent
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.example.fitme.core.utils.Log
-import com.example.fitme.data.local.AppPrefs
 import com.example.fitme.data.models.Alarm
+import com.example.fitme.managers.receivers.AlarmReceiver
+import com.example.fitme.utils.Utils
 import java.util.*
 
 
-class MyAlarmManager(private val prefs: AppPrefs): BroadcastReceiver() {
-
-    override fun onReceive(context: Context?, intent: Intent?) {
-        Log.d("Broadcast Received", myTag)
-        if (intent != null && context != null) {
-            Log.d("Alarm Received. So launch notification", myTag)
-            val title = intent.getStringExtra("title")
-            val service = Intent(context, MyAlarmService::class.java).apply {
-                putExtra("title", title)
-            }
-            if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
-                setTime()
-                return
-            }
-            context.startService(service)
-        }
-    }
-
-    private fun setTime() {
-
-    }
+class MyAlarmManager {
 
     companion object {
         private const val myTag = "AlarmManager"
+        const val ALARM_KEY = "ALARM_KEY"
+        const val ALARM_ACTIVE = "ALARM_ACTIVE"
         private lateinit var alarmManager: AlarmManager
 
         fun setAlarm3(context: Context, id: String, title: String, time: String) {
@@ -51,7 +33,7 @@ class MyAlarmManager(private val prefs: AppPrefs): BroadcastReceiver() {
             calendar.set(Calendar.MINUTE, time.split(":")[1].toInt())
 
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, AlarmManager.INTERVAL_DAY, pendingIntent)
-            Log.d("Alarm set for $time", myTag)
+            Log.d("Alarm set for $calendar.timeInMillis", myTag)
         }
 
         fun cancelAlarm3(context: Context) {
@@ -62,15 +44,21 @@ class MyAlarmManager(private val prefs: AppPrefs): BroadcastReceiver() {
             alarmManager.cancel(broadcast)
         }
 
-        fun scheduleAlarm(context: Context, time: String, isRepeatable: Boolean, days: TreeMap<Int, String>, alarmId: Int) {
-            val timeInMs = Alarm().convertHMtoMS(time, isRepeatable, days)
-
-            val intent = Intent(context, MyAlarmManager::class.java)
-            val bundle = Bundle().apply {
-                putParcelable("ALARM_KEY", this)
+        fun scheduleAlarm(context: Context, alarm: Alarm) {
+            val treeMap = TreeMap<Int, Boolean>()
+            val days = alarm.days
+            for ((index, day) in days.withIndex()) {
+                treeMap[index] = day
             }
-            intent.putExtra("ALARM_KEY", bundle)
-            val pendingIntent = PendingIntent.getBroadcast(context, alarmId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            val timeInMs = Utils.convertHMtoMS(alarm.timestamp, alarm.isRepeatable, treeMap)
+
+            val intent = Intent(context, AlarmReceiver::class.java)
+            val bundle = Bundle().apply {
+                putSerializable(ALARM_KEY, alarm)
+            }
+            intent.putExtra(ALARM_KEY, bundle)
+            val pendingIntent = PendingIntent.getBroadcast(context, alarm.id.substring(8, 13).toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager? ?: return
 
             alarmManager.setAlarmClock(AlarmManager.AlarmClockInfo(timeInMs, pendingIntent), pendingIntent)

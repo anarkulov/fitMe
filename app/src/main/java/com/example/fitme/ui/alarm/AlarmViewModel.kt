@@ -24,4 +24,8 @@ class AlarmViewModel(
     fun saveAlarmData(alarm: Alarm): MutableLiveData<Resource<String>> {
         return alarmRepository.saveAlarmData(alarm)
     }
+
+    fun updateAlarm(alarm: Alarm): MutableLiveData<Resource<Boolean>> {
+        return alarmRepository.updateAlarm(alarm)
+    }
 }

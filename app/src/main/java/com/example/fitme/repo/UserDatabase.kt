@@ -312,16 +312,24 @@ class UserDatabase : AppDatabase() {
         val alarmList = ArrayList<Alarm>()
         firebaseAuth.uid?.let {
             firestoreInstance.collection(ALARM_PATH)
-//                .document(it)
-                .orderBy(ALARM_TIMESTAMP_FIELD, Query.Direction.DESCENDING)
+                .orderBy(ALARM_ID_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { snapshots ->
                     if (snapshots != null) {
                         for (snapshot: DocumentSnapshot in snapshots) {
                             val alarm : Alarm? = snapshot.toObject(Alarm::class.java)
                             Log.d("snapshot: $alarm", myTag)
-                            alarm?.let { it1 ->
-                                alarmList.add(it1)
+                            alarm?.let { item ->
+                                item.docId = snapshot.id
+                                item.id = snapshot["id"] as String
+                                item.title = snapshot["title"] as String
+                                item.timestamp = snapshot["timestamp"] as String
+                                item.days = snapshot["days"] as ArrayList<Boolean>
+                                item.timeInMs = snapshot["timeInMs"] as Long
+                                item.isTurnedOn = snapshot["isTurnedOn"] as Boolean
+                                item.isRepeatable = snapshot["isRepeatable"] as Boolean
+                                item.userId = snapshot["userId"] as String
+                                alarmList.add(item)
                             }
                         }
                     }
@@ -373,6 +381,48 @@ class UserDatabase : AppDatabase() {
             Log.d("NullPointerException", myTag)
             liveData.postValue(Resource.error("NullPointerException", null, -1))
         }
+
+        return liveData
+    }
+
+    fun updateAlarm(alarm: Alarm): MutableLiveData<Resource<Boolean>> {
+        val liveData = MutableLiveData<Resource<Boolean>>()
+        val id = alarm.id
+        val timestamp = alarm.timestamp
+        val title =  alarm.title
+        val days =  alarm.days
+        val challenge =  alarm.challenge
+        val isTurnedOn =  alarm.isTurnedOn
+        val isRepeatable =  alarm.isRepeatable
+        val timeInMs = alarm.timeInMs
+        val userId =  alarm.userId
+
+        val alarmItem: Map<String, Any> = mutableMapOf(
+            "id" to id,
+            "timestamp" to timestamp,
+            "title" to title,
+            "days" to days,
+            "challenge" to challenge,
+            "isTurnedOn" to isTurnedOn,
+            "isRepeatable" to isRepeatable,
+            "timeInMs" to timeInMs,
+            "userId" to userId
+//            "isPlayed" to alarm.isPlayed,
+//            "isVibrated" to city,
+        )
+
+        liveData.value = Resource.loading(null)
+        firestoreInstance
+            .collection(ALARM_PATH)
+            .document(alarm.docId)
+            .set(alarmItem)
+            .addOnSuccessListener {
+                liveData.value = Resource.success(true)
+                Log.d("DocumentSnapshot successfully written!")
+            }
+            .addOnFailureListener { e ->
+                liveData.value = Resource.error(e.toString(), null, null)
+            }
 
         return liveData
     }

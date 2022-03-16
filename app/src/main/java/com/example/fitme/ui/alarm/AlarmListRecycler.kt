@@ -5,23 +5,25 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitme.R
+import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.databinding.ItemAlarmBinding
 
 class AlarmListRecycler(
-    private var items: List<Alarm>,
+    private var items: ArrayList<Alarm>,
     private val onAlarmClick: (id: Alarm) -> Unit,
-    private val onAlarmSwitch: (title: String, time: String, on: Boolean) -> Unit,
+    private val onAlarmSwitch: (alarm: Alarm, checked: Boolean) -> Unit,
 ) : RecyclerView.Adapter<AlarmListRecycler.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemAlarmBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Alarm, onAlarmSwitch: (title: String, time: String, on: Boolean) -> Unit) {
+        fun bind(item: Alarm, onAlarmSwitch: (alarm: Alarm, isChecked: Boolean) -> Unit) {
             val splitTime = item.timestamp.split(":")
             val hour = splitTime[0].toInt()
             val minute = splitTime[1].toInt()
             val time = "${itemView.context.getString(R.string.hour_format, hour)}:${itemView.context.getString(R.string.hour_format, minute)}"
             binding.tvAlarmTime.text = time
             binding.tvAlarmTitle.text = item.title
+            Log.d("alarm: $item", "RecyclerAlarm")
 
             var days = ""
             for ((index, day) in item.days.withIndex()) {
@@ -42,8 +44,9 @@ class AlarmListRecycler(
             binding.btnSwitch.isChecked = item.isTurnedOn
 
             binding.btnSwitch.setOnCheckedChangeListener { _, isChecked ->
-                onAlarmSwitch(item.title, item.timestamp, isChecked)
                 item.isTurnedOn = isChecked
+                onAlarmSwitch(item, isChecked)
+                updateItemValue(absoluteAdapterPosition, item)
             }
         }
     }
@@ -68,7 +71,15 @@ class AlarmListRecycler(
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateItems(item: List<Alarm>) {
-        items = item
+        item.sortedBy {
+            it.id
+        }
+        items.clear()
+        items.addAll(item)
         notifyDataSetChanged()
+    }
+
+    private fun updateItemValue(position: Int, item: Alarm) {
+        items[position] = item
     }
 }
