@@ -9,11 +9,12 @@ import android.content.Intent
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.IBinder
-import android.support.v4.media.session.MediaSessionCompat
 import com.example.fitme.R
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Alarm
+import com.example.fitme.managers.MyAlarmManager.Companion.ALARM_KEY
 import com.example.fitme.managers.alarm.startAlarmActivity
+import com.example.fitme.managers.alarm.stopAlarm
 import com.example.fitme.ui.alarm.AlarmActivity
 
 class MyAlarmService : Service() {
@@ -24,6 +25,7 @@ class MyAlarmService : Service() {
 
         const val ACTION_SHOW_ALARM = "a.show_alarm"
         const val ACTION_STOP = "a.stop_alarm"
+        const val ACTION_STOP_POSE = "stop_alarm"
         const val NOTIFICATION_ID = 1
         var alarm: Alarm? = null
     }
@@ -41,34 +43,32 @@ class MyAlarmService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val title = intent?.getStringExtra("title")
-        Log.d("onStartCommand: $title", myTag)
-
-//        id = if (state == true) 1 else 0
-//
-//        if (!isPlaying && id == 1) {
-//            playAlarm()
-//            isPlaying = true
-//            sendNotification(title)
-//        } else if (isPlaying && id == 0) {
-//            ringtone?.stop()
-//            isPlaying = false
-//        }
+        Log.d("onStartCommand: ${intent?.action}", myTag)
 
         if (!isPlaying) {
             playAlarm()
-            startForeground(NOTIFICATION_ID, buildNotification(this, "Alarm", title, isPlaying))
+            startAlarmActivity(this, intent?.extras)
+            val alarm = intent?.getBundleExtra(ALARM_KEY)?.getSerializable(ALARM_KEY) as Alarm
+            startForeground(NOTIFICATION_ID, buildNotification(this, alarm.title, alarm.timestamp, isPlaying))
         }
 
         isPlaying = true
-
         when (intent?.action) {
             ACTION_SHOW_ALARM, ACTION_STOP -> {
                 startAlarmActivity(this, intent.extras)
             }
+            ACTION_STOP_POSE -> {
+                stopAlarmPlay()
+                stopAlarm()
+            }
         }
 
         return START_NOT_STICKY
+    }
+
+    private fun stopAlarmPlay() {
+        ringtone?.stop()
+        ringtone = null
     }
 
     private fun sendNotification(title: String?) {

@@ -24,19 +24,22 @@ class AlarmReceiver: BroadcastReceiver() {
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            val alarm = intent.getBundleExtra(ALARM_KEY)?.getSerializable(ALARM_KEY) as Alarm? ?: return
+            val alarm = intent.getBundleExtra(ALARM_KEY)?.getSerializable(ALARM_KEY) as Alarm?
 
-            alarm.isPlayed = false
-            val bundle = Bundle().apply {
-                putSerializable(ALARM_KEY, alarm)
-            }
-            intent.putExtra(ALARM_KEY, bundle)
-
-            Log.d("Alarm Received. So launch notification", myTag)
+            Log.d("Alarm Received. action: ${intent.action}", myTag)
 
             val service = Intent(context, MyAlarmService::class.java).apply {
-                putExtra(ALARM_KEY, bundle)
+                action = intent.action
             }
+
+            if (alarm != null) {
+                alarm.isPlayed = false
+                val bundle = Bundle()
+                bundle.putSerializable(ALARM_KEY, alarm)
+                intent.putExtra(ALARM_KEY, bundle)
+                service.putExtra(ALARM_KEY, bundle)
+            }
+
             if (intent.action.equals("android.intent.action.BOOT_COMPLETED")) {
                 return
             }

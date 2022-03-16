@@ -7,6 +7,7 @@ import android.content.Intent
 import android.os.Bundle
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Alarm
+import com.example.fitme.managers.MyAlarmService.Companion.ACTION_STOP_POSE
 import com.example.fitme.managers.receivers.AlarmReceiver
 import com.example.fitme.utils.Utils
 import java.util.*
@@ -65,5 +66,14 @@ class MyAlarmManager {
             Log.d("Alarm set for $timeInMs", myTag)
         }
 
+        fun stopAlarm(context: Context) {
+            Log.d("stopAlarm", myTag)
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val intent = Intent(context, AlarmReceiver::class.java).apply {
+                action = ACTION_STOP_POSE
+            }
+            val broadcast = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            alarmManager.set(AlarmManager.RTC_WAKEUP, 0, broadcast)
+        }
     }
 }
