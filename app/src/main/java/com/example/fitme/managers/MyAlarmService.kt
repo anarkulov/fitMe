@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.os.Bundle
 import android.os.IBinder
 import com.example.fitme.R
 import com.example.fitme.core.utils.Log
@@ -47,15 +48,20 @@ class MyAlarmService : Service() {
 
         if (!isPlaying) {
             playAlarm()
-            startAlarmActivity(this, intent?.extras)
-            val alarm = intent?.getBundleExtra(ALARM_KEY)?.getSerializable(ALARM_KEY) as Alarm
-            startForeground(NOTIFICATION_ID, buildNotification(this, alarm.title, alarm.timestamp, isPlaying))
+            startAlarmActivity(this, intent?.getBundleExtra(ALARM_KEY))
+            val alarm = intent?.getBundleExtra(ALARM_KEY)?.getSerializable(ALARM_KEY) as Alarm?
+            val bundle = Bundle().apply {
+                putSerializable(ALARM_KEY, alarm)
+            }
+            intent?.putExtra(ALARM_KEY, bundle)
+            Log.d("intentAlarms: $alarm", myTag)
+            startForeground(NOTIFICATION_ID, buildNotification(this, alarm?.title, alarm?.timestamp, isPlaying))
         }
 
         isPlaying = true
         when (intent?.action) {
             ACTION_SHOW_ALARM, ACTION_STOP -> {
-                startAlarmActivity(this, intent.extras)
+                startAlarmActivity(this, intent.getBundleExtra(ALARM_KEY))
             }
             ACTION_STOP_POSE -> {
                 stopAlarmPlay()
@@ -97,7 +103,7 @@ class MyAlarmService : Service() {
         }
 
         ringtone = RingtoneManager.getRingtone(this, notificationUri)
-        ringtone?.setLooping(true)
+        ringtone?.isLooping = true
         ringtone?.play()
     }
 }

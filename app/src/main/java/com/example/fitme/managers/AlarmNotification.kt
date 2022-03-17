@@ -13,7 +13,7 @@ import com.example.fitme.managers.MyAlarmService.Companion.ACTION_STOP
 const val NOTIFICATION_ALARM_CHANNEL_ID = "player_channel"
 
 fun buildNotification(
-    context: Context, title: String = "Alarm", text: String?, playing: Boolean
+    context: Context, title: String? = "Alarm", text: String?, playing: Boolean
 ): Notification? {
     val playerIntent = Intent(context.applicationContext, MyAlarmService::class.java)
     playerIntent.action = ACTION_SHOW_ALARM

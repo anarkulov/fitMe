@@ -6,6 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.example.fitme.App
+import com.example.fitme.core.utils.Log
+import com.example.fitme.data.models.Alarm
+import com.example.fitme.managers.MyAlarmManager.Companion.ALARM_KEY
 import com.example.fitme.managers.MyAlarmService
 import com.example.fitme.ui.alarm.AlarmActivity
 fun stopAlarm() {
@@ -17,6 +20,7 @@ fun stopAlarm() {
 }
 
 fun startAlarmActivity(ctx: Context, extras: Bundle?) {
+    Log.d("startAlarmActivity:${extras?.getSerializable(ALARM_KEY) as Alarm?}", "AlarmActivity")
     val intent = Intent(ctx, AlarmActivity::class.java).apply {
         extras?.let { putExtras(it) }
     }

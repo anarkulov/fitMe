@@ -211,7 +211,7 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
 
         val alarm =
             Alarm(System.currentTimeMillis().toString(),
-                timestamp = "${timeHour}:${minute}",
+                timestamp = "${getString(R.string.hour_format, timeHour)}:${getString(R.string.hour_format, minute)}",
                 docId = if (navArgs.alarm != null) navArgs.alarm!!.docId else "",
                 title = alarmTitle,
                 days = repeatDays,
