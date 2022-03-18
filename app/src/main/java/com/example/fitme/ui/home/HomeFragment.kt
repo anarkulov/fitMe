@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.data.local.Constants.Home.TYPE_DAY
 import com.example.fitme.data.local.Constants.Home.TYPE_MONTH
 import com.example.fitme.data.local.Constants.Home.TYPE_WEEK
 import com.example.fitme.data.models.Activity
+import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentHomeBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.roundToInt
@@ -24,11 +26,52 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun initViewModel() {
         super.initViewModel()
 
+        viewModel.getProfile.observe(this) { response ->
+            when(response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    response.data?.let {
+                        setData(it)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setData(user: User) {
+        val fullName = "${user.firstName} ${user.lastName}"
+        binding.tvName.text = fullName
+
+        if (user.age == null) {
+            binding.tvAge.text = "0"
+        } else {
+            binding.tvAge.text = user.age
+        }
+
+        if (user.height == null) {
+            binding.tvHeight.text = "0"
+        } else {
+            binding.tvHeight.text = user.height
+        }
+
+        if (user.weight == null) {
+            binding.tvWeight.text = "0"
+        } else {
+            binding.tvWeight.text = user.height
+        }
+
     }
 
     override fun initView() {
         super.initView()
 
+        viewModel.getUserProfile()
         setStatisticData()
         initActivityList()
     }

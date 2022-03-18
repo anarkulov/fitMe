@@ -23,8 +23,8 @@ class MainRepository(
         return db.getCurrentUser()
     }
 
-    fun getUser(uid: String): MutableLiveData<Resource<User>> {
-        return db.getUser(uid)
+    fun getUser(): MutableLiveData<Resource<User>> {
+        return db.getUser()
     }
 
 //    fun setAccessToken(accessToken: String) {

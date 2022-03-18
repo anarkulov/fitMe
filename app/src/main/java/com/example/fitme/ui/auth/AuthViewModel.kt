@@ -19,7 +19,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : BaseViewModel(
 
     private var _createUserAccount = MutableLiveData<Bundle>()
     private var _forgotPassword = MutableLiveData<String>()
-    private var _getUser = MutableLiveData<String>()
+    private var _getUser = MutableLiveData<Boolean>()
     private var _createUserProfile = MutableLiveData<Bundle>()
     private var _signIn = MutableLiveData<String>()
 
@@ -46,17 +46,15 @@ class AuthViewModel(private val authRepository: AuthRepository) : BaseViewModel(
         _forgotPassword.postValue(email)
     }
 
-
     var getProfile: LiveData<Resource<User>> = _getUser.switchMap {
-        authRepository.getUser(it)
+        authRepository.getUser()
     }
 
     fun getProfile(uid: String, email: String) {
-        _getUser.postValue(uid)
+        _getUser.postValue(true)
         this.email = email
         this.uid = uid
     }
-
 
     var createAccount: LiveData<Resource<String>> = _createUserAccount.switchMap {
         authRepository.createUser(it.getString(EMAIL, ""), it.getString(PASSWORD, ""))

@@ -11,7 +11,6 @@ import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.data.models.User
 import com.example.fitme.utils.Constants.Collection.USERS
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
@@ -27,73 +26,34 @@ class UserDatabase : AppDatabase() {
     private val firebaseUser = MutableLiveData<FirebaseUser?>()
     private val myTag = "UserDatabase"
 
-    fun getProfile(): MutableLiveData<Resource<User>> {
-
-        val liveData = MutableLiveData<Resource<User>>()
-
-        if (currentUser?.uid == null) {
-            liveData.value = Resource.error("UID is null", null, null)
-            return liveData
-        }
-
-        liveData.value = Resource.loading(null)
-
-        val docRef =
-            firestoreInstance.collection(USERS).document(currentUser.uid)
-        docRef.get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val document = task.result
-                if (document.exists()) {
-                    liveData.value = Resource.success(document.toObject(User::class.java))
-                } else {
-                    liveData.value =
-                        Resource.error("No document found on ${docRef.path}", null, 404)
-                }
-            } else {
-                liveData.value = Resource.error(task.exception.toString(), null, null)
-            }
-        }
-        return liveData
-    }
-
-    fun updateProfile(
-        firstName: String,
-        lastName: String,
-        email: String,
-        phone: String,
-        country: String,
-        state: String,
-        city: String,
-    ): MutableLiveData<Resource<Boolean>> {
-
-        val liveData = MutableLiveData<Resource<Boolean>>()
-
-        val user = hashMapOf(
-            "firstName" to firstName,
-            "lastName" to lastName,
-            "email" to email,
-            "phone" to phone,
-            "country" to country,
-            "state" to state,
-            "city" to city
-        )
-
-        liveData.value = Resource.loading(null)
-        currentUser?.uid?.let { uid ->
-
-            firestoreInstance.collection(USERS).document(uid)
-                .set(user)
-                .addOnSuccessListener {
-                    liveData.value = Resource.success(true)
-                    Log.d("DocumentSnapshot successfully written!")
-                }
-                .addOnFailureListener { e ->
-                    liveData.value = Resource.error(e.toString(), null, null)
-                }
-        }
-
-        return liveData
-    }
+//    fun getProfile(): MutableLiveData<Resource<User>> {
+//
+//        val liveData = MutableLiveData<Resource<User>>()
+//
+//        if (currentUser?.uid == null) {
+//            liveData.value = Resource.error("UID is null", null, null)
+//            return liveData
+//        }
+//
+//        liveData.value = Resource.loading(null)
+//
+//        val docRef =
+//            firestoreInstance.collection(USERS).document(currentUser.uid)
+//        docRef.get().addOnCompleteListener { task ->
+//            if (task.isSuccessful) {
+//                val document = task.result
+//                if (document.exists()) {
+//                    liveData.value = Resource.success(document.toObject(User::class.java))
+//                } else {
+//                    liveData.value =
+//                        Resource.error("No document found on ${docRef.path}", null, 404)
+//                }
+//            } else {
+//                liveData.value = Resource.error(task.exception.toString(), null, null)
+//            }
+//        }
+//        return liveData
+//    }
 
     fun getCurrentUser(): MutableLiveData<FirebaseUser?> {
         return firebaseUser
@@ -113,14 +73,15 @@ class UserDatabase : AppDatabase() {
             .signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    liveData.value = Resource.success(task.result.user?.uid)
+                    liveData.postValue(Resource.success(task.result.user?.uid))
                     setCurrentUser()
                 } else {
+                    liveData.postValue(Resource.error("Failed to login",null, -1))
                     Log.d("Failed to login")
                 }
             }
             .addOnFailureListener {
-                liveData.value = Resource.error(it.message, null, null)
+                liveData.postValue(Resource.error("Failed to login",null, -1))
                 Log.d("Failed to login")
             }
 
@@ -226,7 +187,7 @@ class UserDatabase : AppDatabase() {
 
         liveData.value = Resource.loading(null)
 
-        FirebaseAuth.getInstance()
+        firebaseAuth
             .sendPasswordResetEmail(email)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -241,30 +202,88 @@ class UserDatabase : AppDatabase() {
         return liveData
     }
 
-    fun getUser(uid: String): MutableLiveData<Resource<User>> {
+    fun getUser(): MutableLiveData<Resource<User>> {
         val user = MutableLiveData<Resource<User>>()
 
         user.value = Resource.loading(null)
 
-        val docRef = firestoreInstance
-            .collection("users")
-            .document(uid)
-
-        docRef.get()
-            .addOnSuccessListener {
-                val document = it
-                if (document.exists()) {
-                    user.value = Resource.success(document.toObject(User::class.java))
-                } else {
-                    user.value = Resource.error(null, null, null)
+//        //        val docRef =
+////            firestoreInstance.collection(USERS).document(currentUser.uid)
+////        docRef.get().addOnCompleteListener { task ->
+////            if (task.isSuccessful) {
+////                val document = task.result
+////                if (document.exists()) {
+////                    liveData.value = Resource.success(document.toObject(User::class.java))
+////                } else {
+////                    liveData.value =
+////                        Resource.error("No document found on ${docRef.path}", null, 404)
+////                }
+////            } else {
+////                liveData.value = Resource.error(task.exception.toString(), null, null)
+////            }
+////        }
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .get()
+                .addOnSuccessListener {
+                    val document = it
+                    if (document.exists()) {
+                        user.postValue(Resource.success(document.toObject(User::class.java)))
+                    } else {
+                        user.postValue(Resource.error("No user with $it id", null, null))
+                    }
                 }
-            }
-            .addOnFailureListener {
-                user.value = Resource.error(it.message.toString(), null, null)
-            }
+                .addOnFailureListener {
+                    user.postValue(Resource.error(it.message.toString(), null, null))
+                }
+        } ?: run {
+            user.postValue(Resource.error("firebaseAuth is null", null, -1))
+        }
 
         return user
     }
+
+    fun updateProfile(
+        firstName: String,
+        lastName: String,
+        email: String,
+        phone: String,
+        country: String,
+        state: String,
+        city: String,
+    ): MutableLiveData<Resource<Boolean>> {
+
+        val liveData = MutableLiveData<Resource<Boolean>>()
+
+        val user = hashMapOf(
+            "firstName" to firstName,
+            "lastName" to lastName,
+            "email" to email,
+            "phone" to phone,
+            "country" to country,
+            "state" to state,
+            "city" to city
+        )
+
+        liveData.value = Resource.loading(null)
+        currentUser?.uid?.let { uid ->
+
+            firestoreInstance.collection(USERS).document(uid)
+                .set(user)
+                .addOnSuccessListener {
+                    liveData.postValue(Resource.success(true))
+                    Log.d("DocumentSnapshot successfully written!")
+                }
+                .addOnFailureListener { e ->
+                    liveData.postValue(Resource.error(e.toString(), null, null))
+                }
+        }
+
+        return liveData
+    }
+
 
     fun fetchFileReference(
         timeStamp: String,

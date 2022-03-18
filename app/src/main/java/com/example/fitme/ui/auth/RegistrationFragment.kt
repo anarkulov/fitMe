@@ -12,7 +12,7 @@ import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.utils.Log
 import com.example.fitme.databinding.FragmentRegistrationBinding
-import com.readystatesoftware.chuck.internal.ui.MainActivity
+import com.example.fitme.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class RegistrationFragment : BaseFragment<AuthViewModel, FragmentRegistrationBinding>() {
