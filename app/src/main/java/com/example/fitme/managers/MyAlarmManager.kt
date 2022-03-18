@@ -52,7 +52,7 @@ class MyAlarmManager {
                 treeMap[index] = day
             }
 
-            val timeInMs = Utils.convertHMtoMS(alarm.timestamp, alarm.isRepeatable, treeMap)
+            val timeInMs = Utils.convertHMtoMS(alarm.time, alarm.isRepeatable, treeMap)
 
             val intent = Intent(context, AlarmReceiver::class.java)
             val bundle = Bundle().apply {

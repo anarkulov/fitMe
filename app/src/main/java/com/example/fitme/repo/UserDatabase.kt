@@ -165,7 +165,9 @@ class UserDatabase : AppDatabase() {
             "city" to city
         )
 
-        firestoreInstance.collection(USERS).document(uid)
+        firestoreInstance
+            .collection(USERS)
+            .document(uid)
             .set(user)
             .addOnCompleteListener {
                 liveData.value = Resource.success(1)
@@ -207,21 +209,6 @@ class UserDatabase : AppDatabase() {
 
         user.value = Resource.loading(null)
 
-//        //        val docRef =
-////            firestoreInstance.collection(USERS).document(currentUser.uid)
-////        docRef.get().addOnCompleteListener { task ->
-////            if (task.isSuccessful) {
-////                val document = task.result
-////                if (document.exists()) {
-////                    liveData.value = Resource.success(document.toObject(User::class.java))
-////                } else {
-////                    liveData.value =
-////                        Resource.error("No document found on ${docRef.path}", null, 404)
-////                }
-////            } else {
-////                liveData.value = Resource.error(task.exception.toString(), null, null)
-////            }
-////        }
         firebaseAuth.uid?.let { id ->
             firestoreInstance
                 .collection(USERS)
@@ -245,44 +232,44 @@ class UserDatabase : AppDatabase() {
         return user
     }
 
-    fun updateProfile(
-        firstName: String,
-        lastName: String,
-        email: String,
-        phone: String,
-        country: String,
-        state: String,
-        city: String,
-    ): MutableLiveData<Resource<Boolean>> {
-
-        val liveData = MutableLiveData<Resource<Boolean>>()
-
-        val user = hashMapOf(
-            "firstName" to firstName,
-            "lastName" to lastName,
-            "email" to email,
-            "phone" to phone,
-            "country" to country,
-            "state" to state,
-            "city" to city
-        )
-
-        liveData.value = Resource.loading(null)
-        currentUser?.uid?.let { uid ->
-
-            firestoreInstance.collection(USERS).document(uid)
-                .set(user)
-                .addOnSuccessListener {
-                    liveData.postValue(Resource.success(true))
-                    Log.d("DocumentSnapshot successfully written!")
-                }
-                .addOnFailureListener { e ->
-                    liveData.postValue(Resource.error(e.toString(), null, null))
-                }
-        }
-
-        return liveData
-    }
+//    fun updateProfile(
+//        firstName: String,
+//        lastName: String,
+//        email: String,
+//        phone: String,
+//        country: String,
+//        state: String,
+//        city: String,
+//    ): MutableLiveData<Resource<Boolean>> {
+//
+//        val liveData = MutableLiveData<Resource<Boolean>>()
+//
+//        val user = hashMapOf(
+//            "firstName" to firstName,
+//            "lastName" to lastName,
+//            "email" to email,
+//            "phone" to phone,
+//            "country" to country,
+//            "state" to state,
+//            "city" to city
+//        )
+//
+//        liveData.value = Resource.loading(null)
+//        currentUser?.uid?.let { uid ->
+//
+//            firestoreInstance.collection(USERS).document(uid)
+//                .set(user)
+//                .addOnSuccessListener {
+//                    liveData.postValue(Resource.success(true))
+//                    Log.d("DocumentSnapshot successfully written!")
+//                }
+//                .addOnFailureListener { e ->
+//                    liveData.postValue(Resource.error(e.toString(), null, null))
+//                }
+//        }
+//
+//        return liveData
+//    }
 
 
     fun fetchFileReference(
@@ -305,32 +292,35 @@ class UserDatabase : AppDatabase() {
         return mimeTypeMap.getMimeTypeFromExtension(contentResolver.getType(uri))
     }
 
-    fun addImageUrlInDatabase(imageUrl: String, mUri: String): LiveData<Boolean> {
-        val successAddUriImage = MutableLiveData<Boolean>()
-        val reference =
-            currentUser?.uid?.let {
-                firestoreInstance.collection(USERS).document(it)
-            }
-        val map = HashMap<String, Any>()
-        map[imageUrl] = mUri
-
-        reference?.update(map)?.addOnCompleteListener { successAddUriImage.setValue(true) }
-            ?.addOnFailureListener {
-                successAddUriImage.setValue(
-                    false
-                )
-            }
-
-        return successAddUriImage
-    }
+//    fun addImageUrlInDatabase(imageUrl: String, mUri: String): LiveData<Boolean> {
+//        val successAddUriImage = MutableLiveData<Boolean>()
+//        val reference =
+//            currentUser?.uid?.let {
+//                firestoreInstance.collection(USERS).document(it)
+//            }
+//        val map = HashMap<String, Any>()
+//        map[imageUrl] = mUri
+//
+//        reference?.update(map)?.addOnCompleteListener { successAddUriImage.setValue(true) }
+//            ?.addOnFailureListener {
+//                successAddUriImage.setValue(
+//                    false
+//                )
+//            }
+//
+//        return successAddUriImage
+//    }
 
     fun getAlarmList(): MutableLiveData<Resource<List<Alarm>>> {
         val liveData = MutableLiveData<Resource<List<Alarm>>>()
         liveData.value = Resource.loading(null)
 
         val alarmList = ArrayList<Alarm>()
-        firebaseAuth.uid?.let {
-            firestoreInstance.collection(ALARM_PATH)
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ALARM_PATH)
                 .orderBy(ALARM_ID_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { snapshots ->
@@ -342,12 +332,11 @@ class UserDatabase : AppDatabase() {
                                 item.docId = snapshot.id
                                 item.id = snapshot["id"] as String
                                 item.title = snapshot["title"] as String
-                                item.timestamp = snapshot["timestamp"] as String
+                                item.time = snapshot["time"] as String
                                 item.days = snapshot["days"] as ArrayList<Boolean>
                                 item.timeInMs = snapshot["timeInMs"] as Long
-                                item.isTurnedOn = snapshot["isTurnedOn"] as Boolean
-                                item.isRepeatable = snapshot["isRepeatable"] as Boolean
-                                item.userId = snapshot["userId"] as String
+                                item.isTurnedOn = snapshot["isTurnedOn"] as Boolean? ?: true
+                                item.isRepeatable = snapshot["isRepeatable"] as Boolean? ?: true
                                 alarmList.add(item)
                             }
                         }
@@ -377,25 +366,29 @@ class UserDatabase : AppDatabase() {
         val alarmMap = mapOf<String, Any>(
             ALARM_ID_FIELD to alarm.id,
             ALARM_TITLE_FIELD to alarm.title,
-            ALARM_TIMESTAMP_FIELD to alarm.timestamp,
+            ALARM_TIMESTAMP_FIELD to alarm.time,
             ALARM_IS_TURN_ON_FIELD to alarm.isTurnedOn,
+            ALARM_IS_REPEATABLE_FIELD to alarm.isRepeatable,
             ALARM_TIME_IN_MS_FIELD to alarm.timeInMs,
             ALARM_CHALLENGE_FIELD to alarm.challenge,
-            ALARM_DAYS_FIELD to alarm.days,
-            ALARM_USER_ID_FIELD to alarm.userId
+            ALARM_DAYS_FIELD to alarm.days
         )
 
         try {
-            firestoreInstance
-                .collection(ALARM_PATH)
-                .add(alarmMap)
-                .addOnSuccessListener {
-                    Log.d("Successfully added: ${it.id}", myTag)
-                    liveData.postValue(Resource.success(it.id, 1))
-                }.addOnFailureListener {
-                    Log.d("Failure", myTag)
-                    liveData.postValue(Resource.error(it.message, null, -1))
-                }
+            firebaseAuth.uid?.let { id ->
+                firestoreInstance
+                    .collection(USERS)
+                    .document(id)
+                    .collection(ALARM_PATH)
+                    .add(alarmMap)
+                    .addOnSuccessListener {
+                        Log.d("Successfully added: ${it.id}", myTag)
+                        liveData.postValue(Resource.success(it.id, 1))
+                    }.addOnFailureListener {
+                        Log.d("Failure", myTag)
+                        liveData.postValue(Resource.error(it.message, null, -1))
+                    }
+            }
         } catch (e: NullPointerException) {
             Log.d("NullPointerException", myTag)
             liveData.postValue(Resource.error("NullPointerException", null, -1))
@@ -407,41 +400,55 @@ class UserDatabase : AppDatabase() {
     fun updateAlarm(alarm: Alarm): MutableLiveData<Resource<Boolean>> {
         val liveData = MutableLiveData<Resource<Boolean>>()
         val id = alarm.id
-        val timestamp = alarm.timestamp
+        val timestamp = alarm.time
         val title =  alarm.title
         val days =  alarm.days
+        val docId =  alarm.docId
         val challenge =  alarm.challenge
         val isTurnedOn =  alarm.isTurnedOn
         val isRepeatable =  alarm.isRepeatable
         val timeInMs = alarm.timeInMs
-        val userId =  alarm.userId
 
         val alarmItem: Map<String, Any> = mutableMapOf(
-            "id" to id,
-            "timestamp" to timestamp,
-            "title" to title,
-            "days" to days,
-            "challenge" to challenge,
-            "isTurnedOn" to isTurnedOn,
-            "isRepeatable" to isRepeatable,
-            "timeInMs" to timeInMs,
-            "userId" to userId
+            ALARM_ID_FIELD to id,
+            ALARM_TIMESTAMP_FIELD to timestamp,
+            ALARM_TITLE_FIELD to title,
+            ALARM_DAYS_FIELD to days,
+            ALARM_DAYS_FIELD to days,
+            ALARM_CHALLENGE_FIELD to challenge,
+            ALARM_IS_TURN_ON_FIELD to isTurnedOn,
+            ALARM_IS_REPEATABLE_FIELD to isRepeatable,
+            ALARM_TIME_IN_MS_FIELD to timeInMs,
 //            "isPlayed" to alarm.isPlayed,
 //            "isVibrated" to city,
         )
 
+        val alarmMap = mapOf<String, Any>(
+            ALARM_ID_FIELD to alarm.id,
+            ALARM_TITLE_FIELD to alarm.title,
+            ALARM_TIMESTAMP_FIELD to alarm.time,
+            ALARM_IS_TURN_ON_FIELD to alarm.isTurnedOn,
+            ALARM_TIME_IN_MS_FIELD to alarm.timeInMs,
+            ALARM_CHALLENGE_FIELD to alarm.challenge,
+            ALARM_DAYS_FIELD to alarm.days
+        )
+
         liveData.value = Resource.loading(null)
-        firestoreInstance
-            .collection(ALARM_PATH)
-            .document(alarm.docId)
-            .set(alarmItem)
-            .addOnSuccessListener {
-                liveData.value = Resource.success(true)
-                Log.d("DocumentSnapshot successfully written!")
-            }
-            .addOnFailureListener { e ->
-                liveData.value = Resource.error(e.toString(), null, null)
-            }
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ALARM_PATH)
+                .document(docId)
+                .set(alarmItem)
+                .addOnSuccessListener {
+                    liveData.value = Resource.success(true)
+                    Log.d("DocumentSnapshot successfully written!")
+                }
+                .addOnFailureListener { e ->
+                    liveData.value = Resource.error(e.toString(), null, null)
+                }
+        }
 
         return liveData
     }
@@ -509,10 +516,11 @@ class UserDatabase : AppDatabase() {
 
     companion object {
         const val ALARM_PATH = "alarms"
-        const val ALARM_TIMESTAMP_FIELD = "timestamp"
+        const val ALARM_TIMESTAMP_FIELD = "time"
         const val ALARM_ID_FIELD = "id"
         const val ALARM_TITLE_FIELD = "title"
         const val ALARM_IS_TURN_ON_FIELD = "isTurnedOn"
+        const val ALARM_IS_REPEATABLE_FIELD = "isRepeatable"
         const val ALARM_TIME_IN_MS_FIELD = "timeInMs"
         const val ALARM_CHALLENGE_FIELD = "challenge"
         const val ALARM_DAYS_FIELD = "days"

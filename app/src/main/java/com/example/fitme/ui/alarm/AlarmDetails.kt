@@ -19,7 +19,6 @@ import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.databinding.FragmentAlarmDetailsBinding
 import com.example.fitme.ui.alarm.pose.PoseBottomSheetFragment
-import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
@@ -63,7 +62,7 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         }
 
         binding.etAlarmName.setText(data.title)
-        val splitTime = data.timestamp.split(":")
+        val splitTime = data.time.split(":")
         timeHour = splitTime[0].toInt()
         minute = splitTime[1].toInt()
 
@@ -211,15 +210,14 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
 
         val alarm =
             Alarm(System.currentTimeMillis().toString(),
-                timestamp = "${getString(R.string.hour_format, timeHour)}:${getString(R.string.hour_format, minute)}",
+                time = "${getString(R.string.hour_format, timeHour)}:${getString(R.string.hour_format, minute)}",
                 docId = if (navArgs.alarm != null) navArgs.alarm!!.docId else "",
                 title = alarmTitle,
                 days = repeatDays,
                 challenge = challenge,
                 isTurnedOn = false,
                 isRepeatable = isRepeatable,
-                timeInMs = 0,
-                userId = viewModel.getUserId() ?: FirebaseAuth.getInstance().currentUser!!.uid
+                timeInMs = 0
             )
 
         if (navArgs.alarm == null) {

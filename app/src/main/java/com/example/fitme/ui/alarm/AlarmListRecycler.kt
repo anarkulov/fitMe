@@ -17,7 +17,7 @@ class AlarmListRecycler(
 
     inner class ViewHolder(val binding: ItemAlarmBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Alarm, onAlarmSwitch: (alarm: Alarm, isChecked: Boolean) -> Unit) {
-            val splitTime = item.timestamp.split(":")
+            val splitTime = item.time.split(":")
             val hour = splitTime[0].toInt()
             val minute = splitTime[1].toInt()
             val time = "${itemView.context.getString(R.string.hour_format, hour)}:${itemView.context.getString(R.string.hour_format, minute)}"

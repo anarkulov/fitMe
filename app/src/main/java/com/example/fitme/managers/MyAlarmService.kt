@@ -55,7 +55,7 @@ class MyAlarmService : Service() {
             }
             intent?.putExtra(ALARM_KEY, bundle)
             Log.d("intentAlarms: $alarm", myTag)
-            startForeground(NOTIFICATION_ID, buildNotification(this, alarm?.title, alarm?.timestamp, isPlaying))
+            startForeground(NOTIFICATION_ID, buildNotification(this, alarm?.title, alarm?.time, isPlaying))
         }
 
         isPlaying = true
