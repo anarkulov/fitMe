@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 31
 
     project.ext {
         koin_version = "2.2.3"
@@ -18,8 +18,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.fitme"
-        minSdk 21
-        targetSdk 32
+        minSdk 26
+        targetSdk 31
         versionCode 1
         versionName "1.0"
 
@@ -112,6 +112,15 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx:20.0.0'
     implementation 'androidx.browser:browser:1.4.0'
 
-    // Country Code
+// Country Code
     implementation 'com.hbb20:ccp:2.5.4'
+
+//  chart
+    implementation 'com.github.EnthuDai:SimpleChart-Kotlin:1.0.7'
+    implementation project(':chart')
+
+    implementation 'com.diogobernardino:williamchart:3.10.1'
+
+    //eventBus
+    implementation 'org.greenrobot:eventbus:3.2.0'
 }

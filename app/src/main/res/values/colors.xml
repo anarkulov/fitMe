@@ -12,15 +12,20 @@
     <!--    New Colors-->
     <color name="transparent">@android:color/transparent</color>
     <color name="white">#FFFFFF</color>
+    <color name="primary_bg">#F5F3EF</color>
     <color name="black">#000000</color>
     <color name="blue">#92A3FD</color>
-    <color name="purple">#92A3FD</color>
+    <color name="blue_50">#8092A3FD</color>
+    <color name="blue_30">#4D92A3FD</color>
+    <color name="purple">#C58BF2</color>
     <color name="splash_color">@color/blue</color>
     <color name="red">#FF564D</color>
 
     <color name="gray">#979797</color>
     <color name="gray_1">#7B6F72</color>
     <color name="gray_2">#ADA4A5</color>
+    <color name="gray_3">#9BE6E6</color>
+    <color name="gray_4">#ADA4A5</color>
     <color name="gray_light">#F7F8F8</color>
 
 </resources>

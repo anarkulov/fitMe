@@ -13,12 +13,42 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/activityFragment"
+        android:name="com.example.fitme.ui.activity.ActivityFragment"
+        android:label="ActivityFragment"
+        tools:layout="@layout/fragment_activity">
+
+    </fragment>
 
     <fragment
-        android:id="@+id/profileFragment"
-        android:name="com.example.fitme.ui.profile.ProfileFragment"
-        android:label="ProfileFragment"
-        tools:layout="@layout/fragment_profile">
+        android:id="@+id/alarmFragment"
+        android:name="com.example.fitme.ui.alarm.AlarmFragment"
+        android:label="AlarmFragment"
+        tools:layout="@layout/fragment_alarm">
+
+
+        <action
+            android:id="@+id/action_alarmFragment_to_alarmDetails"
+            app:destination="@id/alarmDetails"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/alarmDetails"
+        android:name="com.example.fitme.ui.alarm.AlarmDetails"
+        android:label="fragment_alarm_details"
+        tools:layout="@layout/fragment_alarm_details">
+
+        <argument
+            android:name="alarm"
+            app:argType="com.example.fitme.data.models.Alarm"
+            app:nullable="true"
+            android:defaultValue="@null" />
 
     </fragment>
 

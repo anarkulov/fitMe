@@ -19,8 +19,8 @@ import android.graphics.Canvas
 import android.graphics.PointF
 import androidx.test.platform.app.InstrumentationRegistry
 import com.example.fitme.core.utils.Log
-import com.example.fitme.data.models.BodyPart
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.BodyPart
+import com.example.fitme.data.models.ml.Person
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import kotlin.math.pow

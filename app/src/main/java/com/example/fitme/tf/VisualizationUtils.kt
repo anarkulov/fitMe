@@ -4,8 +4,8 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import com.example.fitme.data.models.BodyPart
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.BodyPart
+import com.example.fitme.data.models.ml.Person
 import kotlin.math.max
 
 object VisualizationUtils {

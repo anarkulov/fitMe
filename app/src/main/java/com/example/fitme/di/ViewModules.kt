@@ -1,5 +1,6 @@
 package com.example.fitme.di
 
+import com.example.fitme.ui.alarm.AlarmViewModel
 import com.example.fitme.ui.auth.AuthViewModel
 import com.example.fitme.ui.home.HomeViewModel
 import com.example.fitme.ui.main.MainViewModel
@@ -11,4 +12,6 @@ val viewModules: Module = module {
     viewModel { AuthViewModel(get()) }
     viewModel { MainViewModel() }
     viewModel { HomeViewModel(get()) }
+    viewModel { AlarmViewModel(get(), get()) }
+
 }

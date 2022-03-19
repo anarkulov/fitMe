@@ -1,6 +1,6 @@
 package com.example.fitme.tf.tracker
 
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.Person
 
 abstract class AbstractTracker(val config: TrackerConfig) {
 

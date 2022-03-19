@@ -31,7 +31,7 @@ class Constants {
 
     object Collection {
         const val USERS_PATH = "users"
-        const val TIMESTAMP_FIELD = "timestamp"
+        const val TIMESTAMP_FIELD = "time"
         const val NAME_FIELD = "name"
         const val PHONE_FIELD = "phone number"
 

@@ -1,88 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    tools:context=".ui.home.HomeFragment"
+    android:background="@color/primary_bg">
 
-    <!--    <com.example.fitme.core.ui.widgets.MainToolbar-->
-    <!--        android:id="@+id/toolbar"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintTop_toTopOf="parent" />-->
-
-    <SurfaceView
-        android:id="@+id/surfaceView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:clipToPadding="false">
 
-    <TextView
-        android:id="@+id/tv_counter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/page_margin"
-        android:background="@drawable/bg_input_field"
-        android:paddingHorizontal="@dimen/element_margin"
-        android:text="0"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/iv_avatar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:src="@drawable/ic_person_placeholder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_border_color="@color/blue"
+            app:riv_border_width="2dp"
+            app:riv_oval="true" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/page_margin"
-        android:background="@drawable/bg_input_field"
-        android:paddingHorizontal="@dimen/element_margin"
-        android:text="@string/counter"
-        app:layout_constraintEnd_toStartOf="@+id/tv_counter"
-        app:layout_constraintTop_toTopOf="parent" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_name"
+            style="@style/Text.Regular.Normal_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium_margin"
+            app:layout_constraintEnd_toEndOf="@+id/iv_avatar"
+            app:layout_constraintStart_toStartOf="@+id/iv_avatar"
+            app:layout_constraintTop_toBottomOf="@+id/iv_avatar"
+            tools:text="Name" />
 
-    <TextView
-        android:id="@+id/btn_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/page_margin"
-        android:background="@drawable/bg_input_field"
-        android:paddingHorizontal="@dimen/element_margin"
-        android:text="switch_camera"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_counter" />
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_edit"
+            style="@style/Text.Caption"
+            android:layout_width="wrap_content"
+            android:layout_height="16dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_name"
+            app:layout_constraintStart_toEndOf="@+id/tv_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_name" />
 
-    <TextView
-        android:id="@+id/tv_first_classification"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/page_margin"
-        android:background="@drawable/bg_input_field"
-        android:paddingHorizontal="@dimen/element_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_switch" />
+        <LinearLayout
+            android:id="@+id/layout_weight"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/layout_height"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btn_edit">
 
-    <TextView
-        android:id="@+id/tv_score"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/page_margin"
-        android:background="@drawable/bg_input_field"
-        android:paddingHorizontal="@dimen/element_margin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_first_classification" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="0"
+                android:textColor="@color/blue_50" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/weight"
+                android:textColor="@color/blue_50" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_height"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toStartOf="@+id/layout_age"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/layout_weight"
+            app:layout_constraintTop_toBottomOf="@+id/btn_edit">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_height"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="0"
+                android:textColor="@color/blue_50" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/height"
+                android:textColor="@color/blue_50" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_age"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/layout_height"
+            app:layout_constraintTop_toBottomOf="@+id/btn_edit">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_age"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="0"
+                android:textColor="@color/blue_50" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/age"
+                android:textColor="@color/blue_50" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/big_margin_half"
+            android:background="@drawable/bg_bottom_sheet"
+            app:layout_constraintTop_toBottomOf="@+id/layout_height">
+
+            <LinearLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/big_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@android:color/transparent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/btn_month"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_custom_tab_left"
+                    android:gravity="center"
+                    android:text="MONTH"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/btn_week"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_custom_tab_middle"
+                    android:gravity="center"
+                    android:text="WEEK"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/btn_day"
+                    android:layout_width="0dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="1dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_custom_tab_right"
+                    android:gravity="center"
+                    android:text="ALL TIME"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_chart_title"
+                style="@style/Text.Semibold.Normal_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/page_margin"
+                android:layout_marginTop="@dimen/page_margin"
+                android:text="All my"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+
+            <Spinner
+                android:id="@+id/btn_filter_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                tools:listitem="@layout/item_spinner"
+                android:layout_marginStart="@dimen/small_margin"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_chart_title"
+                app:layout_constraintStart_toEndOf="@+id/tv_chart_title"
+                app:layout_constraintTop_toTopOf="@+id/tv_chart_title" />
+
+            <com.db.williamchart.view.BarChartView
+                android:id="@+id/lineChart"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_marginHorizontal="@dimen/page_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                app:chart_barsColor="@color/white"
+                app:chart_barsRadius="@dimen/small_margin"
+                app:chart_labelsColor="@color/white"
+                app:chart_labelsFont="@font/poppins_regular"
+                app:chart_labelsSize="@dimen/text_normal_2"
+                app:layout_constraintTop_toBottomOf="@+id/tv_chart_title" />
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="100dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/big_margin"
+                android:background="@color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lineChart" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_month_name"
+                style="@style/Text.Semibold.Normal_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/page_margin"
+                android:layout_marginTop="@dimen/page_margin"
+                android:text="My Activities"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/activity_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/page_margin"
+                android:layout_marginTop="@dimen/page_margin"
+                app:layout_constraintTop_toBottomOf="@+id/tv_month_name"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_activity" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-<!--    <TextView-->
-<!--        android:id="@+id/tv_third_classification"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_margin="@dimen/page_margin"-->
-<!--        android:background="@drawable/bg_input_field"-->
-<!--        android:paddingHorizontal="@dimen/element_margin"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/tv_second_classification" />-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

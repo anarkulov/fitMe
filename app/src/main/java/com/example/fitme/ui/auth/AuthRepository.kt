@@ -43,8 +43,8 @@ class AuthRepository(
         return db.createUser(email, password)
     }
 
-    fun getUser(uid: String): MutableLiveData<Resource<User>> {
-        return db.getUser(uid)
+    fun getUser(): MutableLiveData<Resource<User>> {
+        return db.getUser()
     }
 
     fun forgotPassword(email: String): MutableLiveData<Resource<Boolean>> {

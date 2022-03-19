@@ -1,524 +1,419 @@
 package com.example.fitme.ui.home
 
-import android.Manifest
-import android.app.AlertDialog
-import android.app.Dialog
-import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
-import android.os.Process
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.CompoundButton
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.lifecycleScope
+import android.widget.ArrayAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitme.R
-import com.example.fitme.camera.CameraSource
+import com.example.fitme.core.extentions.fetchColor
+import com.example.fitme.core.extentions.showToast
+import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.utils.Log
-import com.example.fitme.data.models.BodyPart
-import com.example.fitme.data.models.Device
-import com.example.fitme.data.models.KeyPoint
+import com.example.fitme.data.Workout
+import com.example.fitme.data.local.Constants.Home.PERIOD_DAY
+import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
+import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
+import com.example.fitme.data.local.Constants.Home.TYPE_CALORIE
+import com.example.fitme.data.local.Constants.Home.TYPE_COUNTERS
+import com.example.fitme.data.local.Constants.Home.TYPE_SECONDS
+import com.example.fitme.data.models.Activity
+import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentHomeBinding
-import com.example.fitme.tf.ml.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import kotlin.math.PI
-import kotlin.math.abs
-import kotlin.math.atan2
+import java.util.*
+import kotlin.math.roundToInt
+
 
 class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
-    companion object {
-        private const val FRAGMENT_DIALOG = "dialog"
-    }
 
     override val viewModel: HomeViewModel by viewModel()
 
+    private val activityList = ArrayList<Activity>()
     private val myTag = "HomeFragment"
+    private val activitiesAdapter: ActivityListRecycler = ActivityListRecycler(activityList, this::onActivityClick)
+    private var statisticDataList: MutableList<Pair<String, Float>> = mutableListOf()
+    private var statisticActivityList: ArrayList<Activity> = ArrayList()
+    private var selectedType = TYPE_COUNTERS
+    private var selectedPeriod = PERIOD_WEEK
 
-    private var modelPos: Int = 0
-    private var cameraSource: CameraSource? = null
-    private var isClassifyPose = true
-    private var device = Device.CPU
+    override fun initViewModel() {
+        super.initViewModel()
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (isGranted) {
-                openCamera()
-            } else {
-                ErrorDialog.newInstance("The camera permission is needed")
-                    .show(childFragmentManager, FRAGMENT_DIALOG)
-            }
-        }
-
-    private var cameraSourceListener = object : CameraSource.CameraSourceListener {
-        override fun onFPSListener(fps: Int) {
-
-        }
-
-        override fun onDetectedInfo(
-            personScore: Float?,
-            keyPoints: List<KeyPoint>?,
-            poseLabels: List<Pair<String, Float>>?,
-        ) {
-            activity?.runOnUiThread {
-                binding.tvScore.text = getString(R.string.tv_score, personScore ?: 0f)
-            }
-            poseLabels?.sortedByDescending { it.second }?.let {
-                activity?.runOnUiThread {
-//                    binding.tvFirstClassification.text = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-//                    binding.tvSecondClassification.text = convertPoseLabels(if (it.size >= 2) it[1] else null)
-//                    binding.tvThirdClassification.text = convertPoseLabels(if (it.size >= 3) it[2] else null)
+        viewModel.getProfile.observe(this) { response ->
+            when(response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
                 }
-            }
-
-            keyPoints?.let {
-                if (personScore == null || personScore <= 0.4) return@let
-//                Log.d("onDetectedInfo: keyPoints - $keyPoints, ", myTag)
-//                val leftElbow = it.lastOrNull { keyPoint ->
-//                    keyPoint.bodyPart == BodyPart.LEFT_ELBOW
-//                }
-//
-//                val right_elbow = it.lastOrNull { keyPoint ->
-//                    keyPoint.bodyPart == BodyPart.RIGHT_ELBOW
-//                }
-//
-//                val left_wrist = it.lastOrNull { keyPoint ->
-//                    keyPoint.bodyPart == BodyPart.LEFT_WRIST
-//                }
-//
-//                val right_wrist= it.lastOrNull { keyPoint ->
-//                    keyPoint.bodyPart == BodyPart.RIGHT_WRIST
-//                }
-//
-//                val left_shoulder = it.lastOrNull { keyPoint ->
-//                    keyPoint.bodyPart == BodyPart.LEFT_SHOULDER
-//                }
-//
-//                val right_shoulder = it.lastOrNull { keyPoint -> keyPoint.bodyPart == BodyPart.RIGHT_SHOULDER }
-//
-//                calculatePushUpAngle(leftElbow, right_elbow, left_wrist, right_wrist, left_shoulder, right_shoulder)
-
-                calculate(keyPoints)
-            }
-
-
-//            poseByKeyPoints?.let {
-//                Log.d("onDetectedInfo: poseByKeyPoints - $poseByKeyPoints, ", myTag)
-//                activity?.runOnUiThread {
-////                    binding.tvFirstClassification.text = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-////                    binding.tvSecondClassification.text = convertPoseLabels(if (it.size >= 2) it[1] else null)
-////                    binding.tvThirdClassification.text = convertPoseLabels(if (it.size >= 3) it[2] else null)
-//                }
-//            }
-        }
-    }
-
-    private var changeModelListener = object : AdapterView.OnItemSelectedListener {
-        override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-        override fun onItemSelected(
-            parent: AdapterView<*>?,
-            view: View?,
-            position: Int,
-            id: Long,
-        ) {
-            changeModel(position)
-        }
-    }
-
-    private var changeDeviceListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            changeDevice(position)
-        }
-
-        override fun onNothingSelected(parent: AdapterView<*>?) {}
-    }
-
-    private var changeTrackerListener = object : AdapterView.OnItemSelectedListener {
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            changeTracker(position)
-        }
-
-        override fun onNothingSelected(parent: AdapterView<*>?) {}
-    }
-
-    private var setClassificationListener =
-        CompoundButton.OnCheckedChangeListener { _, isChecked ->
-            showClassificationResult(isChecked)
-            isClassifyPose = isChecked
-            isPoseClassifier()
-        }
-
-    private fun isPoseClassifier() {
-        cameraSource?.setClassifier(if (isClassifyPose) context?.let { PoseClassifier.create(it) } else null)
-    }
-
-    private fun changeTracker(position: Int) {
-        cameraSource?.setTracker(
-            when (position) {
-                1 -> TrackerType.BOUNDING_BOX
-                2 -> TrackerType.KEYPOINTS
-                else -> TrackerType.OFF
-            }
-        )
-    }
-
-    private fun changeDevice(position: Int) {
-        val targetDevice = when (position) {
-            0 -> Device.CPU
-            1 -> Device.GPU
-            else -> Device.NNAPI
-        }
-        if (device == targetDevice) return
-        device = targetDevice
-        createPoseEstimator()
-    }
-
-    private fun changeModel(position: Int) {
-        if (modelPos == position) return
-        modelPos = position
-        createPoseEstimator()
-    }
-
-    private fun createPoseEstimator() {
-        // For MoveNet MultiPose, hide score and disable pose classifier as the model returns
-        // multiple Person instances.
-        val poseDetector = when (modelPos) {
-            0 -> {
-                // MoveNet Lightning (SinglePose)
-                showPoseClassifier(true)
-                showDetectionScore(true)
-                showTracker(false)
-                MoveNet.create(requireContext(), device, ModelType.Lightning)
-            }
-            1 -> {
-                // MoveNet Thunder (SinglePose)
-                showPoseClassifier(true)
-                showDetectionScore(true)
-                showTracker(false)
-                MoveNet.create(requireContext(), device, ModelType.Thunder)
-            }
-            2 -> {
-                // MoveNet (Lightning) MultiPose
-                showPoseClassifier(false)
-                showDetectionScore(false)
-                // Movenet MultiPose Dynamic does not support GPUDelegate
-                if (device == Device.GPU) {
-//                    showToast(getString(R.string.tfe_pe_gpu_error))
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
                 }
-                showTracker(true)
-                MoveNetMultiPose.create(
-                    requireContext(),
-                    device,
-                    Type.Dynamic
-                )
-            }
-            3 -> {
-                // PoseNet (SinglePose)
-                showPoseClassifier(true)
-                showDetectionScore(true)
-                showTracker(false)
-                PoseNet.create(requireContext(), device)
-            }
-            else -> {
-                null
-            }
-        }
-        poseDetector?.let { detector ->
-            cameraSource?.setDetector(detector)
-        }
-    }
-
-    // test
-    fun calculateAngle(a: Float, b: Float, c: Float): Double {
-
-//        val radians = atan2(c[1]-b[1], c[0] - b[0]) - atan2(a[1]-b[1], a[0] - b[0])
-//        var angle = abs(radians * 180.0/ PI)
-//        if (angle > 180.0) {
-//            angle = 360.0 - angle
-//        }
-
-        return 0.0
-    }
-
-    //   biceps
-
-    private var counter = 0
-    private fun calculate(keyPoints: List<KeyPoint>) {
-
-        val rightWrist = keyPoints.lastOrNull { keyPoint ->
-            keyPoint.bodyPart == BodyPart.RIGHT_WRIST
-        }
-
-        val rightElbow = keyPoints.lastOrNull { keyPoint ->
-            keyPoint.bodyPart == BodyPart.RIGHT_ELBOW
-        }
-
-        val rightShoulder = keyPoints.lastOrNull { keyPoint ->
-            keyPoint.bodyPart == BodyPart.RIGHT_SHOULDER
-        }
-
-        if (rightElbow == null || rightShoulder == null|| rightWrist == null) return
-        if (rightElbow.score < 0.4 || rightShoulder.score < 0.4 || rightWrist.score < 0.4) return
-
-        val rightWristY = rightWrist.coordinate.y
-        val rightWristX = rightWrist.coordinate.x
-
-        val rightElbowY = rightElbow.coordinate.y
-        val rightElbowX = rightElbow.coordinate.x
-
-        val rightShoulderY = rightShoulder.coordinate.y
-        val rightShoulderX = rightShoulder.coordinate.x
-
-        val radians =
-            atan2(rightShoulderY.minus(rightElbowY), rightShoulderX.minus(rightElbowX)) -
-                    atan2(rightWristY.minus(rightElbowY), rightWristX.minus(rightElbowX))
-
-        val angle = abs(radians * (180.0 / PI))
-
-//        if (angle > 180.0) {
-//            angle = 360.0 - angle
-//        }
-
-        if (angle > 170 && angle < 200) {
-            isUp = true
-            isDown = false
-        }
-
-        if (angle > 25 && angle < 45) {
-            if (isUp) {
-                counter = binding.tvCounter.text.toString().toInt()
-                counter += 1
-                activity?.runOnUiThread {
-                    binding.tvCounter.text = counter.toString()
-                }
-            }
-            isDown = true
-            isUp = false
-        }
-
-        Log.d("calculateBiceps: $angle", myTag)
-    }
-
-    private var isDown = false
-    private var isUp = false
-
-    // pushUpAngle
-    private fun calculatePushUpAngle(
-        leftElbow: KeyPoint?,
-        rightElbow: KeyPoint?,
-        leftWrist: KeyPoint?,
-        rightWrist: KeyPoint?,
-        leftShoulder: KeyPoint?,
-        rightShoulder: KeyPoint?,
-    ) {
-        val leftWristY = leftWrist?.coordinate?.y ?: 0.0f
-        val leftWristX = leftWrist?.coordinate?.x ?: 0.0f
-        val rightWristY = rightWrist?.coordinate?.y ?: 0.0f
-        val rightWristX = rightWrist?.coordinate?.x ?: 0.0f
-
-        val leftElbowY = leftElbow?.coordinate?.y ?: 0.0f
-        val leftElbowX = leftElbow?.coordinate?.x ?: 0.0f
-        val rightElbowY = rightElbow?.coordinate?.y ?: 0.0f
-        val rightElbowX = rightElbow?.coordinate?.x ?: 0.0f
-
-        val leftShoulderY = leftShoulder?.coordinate?.y ?: 0.0f
-        val leftShoulderX = leftShoulder?.coordinate?.x ?: 0.0f
-        val rightShoulderY = rightShoulder?.coordinate?.y ?: 0.0f
-        val rightShoulderX = rightShoulder?.coordinate?.x ?: 0.0f
-
-//        val leftRadians = atan2(c[1]-b[1], c[0] - b[0]) - atan2(a[1]-b[1], a[0] - b[0])
-        val leftRadians = atan2(leftShoulderY.minus(leftElbowY), leftShoulderX.minus(leftElbowX)) -
-                atan2(leftWristY.minus(leftElbowY), leftWristX.minus(leftElbowX))
-
-//        val rightRadians = atan2(c[1]-b[1], c[0] - b[0]) - atan2(a[1]-b[1], a[0] - b[0])
-        val rightRadians =
-            atan2(rightShoulderY.minus(rightElbowY), rightShoulderX.minus(rightElbowX)) -
-                    atan2(rightWristY.minus(rightElbowY), rightWristX.minus(rightElbowX))
-
-        var angle = abs(((leftRadians + rightRadians) / 2.0) * (180.0 / PI))
-
-        if (angle > 180.0) {
-            angle = 360.0 - angle
-        }
-
-        Log.d("calculatePushUpAngle: $angle", myTag)
-//
-    }
-//    fun calculatePushUpAngle(leftElbow: KeyPoint) : Double {
-//
-//        val radians = atan2(c[1]-b[1], c[0] - b[0]) - atan2(a[1]-b[1], a[0] - b[0])
-//        var angle = abs(radians * 180.0/ PI)
-//        if (angle > 180.0) {
-//            angle = 360.0 - angle
-//        }
-//
-//        return angle
-//    }
-
-    // Show/hide the pose classification option.
-    private fun showPoseClassifier(isVisible: Boolean) {
-//        vClassificationOption.visibility = if (isVisible) View.VISIBLE else View.GONE
-//        if (!isVisible) {
-//            swClassification.isChecked = false
-//        }
-    }
-
-    // Show/hide the detection score.
-    private fun showDetectionScore(isVisible: Boolean) {}
-
-    // Show/hide classification result.
-    private fun showClassificationResult(isVisible: Boolean) {}
-
-    // Show/hide the tracking options.
-    private fun showTracker(isVisible: Boolean) {}
-
-    // Open camera
-    private fun openCamera() {
-        if (isCameraPermissionGranted()) {
-            if (cameraSource == null) {
-                cameraSource =
-                    CameraSource(binding.surfaceView, cameraSourceListener).apply {
-                        prepareCamera()
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    response.data?.let {
+                        Log.d("getProfile: $it", myTag)
+                        setData(it)
                     }
-                isPoseClassifier()
-                lifecycleScope.launch(Dispatchers.Main) {
-                    cameraSource?.initCamera()
                 }
             }
-            createPoseEstimator()
         }
+
+        viewModel.getActivityList().observe(this) { response ->
+            when(response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    response.data?.let {
+                        Log.d("getActivityList: $it", myTag)
+                        sortDataList(it)
+                    }
+                }
+            }
+        }
+
+        getStatisticActivityList(selectedPeriod)
     }
 
-    private fun isCameraPermissionGranted(): Boolean {
-        return activity?.checkPermission(
-            Manifest.permission.CAMERA,
-            Process.myPid(),
-            Process.myUid()
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun convertPoseLabels(pair: Pair<String, Float>?): String {
-        if (pair == null) return "empty"
-        return "${pair.first} (${String.format("%.2f", pair.second)})"
+    private fun getStatisticActivityList(period: Int) {
+        selectedPeriod = period
+        viewModel.getAllActivityCountersBy(period).observe(this) { response ->
+            when(response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    response.data?.let {
+                        statisticActivityList.clear()
+                        statisticActivityList.addAll(it)
+                        setTypeStatistic(period, selectedType)
+                    }
+                }
+            }
+        }
     }
 
     override fun initView() {
         super.initView()
 
+        initTab()
+        viewModel.getUserProfile()
         initSpinner()
-        if (!isCameraPermissionGranted()) {
-            requestPermission()
-        }
+        setStatisticData()
+        initActivityList()
     }
 
-    private fun requestPermission() {
-        when (PackageManager.PERMISSION_GRANTED) {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ),
-            -> {
-                openCamera()
+    private fun initTab() {
+        when (selectedPeriod) {
+            PERIOD_WEEK -> {
+                binding.btnWeek.isSelected = !binding.btnWeek.isSelected
+            }
+            PERIOD_MONTH -> {
+                binding.btnMonth.isSelected = !binding.btnMonth.isSelected
             }
             else -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.CAMERA
-                )
+                binding.btnDay.isSelected = !binding.btnDay.isSelected
             }
         }
     }
 
     private fun initSpinner() {
-//        ArrayAdapter.createFromResource(
-//            this,
-//            R.array.tfe_pe_models_array,
-//            android.R.layout.simple_spinner_item
-//        ).also { adapter ->
-//            // Specify the layout to use when the list of choices appears
-//            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//            // Apply the adapter to the spinner
-//            spnModel.adapter = adapter
-//            spnModel.onItemSelectedListener = changeModelListener
-//        }
-//
-//        ArrayAdapter.createFromResource(
-//            this,
-//            R.array.tfe_pe_device_name, android.R.layout.simple_spinner_item
-//        ).also { adaper ->
-//            adaper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//
-//            spnDevice.adapter = adaper
-//            spnDevice.onItemSelectedListener = changeDeviceListener
-//        }
-//
-//        ArrayAdapter.createFromResource(
-//            this,
-//            R.array.tfe_pe_tracker_array, android.R.layout.simple_spinner_item
-//        ).also { adaper ->
-//            adaper.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//
-//            spnTracker.adapter = adaper
-//            spnTracker.onItemSelectedListener = changeTrackerListener
-//        }
+       ArrayAdapter.createFromResource(requireContext(), R.array.categories_array, R.layout.item_spinner).also { adapter ->
+           adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+           binding.btnFilterSpinner.adapter = adapter
+       }
     }
 
-    override fun initViewModel() {
-        super.initViewModel()
+    private fun setData(user: User) {
+        val fullName = "${user.firstName} ${user.lastName}"
+        binding.tvName.text = fullName
 
+        if (user.age == null) {
+            binding.tvAge.text = "0"
+        } else {
+            binding.tvAge.text = user.age.toString()
+        }
+
+        if (user.height == null) {
+            binding.tvHeight.text = "0"
+        } else {
+            binding.tvHeight.text = user.height.toString()
+        }
+
+        if (user.weight == null) {
+            binding.tvWeight.text = "0"
+        } else {
+            binding.tvWeight.text = user.weight.toString()
+        }
+
+    }
+
+    private fun setStatisticData() {
+        binding.lineChart.animation.duration = 1000
+        val labelsFormatter: (Float) -> String = { it.roundToInt().toString() }
+        binding.lineChart.labelsFormatter = labelsFormatter
+    }
+
+    private fun setTypeStatistic(period: Int, type: Int) {
+        selectedPeriod = period
+        selectedType = type
+        when (period) {
+            PERIOD_MONTH -> {
+                calculateStatisticDataForMonth(type)
+            }
+            PERIOD_WEEK -> {
+                calculateStatisticDataForWeek(type)
+            }
+            PERIOD_DAY -> {
+                calculateStatisticDataForAllTime(type)
+            }
+        }
+    }
+
+    private fun calculateStatisticDataForAllTime(type: Int) {
+
+        statisticDataList = mutableListOf(
+            "Today" to 1F
+        )
+        binding.lineChart.barsColorsList = listOf(Color.WHITE)
+        binding.lineChart.animate(statisticDataList)
+    }
+
+    private fun calculateStatisticDataForMonth(type: Int) {
+        statisticDataList = mutableListOf(
+            "J" to 0F,
+            "F" to 0F,
+            "M" to 0F,
+            "A" to 0F,
+            "M" to 0F,
+            "J" to 0F,
+            "J" to 0F,
+            "A" to 0F,
+            "S" to 0F,
+            "O" to 0F,
+            "N" to 0F,
+            "D" to 0F
+        )
+
+        val currentCalendar = Calendar.getInstance()
+        val today = currentCalendar[Calendar.MONTH]
+        currentCalendar.set(Calendar.DAY_OF_YEAR, 1)
+        currentCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        currentCalendar.set(Calendar.MINUTE, 0)
+        currentCalendar.set(Calendar.SECOND, 0)
+        currentCalendar.set(Calendar.MILLISECOND, 0)
+
+        val startDay = 0
+        val hashMapCur = mutableMapOf<Long, Int>()
+        val colorList = arrayListOf<Int>()
+        for (month in 0 until 12) {
+            val yearMonth = startDay + month
+            currentCalendar.set(Calendar.MONTH, yearMonth)
+
+            hashMapCur[currentCalendar.timeInMillis] = yearMonth
+
+            if (yearMonth == today) {
+                colorList.add(fetchColor(R.color.purple))
+            } else {
+                colorList.add(Color.WHITE)
+            }
+            Log.d("month: $yearMonth ${currentCalendar.timeInMillis}", myTag)
+        }
+
+        for (item in statisticActivityList) {
+            val itemCalendar = Calendar.getInstance()
+            itemCalendar.timeInMillis = item.createdAt
+            itemCalendar.set(Calendar.DAY_OF_MONTH, 1)
+            itemCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            itemCalendar.set(Calendar.MINUTE, 0)
+            itemCalendar.set(Calendar.SECOND, 0)
+            itemCalendar.set(Calendar.MILLISECOND, 0)
+
+            val key = itemCalendar.timeInMillis
+            if (hashMapCur.containsKey(key)) {
+                val index = hashMapCur[key]
+                index?.let {
+                    val data = when (type) {
+                        TYPE_COUNTERS -> statisticDataList[index].second + item.counters
+                        TYPE_CALORIE -> statisticDataList[index].second + item.calories
+                        else -> statisticDataList[index].second + item.seconds
+                    }
+                    statisticDataList[index] = statisticDataList[index].copy(second = data)
+                }
+            }
+        }
+
+        binding.lineChart.barsColorsList = colorList
+        binding.lineChart.animate(statisticDataList)
+    }
+
+    private fun calculateStatisticDataForWeek(type: Int) {
+        val currentCalendar = Calendar.getInstance()
+        currentCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        currentCalendar.set(Calendar.MINUTE, 0)
+        currentCalendar.set(Calendar.SECOND, 0)
+        currentCalendar.set(Calendar.MILLISECOND, 0)
+        val today = currentCalendar[Calendar.DAY_OF_WEEK]-2
+        val startDay = currentCalendar[Calendar.DAY_OF_YEAR] - currentCalendar[Calendar.DAY_OF_WEEK]
+
+        statisticDataList = mutableListOf(
+            "Mon" to 1F,
+            "Tue" to 0F,
+            "Wed" to 0F,
+            "Thu" to 1F,
+            "Fri" to 1F,
+            "Sat" to 1F,
+            "Sun" to 1F,
+        )
+
+        val hashMapCur = mutableMapOf<Long, Int>()
+        val colorList = arrayListOf<Int>()
+        for (day in 2 until 9) {
+            val weekDay = startDay + day
+            currentCalendar.set(Calendar.DAY_OF_YEAR, weekDay)
+            hashMapCur[currentCalendar.timeInMillis] = day
+
+            if (day-2 == today) {
+                colorList.add(fetchColor(R.color.purple))
+            } else {
+                colorList.add(Color.WHITE)
+            }
+        }
+
+        for (item in statisticActivityList) {
+            val itemCalendar = Calendar.getInstance()
+            itemCalendar.timeInMillis = item.createdAt
+            itemCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            itemCalendar.set(Calendar.MINUTE, 0)
+            itemCalendar.set(Calendar.SECOND, 0)
+            itemCalendar.set(Calendar.MILLISECOND, 0)
+
+            val key = itemCalendar.timeInMillis
+            if (hashMapCur.containsKey(key)) {
+                val index = hashMapCur[key]?.minus(2)
+                index?.let {
+                    val data = when (type) {
+                        TYPE_COUNTERS -> statisticDataList[index].second + item.counters
+                        TYPE_CALORIE -> statisticDataList[index].second + item.calories
+                        else -> statisticDataList[index].second + item.seconds
+                    }
+                    statisticDataList[index] = statisticDataList[index].copy(second = data)
+                }
+            }
+        }
+
+        binding.lineChart.barsColorsList = colorList
+        binding.lineChart.animate(statisticDataList)
+    }
+
+    private fun initActivityList() {
+        binding.activityRecyclerView.apply {
+            this.adapter = activitiesAdapter
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
+        }
+    }
+
+    private fun sortDataList(statisticDataList: List<Activity>) {
+        val sortedActivities = ArrayList<Activity>()
+
+        val pushUps = statisticDataList.filter { it.workout == Workout.PushUp.name }
+        val squads = statisticDataList.filter { it.workout == Workout.Squad.name }
+        val planks = statisticDataList.filter { it.workout == Workout.Plank.name }
+
+        if (pushUps.isNotEmpty()) {
+            val pushUp = Activity(name = "My PushUps", createdAt = System.currentTimeMillis())
+            for (item in pushUps) {
+                if (item.createdAt < pushUp.createdAt) {
+                    pushUp.createdAt = item.createdAt
+                }
+                pushUp.counters += item.counters
+                pushUp.calories += item.calories
+                pushUp.seconds += item.seconds
+            }
+            sortedActivities.add(pushUp)
+        }
+
+        if (squads.isNotEmpty()) {
+            val squad = Activity(name = "My Squads", createdAt = System.currentTimeMillis())
+            for (item in squads) {
+                if (item.createdAt < squad.createdAt) {
+                    squad.createdAt = item.createdAt
+                }
+                squad.counters += item.counters
+                squad.calories += item.calories
+                squad.seconds += item.seconds
+            }
+            sortedActivities.add(squad)
+        }
+
+        if (planks.isNotEmpty()) {
+            val plank = Activity(name = "My Planks")
+            for (item in pushUps) {
+                plank.counters += item.counters
+                plank.calories += item.calories
+                plank.seconds += item.seconds
+            }
+            sortedActivities.add(plank)
+        }
+
+        activitiesAdapter.updateItems(sortedActivities)
     }
 
     override fun initListeners() {
         super.initListeners()
 
-        binding.btnSwitch.setOnClickListener {
-            cameraSource?.switchCamera()
+        binding.btnMonth.setOnClickListener {
+            binding.btnMonth.isSelected = true
+            binding.btnWeek.isSelected = false
+            binding.btnDay.isSelected = false
+            getStatisticActivityList(PERIOD_MONTH)
         }
-    }
 
-    class ErrorDialog : DialogFragment() {
+        binding.btnWeek.setOnClickListener {
+            binding.btnWeek.isSelected = true
+            binding.btnMonth.isSelected = false
+            binding.btnDay.isSelected = false
+            getStatisticActivityList(PERIOD_WEEK)
+        }
 
-        override fun onCreateDialog(savedInstanceState: Bundle?): Dialog =
-            AlertDialog.Builder(activity)
-                .setMessage(requireArguments().getString(ARG_MESSAGE))
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    // do nothing
+        binding.btnDay.setOnClickListener {
+            binding.btnDay.isSelected = true
+            binding.btnWeek.isSelected = false
+            binding.btnMonth.isSelected = false
+            setTypeStatistic(PERIOD_DAY, selectedType)
+        }
+
+        binding.btnEdit.setOnClickListener {
+            showToast("Edit is not implemented yet")
+        }
+
+        binding.btnFilterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                when (p2) {
+                    0 -> setTypeStatistic(PERIOD_WEEK, TYPE_COUNTERS)
+                    1 -> setTypeStatistic(PERIOD_WEEK, TYPE_CALORIE)
+                    else -> setTypeStatistic(PERIOD_WEEK, TYPE_SECONDS)
                 }
-                .create()
-
-        companion object {
-
-            @JvmStatic
-            private val ARG_MESSAGE = "message"
-
-            @JvmStatic
-            fun newInstance(message: String): ErrorDialog = ErrorDialog().apply {
-                arguments = Bundle().apply { putString(ARG_MESSAGE, message) }
             }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        openCamera()
-    }
+    private fun onActivityClick(activity: Activity) {
 
-    override fun onResume() {
-        super.onResume()
-        cameraSource?.resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        cameraSource?.close()
-        cameraSource = null
     }
 
     override fun inflateViewBinding(

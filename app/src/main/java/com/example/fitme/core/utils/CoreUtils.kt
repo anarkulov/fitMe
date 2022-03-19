@@ -15,14 +15,14 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.content.ContextCompat
 import com.example.fitme.R
-import com.example.fitme.data.local.Constants
 import com.example.fitme.data.local.Constants.Date.DATE_FORMAT
 import com.example.fitme.data.local.Constants.Date.DATE_FORMAT_SERVER
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
 import kotlin.math.ceil
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities
 
 open class  CoreUtils {
 
@@ -102,10 +102,90 @@ open class  CoreUtils {
         return date.time
     }
 
+    fun getDateTime(timestamp: Long): String? {
+        return try {
+            val format = "MM/dd/yyyy"
+            val sdf = SimpleDateFormat(format)
+            val netDate = Date(timestamp * 1000)
+            sdf.format(netDate)
+        } catch (e: Exception) {
+            e.toString()
+        }
+    }
+
     fun getVersionName(context: Context): String {
         val manager = context.packageManager
         val info = manager.getPackageInfo(context.packageName, PackageManager.GET_ACTIVITIES)
         return "${context.getString(R.string.app_name)} version ${info.versionName}"
+    }
+
+    fun convertHMtoMS(time: String, isRepeating: Boolean, days: TreeMap<Int, Boolean>) : Long {
+        var timeInMs: Long = 0
+
+        val splitTime = time.split(":")
+        val hour = splitTime[0].toInt()
+        val minute = splitTime[1].toInt()
+
+        val calendar = Calendar.getInstance().apply {
+            set(Calendar.HOUR, hour)
+            set(Calendar.MINUTE, minute)
+            set(Calendar.SECOND, 0)
+        }
+
+        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+        val nowTime = simpleDateFormat.format(Date())
+
+        val currentTime = nowTime.split(":")
+        val hr = currentTime[0].toInt()
+
+        if (hr >= 12) {
+            calendar.set(Calendar.AM_PM, Calendar.AM)
+        }
+
+        timeInMs = calendar.timeInMillis
+
+        if (isRepeating) {
+            val timeSet = TreeSet<Long>()
+            for (i in 0 until 7) {
+                var repeatTime = timeInMs
+
+                if (days.containsKey(i)) {
+                    val calendar = Calendar.getInstance()
+                    var currentDay = calendar.get(Calendar.DAY_OF_WEEK)
+                    currentDay--
+                    if ((repeatTime < System.currentTimeMillis() && currentDay == i) || currentDay != i) {
+                        if (i > currentDay) {
+                            repeatTime += TimeUnit.MICROSECONDS.convert((i - currentDay).toLong(), TimeUnit.DAYS)
+                        } else {
+                            repeatTime += TimeUnit.MICROSECONDS.convert((7 - currentDay).toLong(), TimeUnit.DAYS)
+                            TimeUnit.MICROSECONDS.convert(i.toLong(), TimeUnit.DAYS)
+                        }
+                        timeSet.add(repeatTime)
+                    } else if (currentDay == i) {
+                        timeSet.add(repeatTime)
+                    }
+                }
+            }
+
+            if (timeSet.isNotEmpty()) {
+                return timeSet.first()
+            }
+        }
+
+        if (calendar.before(Calendar.getInstance())) {
+            calendar.add(Calendar.DAY_OF_WEEK, 1)
+        }
+
+        timeInMs = calendar.timeInMillis
+        return timeInMs
+    }
+
+    fun formatTimestampDate(createdAt: Timestamp): String {
+        val milliseconds = createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000
+        val sdf = SimpleDateFormat("MMMM d")
+        val netDate = Date(milliseconds)
+
+        return sdf.format(netDate)
     }
 
 //    val date = Date(time * 1000)

@@ -3,6 +3,7 @@ package com.example.fitme.repo
 import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
 import com.example.fitme.data.local.AppPrefs
+import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.User
 import com.example.fitme.data.remote.RemoteDataSource
 import com.google.firebase.auth.FirebaseUser
@@ -23,8 +24,16 @@ class MainRepository(
         return db.getCurrentUser()
     }
 
-    fun getUser(uid: String): MutableLiveData<Resource<User>> {
-        return db.getUser(uid)
+    fun getUser(): MutableLiveData<Resource<User>> {
+        return db.getUser()
+    }
+
+    fun getActivityList(): MutableLiveData<Resource<List<Activity>>> {
+        return db.getActivityList()
+    }
+
+    fun getAllActivityCountersBy(type: Int): MutableLiveData<Resource<List<Activity>>> {
+        return db.getAllActivityCountersBy(type)
     }
 
 //    fun setAccessToken(accessToken: String) {

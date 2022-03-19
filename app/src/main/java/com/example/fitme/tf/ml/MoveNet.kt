@@ -3,9 +3,9 @@ package com.example.fitme.tf.ml
 import android.content.Context
 import android.graphics.*
 import android.os.SystemClock
+import com.example.fitme.data.models.ml.*
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
-import com.example.fitme.data.models.*
 import org.tensorflow.lite.gpu.GpuDelegate
 import org.tensorflow.lite.support.common.FileUtil
 import org.tensorflow.lite.support.image.ImageProcessor

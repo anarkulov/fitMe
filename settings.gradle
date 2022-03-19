@@ -3,8 +3,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven {
+            url 'https://jitpack.io'
+        }
         jcenter() // Warning: this repository is going to shut down soon
     }
 }
 rootProject.name = "FitMe"
 include ':app'
+include ':chart'

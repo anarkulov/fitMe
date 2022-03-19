@@ -1,8 +1,8 @@
 package com.example.fitme.tf.tracker
 
 import androidx.annotation.VisibleForTesting
-import com.example.fitme.data.models.KeyPoint
-import com.example.fitme.data.models.Person
+import com.example.fitme.data.models.ml.KeyPoint
+import com.example.fitme.data.models.ml.Person
 import kotlin.math.exp
 import kotlin.math.max
 import kotlin.math.min
