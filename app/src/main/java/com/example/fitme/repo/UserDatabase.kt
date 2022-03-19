@@ -489,16 +489,20 @@ class UserDatabase : AppDatabase() {
         liveData.value = Resource.loading(null)
 
         val calendar = Calendar.getInstance()
+        calendar.set(Calendar.HOUR_OF_DAY, 0)
+        calendar.set(Calendar.MINUTE, 0)
+        calendar.set(Calendar.SECOND, 0)
+        calendar.set(Calendar.MILLISECOND, 0)
 
         val startDay = when(type) {
             PERIOD_WEEK -> {
                 calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_WEEK]
             }
             PERIOD_MONTH -> {
-                calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_MONTH]
+                1
             }
             else -> {
-                0
+                calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_WEEK]
             }
         }
 

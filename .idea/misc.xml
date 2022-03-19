@@ -15,6 +15,9 @@
         <entry key="app/src/main/res/drawable/bg_custom_tab_left.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/bg_custom_tab_left_pressed.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/bg_custom_tab_left_unpressed.xml" value="0.192" />
+        <entry key="app/src/main/res/drawable/bg_custom_tab_middle.xml" value="0.288" />
+        <entry key="app/src/main/res/drawable/bg_custom_tab_middle_selected.xml" value="0.288" />
+        <entry key="app/src/main/res/drawable/bg_custom_tab_middle_unselected.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/bg_custom_tab_right.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/bg_custom_tab_right_press.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/bg_custom_tab_right_pressed.xml" value="0.192" />
@@ -61,7 +64,7 @@
         <entry key="app/src/main/res/layout/fragment_alarm_list.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_boarding.xml" value="0.18" />
         <entry key="app/src/main/res/layout/fragment_exercise.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.436950146627566" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_otp.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/layout/fragment_password.xml" value="0.20742753623188406" />

@@ -1,5 +1,6 @@
 package com.example.fitme.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitme.R
+import com.example.fitme.core.extentions.fetchColor
 import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
@@ -36,7 +38,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private val activitiesAdapter: ActivityListRecycler = ActivityListRecycler(activityList, this::onActivityClick)
     private var statisticDataList: MutableList<Pair<String, Float>> = mutableListOf()
     private var statisticActivityList: ArrayList<Activity> = ArrayList()
-
+    private var selectedType = TYPE_COUNTERS
+    private var selectedPeriod = PERIOD_WEEK
 
     override fun initViewModel() {
         super.initViewModel()
@@ -77,11 +80,12 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             }
         }
 
-        getStatisticActivityList(PERIOD_WEEK)
+        getStatisticActivityList(selectedPeriod)
     }
 
-    private fun getStatisticActivityList(typeWeek: Int) {
-        viewModel.getAllActivityCountersBy(typeWeek).observe(this) { response ->
+    private fun getStatisticActivityList(period: Int) {
+        selectedPeriod = period
+        viewModel.getAllActivityCountersBy(period).observe(this) { response ->
             when(response.status) {
                 Status.LOADING -> {
                     viewModel.loading.postValue(true)
@@ -94,7 +98,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                     response.data?.let {
                         statisticActivityList.clear()
                         statisticActivityList.addAll(it)
-                        setTypeStatistic(typeWeek)
+                        setTypeStatistic(period, selectedType)
                     }
                 }
             }
@@ -104,10 +108,25 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun initView() {
         super.initView()
 
+        initTab()
         viewModel.getUserProfile()
         initSpinner()
         setStatisticData()
         initActivityList()
+    }
+
+    private fun initTab() {
+        when (selectedPeriod) {
+            PERIOD_WEEK -> {
+                binding.btnWeek.isSelected = !binding.btnWeek.isSelected
+            }
+            PERIOD_MONTH -> {
+                binding.btnMonth.isSelected = !binding.btnMonth.isSelected
+            }
+            else -> {
+                binding.btnDay.isSelected = !binding.btnDay.isSelected
+            }
+        }
     }
 
     private fun initSpinner() {
@@ -147,7 +166,9 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         binding.lineChart.labelsFormatter = labelsFormatter
     }
 
-    private fun setTypeStatistic(period: Int = PERIOD_WEEK, type: Int = TYPE_COUNTERS) {
+    private fun setTypeStatistic(period: Int, type: Int) {
+        selectedPeriod = period
+        selectedType = type
         when (period) {
             PERIOD_MONTH -> {
                 calculateStatisticDataForMonth(type)
@@ -162,15 +183,11 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
     private fun calculateStatisticDataForAllTime(type: Int) {
+
         statisticDataList = mutableListOf(
-            "J" to 0F,
-            "F" to 0F,
-            "M" to 0F,
-            "A" to 0F,
-            "M" to 0F,
-            "M" to 0F,
-            "M" to 0F
+            "Today" to 1F
         )
+        binding.lineChart.barsColorsList = listOf(Color.WHITE)
         binding.lineChart.animate(statisticDataList)
     }
 
@@ -190,6 +207,55 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             "D" to 0F
         )
 
+        val currentCalendar = Calendar.getInstance()
+        val today = currentCalendar[Calendar.MONTH]
+        currentCalendar.set(Calendar.DAY_OF_YEAR, 1)
+        currentCalendar.set(Calendar.HOUR_OF_DAY, 0)
+        currentCalendar.set(Calendar.MINUTE, 0)
+        currentCalendar.set(Calendar.SECOND, 0)
+        currentCalendar.set(Calendar.MILLISECOND, 0)
+
+        val startDay = 0
+        val hashMapCur = mutableMapOf<Long, Int>()
+        val colorList = arrayListOf<Int>()
+        for (month in 0 until 12) {
+            val yearMonth = startDay + month
+            currentCalendar.set(Calendar.MONTH, yearMonth)
+
+            hashMapCur[currentCalendar.timeInMillis] = yearMonth
+
+            if (yearMonth == today) {
+                colorList.add(fetchColor(R.color.purple))
+            } else {
+                colorList.add(Color.WHITE)
+            }
+            Log.d("month: $yearMonth ${currentCalendar.timeInMillis}", myTag)
+        }
+
+        for (item in statisticActivityList) {
+            val itemCalendar = Calendar.getInstance()
+            itemCalendar.timeInMillis = item.createdAt
+            itemCalendar.set(Calendar.DAY_OF_MONTH, 1)
+            itemCalendar.set(Calendar.HOUR_OF_DAY, 0)
+            itemCalendar.set(Calendar.MINUTE, 0)
+            itemCalendar.set(Calendar.SECOND, 0)
+            itemCalendar.set(Calendar.MILLISECOND, 0)
+
+            val key = itemCalendar.timeInMillis
+            if (hashMapCur.containsKey(key)) {
+                val index = hashMapCur[key]
+                index?.let {
+                    val data = when (type) {
+                        TYPE_COUNTERS -> statisticDataList[index].second + item.counters
+                        TYPE_CALORIE -> statisticDataList[index].second + item.calories
+                        else -> statisticDataList[index].second + item.seconds
+                    }
+                    statisticDataList[index] = statisticDataList[index].copy(second = data)
+                }
+            }
+        }
+
+        binding.lineChart.barsColorsList = colorList
         binding.lineChart.animate(statisticDataList)
     }
 
@@ -199,33 +265,31 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         currentCalendar.set(Calendar.MINUTE, 0)
         currentCalendar.set(Calendar.SECOND, 0)
         currentCalendar.set(Calendar.MILLISECOND, 0)
-
-        val nextDay = Calendar.getInstance()
-        nextDay.set(Calendar.HOUR_OF_DAY, 0)
-        nextDay.set(Calendar.MINUTE, 0)
-        nextDay.set(Calendar.SECOND, 0)
-        nextDay.set(Calendar.MILLISECOND, 0)
-
+        val today = currentCalendar[Calendar.DAY_OF_WEEK]-2
         val startDay = currentCalendar[Calendar.DAY_OF_YEAR] - currentCalendar[Calendar.DAY_OF_WEEK]
 
         statisticDataList = mutableListOf(
-            "Mon" to 0F,
+            "Mon" to 1F,
             "Tue" to 0F,
             "Wed" to 0F,
-            "Thu" to 0F,
-            "Fri" to 0F,
-            "Sat" to 0F,
-            "Sun" to 0F,
+            "Thu" to 1F,
+            "Fri" to 1F,
+            "Sat" to 1F,
+            "Sun" to 1F,
         )
 
         val hashMapCur = mutableMapOf<Long, Int>()
-
+        val colorList = arrayListOf<Int>()
         for (day in 2 until 9) {
             val weekDay = startDay + day
             currentCalendar.set(Calendar.DAY_OF_YEAR, weekDay)
-
             hashMapCur[currentCalendar.timeInMillis] = day
-            Log.d("${currentCalendar.timeInMillis} - $day", myTag)
+
+            if (day-2 == today) {
+                colorList.add(fetchColor(R.color.purple))
+            } else {
+                colorList.add(Color.WHITE)
+            }
         }
 
         for (item in statisticActivityList) {
@@ -250,6 +314,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             }
         }
 
+        binding.lineChart.barsColorsList = colorList
         binding.lineChart.animate(statisticDataList)
     }
 
@@ -311,15 +376,24 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         super.initListeners()
 
         binding.btnMonth.setOnClickListener {
-            setTypeStatistic(PERIOD_MONTH)
+            binding.btnMonth.isSelected = true
+            binding.btnWeek.isSelected = false
+            binding.btnDay.isSelected = false
+            getStatisticActivityList(PERIOD_MONTH)
         }
 
         binding.btnWeek.setOnClickListener {
-            setTypeStatistic(PERIOD_WEEK)
+            binding.btnWeek.isSelected = true
+            binding.btnMonth.isSelected = false
+            binding.btnDay.isSelected = false
+            getStatisticActivityList(PERIOD_WEEK)
         }
 
         binding.btnDay.setOnClickListener {
-            setTypeStatistic(PERIOD_DAY)
+            binding.btnDay.isSelected = true
+            binding.btnWeek.isSelected = false
+            binding.btnMonth.isSelected = false
+            setTypeStatistic(PERIOD_DAY, selectedType)
         }
 
         binding.btnEdit.setOnClickListener {

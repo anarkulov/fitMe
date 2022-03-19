@@ -164,8 +164,7 @@
                     android:layout_gravity="center"
                     android:layout_marginStart="1dp"
                     android:layout_weight="1"
-                    android:background="@color/blue_30"
-                    android:foreground="?attr/selectableItemBackground"
+                    android:background="@drawable/bg_custom_tab_middle"
                     android:gravity="center"
                     android:text="WEEK"
                     android:textColor="@color/white" />
@@ -201,6 +200,7 @@
                 android:layout_height="wrap_content"
                 android:backgroundTint="@color/white"
                 tools:listitem="@layout/item_spinner"
+                android:layout_marginStart="@dimen/small_margin"
                 app:layout_constraintBottom_toBottomOf="@+id/tv_chart_title"
                 app:layout_constraintStart_toEndOf="@+id/tv_chart_title"
                 app:layout_constraintTop_toTopOf="@+id/tv_chart_title" />
