@@ -71,9 +71,6 @@ class AlarmListRecycler(
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateItems(item: List<Alarm>) {
-        item.sortedBy {
-            it.id
-        }
         items.clear()
         items.addAll(item)
         notifyDataSetChanged()

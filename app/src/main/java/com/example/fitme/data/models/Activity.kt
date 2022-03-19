@@ -1,29 +1,56 @@
 package com.example.fitme.data.models
 
-import java.io.Serializable
+import android.os.Parcel
+import android.os.Parcelable
 
 data class Activity(
-    val id: String,
-    val title: String,
-    val description: String
-) : Serializable {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
+    var id: String = "",
+    var docId: String = "",
+    var name: String = "",
+    var description: String = "",
+    var counters: Int = 0,
+    var seconds: Int = 0,
+    var calories: Int = 0,
+    var workout: String = "",
+    var createdAt: Long = 0
+) : Parcelable {
 
-        other as Activity
-
-        if (id != other.id) return false
-        if (!description.contentEquals(other.description)) return false
-        if (title != other.title) return false
-
-        return true
+    constructor(parcel: Parcel) : this(
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readInt(),
+        parcel.readString().toString(),
+        parcel.readLong(),
+    ) {
     }
 
-    override fun hashCode(): Int {
-        var result = id.hashCode()
-        result = 31 * result + title.hashCode()
-        result = 31 * result + description.hashCode()
-        return result
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
+        parcel.writeString(docId)
+        parcel.writeString(name)
+        parcel.writeString(description)
+        parcel.writeInt(counters)
+        parcel.writeInt(seconds)
+        parcel.writeInt(calories)
+        parcel.writeString(workout)
+        parcel.writeLong(createdAt)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Activity> {
+        override fun createFromParcel(parcel: Parcel): Activity {
+            return Activity(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Activity?> {
+            return arrayOfNulls(size)
+        }
     }
 }

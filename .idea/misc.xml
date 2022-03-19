@@ -36,12 +36,14 @@
         <entry key="app/src/main/res/drawable/ic_card.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_circle.xml" value="0.239" />
         <entry key="app/src/main/res/drawable/ic_clear.xml" value="0.321025641025641" />
+        <entry key="app/src/main/res/drawable/ic_edit.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/ic_item_alarm.xml" value="0.2765" />
         <entry key="app/src/main/res/drawable/ic_lock.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_message.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_person.xml" value="0.216" />
+        <entry key="app/src/main/res/drawable/ic_person_placeholder.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.2984375" />
         <entry key="app/src/main/res/drawable/ic_pushup.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/nav_activity_state.xml" value="0.2865" />
@@ -54,11 +56,11 @@
         <entry key="app/src/main/res/layout/content_alarm.xml" value="0.3734375" />
         <entry key="app/src/main/res/layout/fragment_activity.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_alarm.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/fragment_alarm_details.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/fragment_alarm_details.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_alarm_list.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_boarding.xml" value="0.18" />
         <entry key="app/src/main/res/layout/fragment_exercise.xml" value="0.165" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.436950146627566" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_otp.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/layout/fragment_password.xml" value="0.20742753623188406" />

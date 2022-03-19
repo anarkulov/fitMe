@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import com.example.fitme.R
 import com.example.fitme.data.local.Constants.Date.DATE_FORMAT
 import com.example.fitme.data.local.Constants.Date.DATE_FORMAT_SERVER
+import com.google.firebase.Timestamp
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -154,9 +155,9 @@ open class  CoreUtils {
                     currentDay--
                     if ((repeatTime < System.currentTimeMillis() && currentDay == i) || currentDay != i) {
                         if (i > currentDay) {
-                            repeatTime += java.util.concurrent.TimeUnit.MICROSECONDS.convert((i - currentDay).toLong(), java.util.concurrent.TimeUnit.DAYS)
+                            repeatTime += TimeUnit.MICROSECONDS.convert((i - currentDay).toLong(), TimeUnit.DAYS)
                         } else {
-                            repeatTime += java.util.concurrent.TimeUnit.MICROSECONDS.convert((7 - currentDay).toLong(), java.util.concurrent.TimeUnit.DAYS)
+                            repeatTime += TimeUnit.MICROSECONDS.convert((7 - currentDay).toLong(), TimeUnit.DAYS)
                             TimeUnit.MICROSECONDS.convert(i.toLong(), TimeUnit.DAYS)
                         }
                         timeSet.add(repeatTime)
@@ -177,6 +178,14 @@ open class  CoreUtils {
 
         timeInMs = calendar.timeInMillis
         return timeInMs
+    }
+
+    fun formatTimestampDate(createdAt: Timestamp): String {
+        val milliseconds = createdAt.seconds * 1000 + createdAt.nanoseconds / 1000000
+        val sdf = SimpleDateFormat("MMMM d")
+        val netDate = Date(milliseconds)
+
+        return sdf.format(netDate)
     }
 
 //    val date = Date(time * 1000)

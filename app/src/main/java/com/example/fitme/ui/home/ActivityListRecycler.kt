@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitme.data.models.Activity
 import com.example.fitme.databinding.ItemActivityBinding
+import java.util.*
 
 class ActivityListRecycler(
     private val items: ArrayList<Activity>,
@@ -14,8 +15,9 @@ class ActivityListRecycler(
 
     inner class ViewHolder(val binding: ItemActivityBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Activity) {
-            binding.tvActivityTitle.text = item.title
-            binding.tvDescription.text = item.description
+            binding.tvActivityTitle.text = item.name
+            val description = "${item.calories} kcal were burn out since ${Date(item.createdAt)} | ${item.seconds} seconds"
+            binding.tvDescription.text = description
         }
     }
 
@@ -37,7 +39,9 @@ class ActivityListRecycler(
     override fun getItemCount(): Int = items.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateItems() {
+    fun updateItems(items: List<Activity>) {
+        this.items.clear()
+        this.items.addAll(items)
         notifyDataSetChanged()
     }
 }

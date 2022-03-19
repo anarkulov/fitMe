@@ -8,6 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.utils.Log
+import com.example.fitme.data.local.Constants.Home.TYPE_MONTH
+import com.example.fitme.data.local.Constants.Home.TYPE_WEEK
+import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.data.models.User
 import com.example.fitme.utils.Constants.Collection.USERS
@@ -16,6 +19,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.Query
 import com.google.firebase.storage.StorageReference
 import org.koin.dsl.module
+import java.util.*
 
 val databaseModule = module {
     single { UserDatabase() }
@@ -321,7 +325,7 @@ class UserDatabase : AppDatabase() {
                 .collection(USERS)
                 .document(id)
                 .collection(ALARM_PATH)
-                .orderBy(ALARM_ID_FIELD, Query.Direction.DESCENDING)
+                .orderBy(ID_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { snapshots ->
                     if (snapshots != null) {
@@ -364,7 +368,7 @@ class UserDatabase : AppDatabase() {
         liveData.value = Resource.loading(null)
 
         val alarmMap = mapOf<String, Any>(
-            ALARM_ID_FIELD to alarm.id,
+            ID_FIELD to alarm.id,
             ALARM_TITLE_FIELD to alarm.title,
             ALARM_TIMESTAMP_FIELD to alarm.time,
             ALARM_IS_TURN_ON_FIELD to alarm.isTurnedOn,
@@ -410,7 +414,7 @@ class UserDatabase : AppDatabase() {
         val timeInMs = alarm.timeInMs
 
         val alarmItem: Map<String, Any> = mutableMapOf(
-            ALARM_ID_FIELD to id,
+            ID_FIELD to id,
             ALARM_TIMESTAMP_FIELD to timestamp,
             ALARM_TITLE_FIELD to title,
             ALARM_DAYS_FIELD to days,
@@ -421,16 +425,6 @@ class UserDatabase : AppDatabase() {
             ALARM_TIME_IN_MS_FIELD to timeInMs,
 //            "isPlayed" to alarm.isPlayed,
 //            "isVibrated" to city,
-        )
-
-        val alarmMap = mapOf<String, Any>(
-            ALARM_ID_FIELD to alarm.id,
-            ALARM_TITLE_FIELD to alarm.title,
-            ALARM_TIMESTAMP_FIELD to alarm.time,
-            ALARM_IS_TURN_ON_FIELD to alarm.isTurnedOn,
-            ALARM_TIME_IN_MS_FIELD to alarm.timeInMs,
-            ALARM_CHALLENGE_FIELD to alarm.challenge,
-            ALARM_DAYS_FIELD to alarm.days
         )
 
         liveData.value = Resource.loading(null)
@@ -447,6 +441,166 @@ class UserDatabase : AppDatabase() {
                 }
                 .addOnFailureListener { e ->
                     liveData.value = Resource.error(e.toString(), null, null)
+                }
+        }
+
+        return liveData
+    }
+
+    fun getActivityList(): MutableLiveData<Resource<List<Activity>>> {
+        val liveData = MutableLiveData<Resource<List<Activity>>>()
+        liveData.value = Resource.loading(null)
+
+        val activityList = ArrayList<Activity>()
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ACTIVITY_PATH)
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (snapshots != null) {
+                        for (snapshot: DocumentSnapshot in snapshots) {
+                            val activity : Activity? = snapshot.toObject(Activity::class.java)
+                            Log.d("getActivityList - snapshot: $activity", myTag)
+                            activity?.let { item ->
+                                item.docId = snapshot.id
+                                item.createdAt = snapshot.get(ACTIVITY_CREATED_AT_FIELD) as Long
+                                activityList.add(item)
+                            }
+                        }
+                    }
+                    if (activityList.isNotEmpty()) {
+                        liveData.postValue(Resource.success(activityList))
+                    } else {
+                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
+                    }
+                }
+                .addOnFailureListener {
+                    liveData.postValue(Resource.error("Failed to get activity list", null, -1))
+                }
+        }
+
+        return liveData
+    }
+
+    fun getAllActivityCountersBy(type: Int): MutableLiveData<Resource<List<Activity>>> {
+        val liveData = MutableLiveData<Resource<List<Activity>>>()
+        liveData.value = Resource.loading(null)
+
+        val calendar = Calendar.getInstance()
+
+        val startDay = when(type) {
+            TYPE_WEEK -> {
+                calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_WEEK]
+            }
+            TYPE_MONTH -> {
+                calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_MONTH]
+            }
+            else -> {
+                0
+            }
+        }
+
+        calendar.set(Calendar.DAY_OF_YEAR, startDay)
+
+        Log.d("getAllActivityCountersBy: ${calendar.time}", myTag)
+
+        val activityList = ArrayList<Activity>()
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ACTIVITY_PATH)
+                .whereGreaterThanOrEqualTo("createdAt", calendar.timeInMillis)
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (snapshots != null) {
+                        for (snapshot: DocumentSnapshot in snapshots) {
+                            val activity : Activity? = snapshot.toObject(Activity::class.java)
+                            Log.d("getAllActivityCountersBy - snapshot: $activity", myTag)
+                            activity?.let { item ->
+                                item.docId = snapshot.id
+                                item.createdAt = snapshot.get(ACTIVITY_CREATED_AT_FIELD) as Long
+                                activityList.add(item)
+                            }
+                        }
+                    }
+                    if (activityList.isNotEmpty()) {
+                        liveData.postValue(Resource.success(activityList))
+                    } else {
+                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
+                    }
+                }
+                .addOnFailureListener {
+                    liveData.postValue(Resource.error("Failed to get activity list", null, -1))
+                }
+        }
+
+        return liveData
+    }
+
+    fun createActivity(activity: Activity): MutableLiveData<Resource<Boolean>> {
+        val liveData = MutableLiveData<Resource<Boolean>>()
+
+        val activityMap = mapOf<String, Any>(
+            ID_FIELD to activity.id,
+            NAME_FIELD to activity.name,
+            DESCRIPTION_FIELD to activity.description,
+            SECONDS_FIELD to activity.seconds,
+            WORKOUT_FIELD to activity.workout,
+            ACTIVITY_KCAL_FIELD to activity.calories,
+            ACTIVITY_COUNTERS_FIELD to activity.counters,
+            ACTIVITY_CREATED_AT_FIELD to activity.createdAt
+        )
+
+        liveData.value = Resource.loading(null)
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ACTIVITY_PATH)
+                .add(activityMap)
+                .addOnSuccessListener {
+                    liveData.postValue(Resource.success(true, 1))
+                    Log.d("DocumentSnapshot successfully written!")
+                }
+                .addOnFailureListener { e ->
+                    liveData.postValue(Resource.error(e.toString(), null, null))
+                }
+        }
+
+        return liveData
+    }
+
+    fun updateActivity(activity: Activity): MutableLiveData<Resource<Boolean>> {
+        val liveData = MutableLiveData<Resource<Boolean>>()
+
+        val activityMap = mapOf<String, Any>(
+            ID_FIELD to activity.id,
+            NAME_FIELD to activity.name,
+            DESCRIPTION_FIELD to activity.description,
+            WORKOUT_FIELD to activity.workout,
+            SECONDS_FIELD to activity.seconds,
+            ACTIVITY_KCAL_FIELD to activity.calories,
+            ACTIVITY_COUNTERS_FIELD to activity.counters,
+            ACTIVITY_CREATED_AT_FIELD to activity.createdAt
+        )
+
+        liveData.value = Resource.loading(null)
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ACTIVITY_PATH)
+                .document(activity.docId)
+                .set(activityMap)
+                .addOnSuccessListener {
+                    liveData.postValue(Resource.success(true, 1))
+                    Log.d("DocumentSnapshot successfully updated!")
+                }
+                .addOnFailureListener { e ->
+                    liveData.postValue(Resource.error(e.toString(), null, null))
                 }
         }
 
@@ -516,8 +670,20 @@ class UserDatabase : AppDatabase() {
 
     companion object {
         const val ALARM_PATH = "alarms"
+        const val ACTIVITY_PATH = "activities"
+
+        const val ID_FIELD = "id"
+        const val NAME_FIELD = "name"
+        const val WORKOUT_FIELD = "workout"
+        const val SECONDS_FIELD = "seconds"
+        const val WORKOUT_ID_FIELD = "workoutId"
+        const val DESCRIPTION_FIELD = "description"
+
+        const val ACTIVITY_CREATED_AT_FIELD = "createdAt"
+        const val ACTIVITY_COUNTERS_FIELD = "counters"
+        const val ACTIVITY_KCAL_FIELD = "calories"
+
         const val ALARM_TIMESTAMP_FIELD = "time"
-        const val ALARM_ID_FIELD = "id"
         const val ALARM_TITLE_FIELD = "title"
         const val ALARM_IS_TURN_ON_FIELD = "isTurnedOn"
         const val ALARM_IS_REPEATABLE_FIELD = "isRepeatable"

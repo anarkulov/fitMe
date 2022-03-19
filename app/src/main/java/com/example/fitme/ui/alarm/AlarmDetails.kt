@@ -189,7 +189,7 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         }
 
         var alarmTitle = binding.etAlarmName.text.toString()
-        if (alarmTitle.isEmpty() || alarmTitle == "Alarm") {
+        if (alarmTitle.isEmpty()) {
             alarmTitle = "Alarm ${Date().time.mod(12)}"
         }
 

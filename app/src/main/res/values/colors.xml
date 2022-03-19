@@ -12,6 +12,7 @@
     <!--    New Colors-->
     <color name="transparent">@android:color/transparent</color>
     <color name="white">#FFFFFF</color>
+    <color name="primary_bg">#F5F3EF</color>
     <color name="black">#000000</color>
     <color name="blue">#92A3FD</color>
     <color name="blue_50">#8092A3FD</color>

@@ -15,13 +15,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
 
     private var navController: NavController? = null
-
     override val viewModel: MainViewModel by viewModel()
 
     private val navListener = NavController.OnDestinationChangedListener { _, destination, _ ->
         when (destination.id) {
             R.id.homeFragment -> {
-                window.statusBarColor = fetchColor(R.color.white)
+                window.statusBarColor = fetchColor(R.color.primary_bg)
                 binding.navView.visible = true
             }
             else -> {

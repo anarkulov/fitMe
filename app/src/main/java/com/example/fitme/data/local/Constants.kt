@@ -11,6 +11,6 @@ class Constants {
     object Home {
         const val TYPE_MONTH = 0
         const val TYPE_WEEK = 1
-        const val TYPE_DAY = 3
+        const val TYPE_ALL_TIME = 3
     }
 }

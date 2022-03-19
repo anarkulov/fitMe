@@ -9,9 +9,10 @@ data class User(
     var country: String?  = null,
     var state: String?  = null,
     var city: String?  = null,
-    var age: String? = null,
-    var height: String? = null,
-    var weight: String? = null
+    var age: Int? = null,
+    var gender: String? = null,
+    var height: Float? = null,
+    var weight: Float? = null
 )
 {
     //    "firstName" to firstName,
