@@ -5,7 +5,8 @@ class Constants {
     object Date {
         const val TIME_FORMAT = "hh:mmaa"
         const val DATE_FORMAT = "dd MMM hh:mmaa"
-        const val DATE_FORMAT_SERVER = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+//        const val DATE_FORMAT_SERVER = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+        const val DATE_FORMAT_SERVER = "ddd MMM HH:mm:ss.SSS'Z'"
     }
 
     object Home {

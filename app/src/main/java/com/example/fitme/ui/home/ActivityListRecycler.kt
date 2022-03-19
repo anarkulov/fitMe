@@ -6,7 +6,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.fitme.data.models.Activity
 import com.example.fitme.databinding.ItemActivityBinding
-import java.util.*
+import com.example.fitme.utils.Utils
+import com.google.firebase.Timestamp
 
 class ActivityListRecycler(
     private val items: ArrayList<Activity>,
@@ -16,7 +17,8 @@ class ActivityListRecycler(
     inner class ViewHolder(val binding: ItemActivityBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: Activity) {
             binding.tvActivityTitle.text = item.name
-            val description = "${item.calories} kcal were burn out since ${Date(item.createdAt)} | ${item.seconds} seconds"
+            val date = Utils.formatTimestampDate(Timestamp(item.createdAt/1000, 0))
+            val description = "${item.calories} kcal were burn out since $date | ${item.seconds} seconds"
             binding.tvDescription.text = description
         }
     }

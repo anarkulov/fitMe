@@ -35,7 +35,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
     private val activityList = ArrayList<Activity>()
     private val myTag = "HomeFragment"
-    private val activitiesAdapter: ActivityListRecycler = ActivityListRecycler(activityList, this::onActivityClick)
+    private val activitiesAdapter: ActivityListRecycler =
+        ActivityListRecycler(activityList, this::onActivityClick)
     private var statisticDataList: MutableList<Pair<String, Float>> = mutableListOf()
     private var statisticActivityList: ArrayList<Activity> = ArrayList()
     private var selectedType = TYPE_COUNTERS
@@ -45,7 +46,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         super.initViewModel()
 
         viewModel.getProfile.observe(this) { response ->
-            when(response.status) {
+            when (response.status) {
                 Status.LOADING -> {
                     viewModel.loading.postValue(true)
                 }
@@ -63,7 +64,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         }
 
         viewModel.getActivityList().observe(this) { response ->
-            when(response.status) {
+            when (response.status) {
                 Status.LOADING -> {
                     viewModel.loading.postValue(true)
                 }
@@ -86,7 +87,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun getStatisticActivityList(period: Int) {
         selectedPeriod = period
         viewModel.getAllActivityCountersBy(period).observe(this) { response ->
-            when(response.status) {
+            when (response.status) {
                 Status.LOADING -> {
                     viewModel.loading.postValue(true)
                 }
@@ -130,10 +131,14 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
     private fun initSpinner() {
-       ArrayAdapter.createFromResource(requireContext(), R.array.categories_array, R.layout.item_spinner).also { adapter ->
-           adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-           binding.btnFilterSpinner.adapter = adapter
-       }
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.categories_array,
+            R.layout.item_spinner
+        ).also { adapter ->
+            adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+            binding.btnFilterSpinner.adapter = adapter
+        }
     }
 
     private fun setData(user: User) {
@@ -185,7 +190,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun calculateStatisticDataForAllTime(type: Int) {
 
         statisticDataList = mutableListOf(
-            "Today" to 1F
+            "Today" to 0F
         )
         binding.lineChart.barsColorsList = listOf(Color.WHITE)
         binding.lineChart.animate(statisticDataList)
@@ -265,17 +270,17 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         currentCalendar.set(Calendar.MINUTE, 0)
         currentCalendar.set(Calendar.SECOND, 0)
         currentCalendar.set(Calendar.MILLISECOND, 0)
-        val today = currentCalendar[Calendar.DAY_OF_WEEK]-2
+        val today = currentCalendar[Calendar.DAY_OF_WEEK] - 2
         val startDay = currentCalendar[Calendar.DAY_OF_YEAR] - currentCalendar[Calendar.DAY_OF_WEEK]
 
         statisticDataList = mutableListOf(
-            "Mon" to 1F,
+            "Mon" to 0F,
             "Tue" to 0F,
             "Wed" to 0F,
-            "Thu" to 1F,
-            "Fri" to 1F,
-            "Sat" to 1F,
-            "Sun" to 1F,
+            "Thu" to 0F,
+            "Fri" to 0F,
+            "Sat" to 0F,
+            "Sun" to 0F,
         )
 
         val hashMapCur = mutableMapOf<Long, Int>()
@@ -285,7 +290,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             currentCalendar.set(Calendar.DAY_OF_YEAR, weekDay)
             hashMapCur[currentCalendar.timeInMillis] = day
 
-            if (day-2 == today) {
+            if (day - 2 == today) {
                 colorList.add(fetchColor(R.color.purple))
             } else {
                 colorList.add(Color.WHITE)
@@ -360,8 +365,11 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         }
 
         if (planks.isNotEmpty()) {
-            val plank = Activity(name = "My Planks")
+            val plank = Activity(name = "My Planks", createdAt = System.currentTimeMillis())
             for (item in pushUps) {
+                if (item.createdAt < plank.createdAt) {
+                    plank.createdAt = item.createdAt
+                }
                 plank.counters += item.counters
                 plank.calories += item.calories
                 plank.seconds += item.seconds
@@ -400,16 +408,18 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             showToast("Edit is not implemented yet")
         }
 
-        binding.btnFilterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                when (p2) {
-                    0 -> setTypeStatistic(selectedPeriod, TYPE_COUNTERS)
-                    1 -> setTypeStatistic(selectedPeriod, TYPE_CALORIE)
-                    else -> setTypeStatistic(selectedPeriod, TYPE_SECONDS)
+        binding.btnFilterSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    when (p2) {
+                        0 -> setTypeStatistic(selectedPeriod, TYPE_COUNTERS)
+                        1 -> setTypeStatistic(selectedPeriod, TYPE_CALORIE)
+                        else -> setTypeStatistic(selectedPeriod, TYPE_SECONDS)
+                    }
                 }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-        }
     }
 
     private fun onActivityClick(activity: Activity) {
