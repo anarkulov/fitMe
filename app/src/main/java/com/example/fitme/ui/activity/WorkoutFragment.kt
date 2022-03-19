@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.fitme.core.extentions.showToast
+import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.utils.Log
@@ -23,6 +24,10 @@ class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentActivityBinding>(
 
     override fun initViewModel() {
         super.initViewModel()
+
+        viewModel.loading.observe(this) {
+            binding.loading.visible = it
+        }
 
         viewModel.getWorkoutList().observe(this) { response ->
             when (response.status) {

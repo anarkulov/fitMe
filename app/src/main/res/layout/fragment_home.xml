@@ -51,7 +51,7 @@
             android:id="@+id/layout_weight"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/page_margin"
             android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@+id/layout_height"
             app:layout_constraintHorizontal_bias="0.5"
@@ -78,7 +78,7 @@
             android:id="@+id/layout_height"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/page_margin"
             android:orientation="vertical"
             app:layout_constraintEnd_toStartOf="@+id/layout_age"
             app:layout_constraintHorizontal_bias="0.5"
@@ -105,7 +105,7 @@
             android:id="@+id/layout_age"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/page_margin"
             android:orientation="vertical"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -154,7 +154,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_custom_tab_left"
                     android:gravity="center"
-                    android:text="Week"
+                    android:text="@string/week"
                     android:textAllCaps="true"
                     android:textColor="@color/white" />
 
@@ -167,7 +167,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_custom_tab_right"
                     android:gravity="center"
-                    android:text="Month"
+                    android:text="@string/month"
                     android:textAllCaps="true"
                     android:textColor="@color/white" />
             </LinearLayout>
@@ -179,7 +179,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/page_margin"
                 android:layout_marginTop="@dimen/page_margin"
-                android:text="All my"
+                android:text="@string/all_my"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
@@ -225,7 +225,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/page_margin"
                 android:layout_marginTop="@dimen/page_margin"
-                android:text="My Activities"
+                android:text="@string/my_activities"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/divider" />
@@ -241,7 +241,6 @@
                 tools:listitem="@layout/item_activity" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
