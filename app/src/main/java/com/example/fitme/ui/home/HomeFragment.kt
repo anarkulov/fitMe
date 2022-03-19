@@ -124,7 +124,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                 binding.btnMonth.isSelected = !binding.btnMonth.isSelected
             }
             else -> {
-                binding.btnDay.isSelected = !binding.btnDay.isSelected
+//                binding.btnDay.isSelected = !binding.btnDay.isSelected
             }
         }
     }
@@ -378,23 +378,23 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         binding.btnMonth.setOnClickListener {
             binding.btnMonth.isSelected = true
             binding.btnWeek.isSelected = false
-            binding.btnDay.isSelected = false
+//            binding.btnDay.isSelected = false
             getStatisticActivityList(PERIOD_MONTH)
         }
 
         binding.btnWeek.setOnClickListener {
             binding.btnWeek.isSelected = true
             binding.btnMonth.isSelected = false
-            binding.btnDay.isSelected = false
+//            binding.btnDay.isSelected = false
             getStatisticActivityList(PERIOD_WEEK)
         }
 
-        binding.btnDay.setOnClickListener {
-            binding.btnDay.isSelected = true
-            binding.btnWeek.isSelected = false
-            binding.btnMonth.isSelected = false
-            setTypeStatistic(PERIOD_DAY, selectedType)
-        }
+//        binding.btnDay.setOnClickListener {
+//            binding.btnDay.isSelected = true
+////            binding.btnWeek.isSelected = false
+//            binding.btnMonth.isSelected = false
+//            setTypeStatistic(PERIOD_DAY, selectedType)
+//        }
 
         binding.btnEdit.setOnClickListener {
             showToast("Edit is not implemented yet")
@@ -403,9 +403,9 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         binding.btnFilterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
                 when (p2) {
-                    0 -> setTypeStatistic(PERIOD_WEEK, TYPE_COUNTERS)
-                    1 -> setTypeStatistic(PERIOD_WEEK, TYPE_CALORIE)
-                    else -> setTypeStatistic(PERIOD_WEEK, TYPE_SECONDS)
+                    0 -> setTypeStatistic(selectedPeriod, TYPE_COUNTERS)
+                    1 -> setTypeStatistic(selectedPeriod, TYPE_CALORIE)
+                    else -> setTypeStatistic(selectedPeriod, TYPE_SECONDS)
                 }
             }
             override fun onNothingSelected(p0: AdapterView<*>?) {}
