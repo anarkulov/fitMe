@@ -9,8 +9,13 @@ class Constants {
     }
 
     object Home {
-        const val TYPE_MONTH = 0
-        const val TYPE_WEEK = 1
-        const val TYPE_ALL_TIME = 3
+        const val PERIOD_MONTH = 0
+        const val PERIOD_WEEK = 1
+        const val PERIOD_DAY = 3
+        const val PERIOD_ALL_TIME = 3
+
+        const val TYPE_CALORIE = 0
+        const val TYPE_COUNTERS = 1
+        const val TYPE_SECONDS = 2
     }
 }

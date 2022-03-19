@@ -8,8 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.utils.Log
-import com.example.fitme.data.local.Constants.Home.TYPE_MONTH
-import com.example.fitme.data.local.Constants.Home.TYPE_WEEK
+import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
+import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
 import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.data.models.User
@@ -491,10 +491,10 @@ class UserDatabase : AppDatabase() {
         val calendar = Calendar.getInstance()
 
         val startDay = when(type) {
-            TYPE_WEEK -> {
+            PERIOD_WEEK -> {
                 calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_WEEK]
             }
-            TYPE_MONTH -> {
+            PERIOD_MONTH -> {
                 calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_MONTH]
             }
             else -> {

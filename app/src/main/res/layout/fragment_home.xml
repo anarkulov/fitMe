@@ -190,10 +190,20 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/page_margin"
                 android:layout_marginTop="@dimen/page_margin"
-                android:text="All my counters"
+                android:text="All my"
                 android:textColor="@color/white"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tab_layout" />
+
+            <Spinner
+                android:id="@+id/btn_filter_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/white"
+                tools:listitem="@layout/item_spinner"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_chart_title"
+                app:layout_constraintStart_toEndOf="@+id/tv_chart_title"
+                app:layout_constraintTop_toTopOf="@+id/tv_chart_title" />
 
             <com.db.williamchart.view.BarChartView
                 android:id="@+id/lineChart"

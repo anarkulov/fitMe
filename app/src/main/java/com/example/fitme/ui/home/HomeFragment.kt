@@ -4,20 +4,28 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fitme.R
+import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.Workout
-import com.example.fitme.data.local.Constants.Home.TYPE_ALL_TIME
-import com.example.fitme.data.local.Constants.Home.TYPE_MONTH
-import com.example.fitme.data.local.Constants.Home.TYPE_WEEK
+import com.example.fitme.data.local.Constants.Home.PERIOD_DAY
+import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
+import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
+import com.example.fitme.data.local.Constants.Home.TYPE_CALORIE
+import com.example.fitme.data.local.Constants.Home.TYPE_COUNTERS
+import com.example.fitme.data.local.Constants.Home.TYPE_SECONDS
 import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentHomeBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.math.roundToInt
+
 
 class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
@@ -69,7 +77,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             }
         }
 
-        getStatisticActivityList(TYPE_WEEK)
+        getStatisticActivityList(PERIOD_WEEK)
     }
 
     private fun getStatisticActivityList(typeWeek: Int) {
@@ -97,8 +105,16 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         super.initView()
 
         viewModel.getUserProfile()
+        initSpinner()
         setStatisticData()
         initActivityList()
+    }
+
+    private fun initSpinner() {
+       ArrayAdapter.createFromResource(requireContext(), R.array.categories_array, R.layout.item_spinner).also { adapter ->
+           adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+           binding.btnFilterSpinner.adapter = adapter
+       }
     }
 
     private fun setData(user: User) {
@@ -131,21 +147,21 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         binding.lineChart.labelsFormatter = labelsFormatter
     }
 
-    private fun setTypeStatistic(type: Int = TYPE_WEEK) {
-        when (type) {
-            TYPE_MONTH -> {
-                calculateStatisticDataForMonth()
+    private fun setTypeStatistic(period: Int = PERIOD_WEEK, type: Int = TYPE_COUNTERS) {
+        when (period) {
+            PERIOD_MONTH -> {
+                calculateStatisticDataForMonth(type)
             }
-            TYPE_WEEK -> {
-                calculateStatisticDataForWeek()
+            PERIOD_WEEK -> {
+                calculateStatisticDataForWeek(type)
             }
-            TYPE_ALL_TIME -> {
-                calculateStatisticDataForAllTime()
+            PERIOD_DAY -> {
+                calculateStatisticDataForAllTime(type)
             }
         }
     }
 
-    private fun calculateStatisticDataForAllTime() {
+    private fun calculateStatisticDataForAllTime(type: Int) {
         statisticDataList = mutableListOf(
             "J" to 0F,
             "F" to 0F,
@@ -158,7 +174,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         binding.lineChart.animate(statisticDataList)
     }
 
-    private fun calculateStatisticDataForMonth() {
+    private fun calculateStatisticDataForMonth(type: Int) {
         statisticDataList = mutableListOf(
             "J" to 0F,
             "F" to 0F,
@@ -177,7 +193,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         binding.lineChart.animate(statisticDataList)
     }
 
-    private fun calculateStatisticDataForWeek() {
+    private fun calculateStatisticDataForWeek(type: Int) {
         val currentCalendar = Calendar.getInstance()
         currentCalendar.set(Calendar.HOUR_OF_DAY, 0)
         currentCalendar.set(Calendar.MINUTE, 0)
@@ -199,7 +215,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             "Thu" to 0F,
             "Fri" to 0F,
             "Sat" to 0F,
-            "Sun" to 0F
+            "Sun" to 0F,
         )
 
         val hashMapCur = mutableMapOf<Long, Int>()
@@ -224,11 +240,13 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             if (hashMapCur.containsKey(key)) {
                 val index = hashMapCur[key]?.minus(2)
                 index?.let {
-                    val data = statisticDataList[index].second + item.counters
+                    val data = when (type) {
+                        TYPE_COUNTERS -> statisticDataList[index].second + item.counters
+                        TYPE_CALORIE -> statisticDataList[index].second + item.calories
+                        else -> statisticDataList[index].second + item.seconds
+                    }
                     statisticDataList[index] = statisticDataList[index].copy(second = data)
                 }
-                
-                Log.d("listKey: $key counter${item.counters}:$: dayCounter ${statisticDataList[hashMapCur[key]?.minus(2)!!].second}", myTag)
             }
         }
 
@@ -293,15 +311,30 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         super.initListeners()
 
         binding.btnMonth.setOnClickListener {
-            setTypeStatistic(TYPE_MONTH)
+            setTypeStatistic(PERIOD_MONTH)
         }
 
         binding.btnWeek.setOnClickListener {
-            setTypeStatistic(TYPE_WEEK)
+            setTypeStatistic(PERIOD_WEEK)
         }
 
-        binding.btnMonth.setOnClickListener {
-            setTypeStatistic(TYPE_ALL_TIME)
+        binding.btnDay.setOnClickListener {
+            setTypeStatistic(PERIOD_DAY)
+        }
+
+        binding.btnEdit.setOnClickListener {
+            showToast("Edit is not implemented yet")
+        }
+
+        binding.btnFilterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                when (p2) {
+                    0 -> setTypeStatistic(PERIOD_WEEK, TYPE_COUNTERS)
+                    1 -> setTypeStatistic(PERIOD_WEEK, TYPE_CALORIE)
+                    else -> setTypeStatistic(PERIOD_WEEK, TYPE_SECONDS)
+                }
+            }
+            override fun onNothingSelected(p0: AdapterView<*>?) {}
         }
     }
 
