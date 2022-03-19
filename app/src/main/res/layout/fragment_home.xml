@@ -147,18 +147,19 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/btn_month"
+                    android:id="@+id/btn_week"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:background="@drawable/bg_custom_tab_left"
                     android:gravity="center"
-                    android:text="MONTH"
+                    android:text="Week"
+                    android:textAllCaps="true"
                     android:textColor="@color/white" />
 
                 <TextView
-                    android:id="@+id/btn_week"
+                    android:id="@+id/btn_month"
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
@@ -166,7 +167,8 @@
                     android:layout_weight="1"
                     android:background="@drawable/bg_custom_tab_right"
                     android:gravity="center"
-                    android:text="WEEK"
+                    android:text="Month"
+                    android:textAllCaps="true"
                     android:textColor="@color/white" />
             </LinearLayout>
 

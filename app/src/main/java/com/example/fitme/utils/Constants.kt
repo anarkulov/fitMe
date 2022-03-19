@@ -30,15 +30,6 @@ class Constants {
     }
 
     object Collection {
-        const val USERS_PATH = "users"
-        const val TIMESTAMP_FIELD = "time"
-        const val NAME_FIELD = "name"
-        const val PHONE_FIELD = "phone number"
-
-        const val MILESTONE = "milestone"
-        const val PORTFOLIO = "portfolio"
-        const val PROJECTS = "projects"
-        const val REVISION = "revision"
         const val USERS = "users"
     }
 

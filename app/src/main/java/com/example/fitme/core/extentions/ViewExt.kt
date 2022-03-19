@@ -7,7 +7,6 @@ import android.graphics.PorterDuffColorFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.annotation.ColorRes
@@ -15,16 +14,13 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
-import com.google.android.material.textfield.TextInputEditText
+import com.example.fitme.core.utils.Log
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
-import com.example.fitme.R
-import com.example.fitme.core.utils.Log
 import java.text.DecimalFormat
 import kotlin.math.floor
 import kotlin.math.log10
 import kotlin.math.pow
-import kotlin.reflect.jvm.internal.impl.builtins.StandardNames.FqNames.number
 
 fun View.showPopup(
     @MenuRes menu: Int,
@@ -139,7 +135,13 @@ fun ImageView.loadUrl(url: String?) {
         .load(url)
         .into(this)
 }
+
 fun ImageView.loadUrl(url: String, placeholderResId: Int) {
+
+    if (url.isEmpty()) {
+        return
+    }
+
     Picasso.get()
         .load(url)
         .placeholder(placeholderResId)

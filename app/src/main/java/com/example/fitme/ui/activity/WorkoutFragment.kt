@@ -5,19 +5,42 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.fitme.core.extentions.showToast
+import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
+import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Workout
 import com.example.fitme.databinding.FragmentActivityBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class ActivityFragment : BaseFragment<ActivityViewModel, FragmentActivityBinding>() {
+class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentActivityBinding>() {
 
-    override val viewModel: ActivityViewModel by viewModel()
+    private val myTag = "ActivityFragment"
 
+    override val viewModel: WorkoutViewModel by viewModel()
     private val workoutList = ArrayList<Workout>()
+    private val workoutAdapter = WorkoutListAdapter(workoutList, this::onWorkoutClick)
 
     override fun initViewModel() {
         super.initViewModel()
+
+        viewModel.getWorkoutList().observe(this) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    response.data?.let {
+                        Log.d("getWorkoutList: $it", myTag)
+                        workoutAdapter.updateItems(it)
+                    }
+                }
+            }
+        }
     }
 
     override fun initView() {
@@ -27,24 +50,15 @@ class ActivityFragment : BaseFragment<ActivityViewModel, FragmentActivityBinding
     }
 
     private fun initWorkoutRecyclerView() {
-        for (i in 0 until 10) {
-            workoutList.add(
-                Workout("${i + i % (i + 1) * 2}",
-                    "Fullbody Workout ${i+1}",
-                "${i+1*i+1} Exercises}")
-            )
-        }
-
-        val adapter = WorkoutListAdapter(workoutList, this::onWorkoutClick)
 
         binding.workoutRecyclerView.apply {
-            this.adapter = adapter
+            this.adapter = workoutAdapter
             layoutManager = GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         }
     }
 
     private fun onWorkoutClick(workout: Workout) {
-
+        showToast(workout.name)
     }
 
     override fun initListeners() {

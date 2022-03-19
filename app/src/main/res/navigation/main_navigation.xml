@@ -15,7 +15,7 @@
 
     <fragment
         android:id="@+id/activityFragment"
-        android:name="com.example.fitme.ui.activity.ActivityFragment"
+        android:name="com.example.fitme.ui.activity.WorkoutFragment"
         android:label="ActivityFragment"
         tools:layout="@layout/fragment_activity">
 

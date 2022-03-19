@@ -4,18 +4,24 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitme.R
+import com.example.fitme.core.extentions.loadUrl
 import com.example.fitme.data.models.Workout
 import com.example.fitme.databinding.ItemWorkoutBinding
 
 class WorkoutListAdapter(
     private val items: ArrayList<Workout>,
-    private val onAlarmClick: (id: Workout) -> Unit,
+    private val onMoreClick: (workout: Workout) -> Unit,
 ) : RecyclerView.Adapter<WorkoutListAdapter.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemWorkoutBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Workout) {
-            binding.tvActivityTitle.text = item.title
-            binding.tvDescription.text = item.description
+        fun bind(item: Workout, onMoreClick: (workout: Workout) -> Unit) {
+            binding.tvActivityTitle.text = item.name
+            binding.tvExercises.text = itemView.context.getString(R.string.exercises_format, item.exercises)
+            binding.ivWorkout.loadUrl(item.imageUrl, R.drawable.ic_pushup)
+            binding.btnViewMore.setOnClickListener {
+                onMoreClick(item)
+            }
         }
     }
 
@@ -28,16 +34,15 @@ class WorkoutListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.itemView.setOnClickListener {
-            onAlarmClick(items[position])
-        }
-        holder.bind(items[position])
+        holder.bind(items[position], onMoreClick)
     }
 
     override fun getItemCount(): Int = items.size
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateItems() {
+    fun updateItems(items: List<Workout>) {
+        this.items.clear()
+        this.items.addAll(items)
         notifyDataSetChanged()
     }
 }

@@ -14,7 +14,7 @@ import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.utils.Log
-import com.example.fitme.data.Workout
+import com.example.fitme.data.enums.Workout
 import com.example.fitme.data.local.Constants.Home.PERIOD_DAY
 import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
 import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
@@ -39,6 +39,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         ActivityListRecycler(activityList, this::onActivityClick)
     private var statisticDataList: MutableList<Pair<String, Float>> = mutableListOf()
     private var statisticActivityList: ArrayList<Activity> = ArrayList()
+
     private var selectedType = TYPE_COUNTERS
     private var selectedPeriod = PERIOD_WEEK
 
@@ -119,10 +120,10 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun initTab() {
         when (selectedPeriod) {
             PERIOD_WEEK -> {
-                binding.btnWeek.isSelected = !binding.btnWeek.isSelected
+                binding.btnWeek.isSelected = true
             }
             PERIOD_MONTH -> {
-                binding.btnMonth.isSelected = !binding.btnMonth.isSelected
+                binding.btnMonth.isSelected = true
             }
             else -> {
 //                binding.btnDay.isSelected = !binding.btnDay.isSelected
@@ -335,7 +336,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         val sortedActivities = ArrayList<Activity>()
 
         val pushUps = statisticDataList.filter { it.workout == Workout.PushUp.name }
-        val squads = statisticDataList.filter { it.workout == Workout.Squad.name }
+        val squats = statisticDataList.filter { it.workout == Workout.Squat.name }
         val planks = statisticDataList.filter { it.workout == Workout.Plank.name }
 
         if (pushUps.isNotEmpty()) {
@@ -351,17 +352,17 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             sortedActivities.add(pushUp)
         }
 
-        if (squads.isNotEmpty()) {
-            val squad = Activity(name = "My Squads", createdAt = System.currentTimeMillis())
-            for (item in squads) {
-                if (item.createdAt < squad.createdAt) {
-                    squad.createdAt = item.createdAt
+        if (squats.isNotEmpty()) {
+            val squat = Activity(name = "My Squats", createdAt = System.currentTimeMillis())
+            for (item in squats) {
+                if (item.createdAt < squat.createdAt) {
+                    squat.createdAt = item.createdAt
                 }
-                squad.counters += item.counters
-                squad.calories += item.calories
-                squad.seconds += item.seconds
+                squat.counters += item.counters
+                squat.calories += item.calories
+                squat.seconds += item.seconds
             }
-            sortedActivities.add(squad)
+            sortedActivities.add(squat)
         }
 
         if (planks.isNotEmpty()) {

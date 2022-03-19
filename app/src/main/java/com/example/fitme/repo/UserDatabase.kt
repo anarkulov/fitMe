@@ -10,9 +10,7 @@ import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
 import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
-import com.example.fitme.data.models.Activity
-import com.example.fitme.data.models.Alarm
-import com.example.fitme.data.models.User
+import com.example.fitme.data.models.*
 import com.example.fitme.utils.Constants.Collection.USERS
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
@@ -611,6 +609,76 @@ class UserDatabase : AppDatabase() {
         return liveData
     }
 
+    fun getWorkouts(): MutableLiveData<Resource<List<Workout>>> {
+        val liveData = MutableLiveData<Resource<List<Workout>>>()
+        liveData.value = Resource.loading(null)
+
+        val workoutList = ArrayList<Workout>()
+        firebaseAuth.uid?.let {
+            firestoreInstance
+                .collection(WORKOUT_PATH)
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (snapshots != null) {
+                        for (snapshot: DocumentSnapshot in snapshots) {
+                            val workout : Workout? = snapshot.toObject(Workout::class.java)
+                            Log.d("getWorkoutList - workout: $workout", myTag)
+                            workout?.let { item ->
+                                item.docId = snapshot.id
+                                workoutList.add(item)
+                            }
+                        }
+                    }
+                    if (workoutList.isNotEmpty()) {
+                        liveData.postValue(Resource.success(workoutList))
+                    } else {
+                        liveData.postValue(Resource.error("workout list is empty", null, -1))
+                    }
+                }
+                .addOnFailureListener {
+                    liveData.postValue(Resource.error("Failed to get workout list", null, -1))
+                }
+        }
+
+        return liveData
+    }
+
+    fun getExercisesByWorkoutId(id: String): MutableLiveData<Resource<List<Exercise>>> {
+        val liveData = MutableLiveData<Resource<List<Exercise>>>()
+        liveData.value = Resource.loading(null)
+
+        val exerciseList = ArrayList<Exercise>()
+        firebaseAuth.uid?.let {
+            firestoreInstance
+                .collection(WORKOUT_PATH)
+                .document(id)
+                .collection(EXERCISES_PATH)
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (snapshots != null) {
+                        for (snapshot: DocumentSnapshot in snapshots) {
+                            val workout : Exercise? = snapshot.toObject(Exercise::class.java)
+                            Log.d("getExerciseListList - exerciseList: $workout", myTag)
+                            workout?.let { item ->
+                                item.docId = snapshot.id
+                                exerciseList.add(item)
+                            }
+                        }
+                    }
+                    if (exerciseList.isNotEmpty()) {
+                        liveData.postValue(Resource.success(exerciseList))
+                    } else {
+                        liveData.postValue(Resource.error("exerciseList list is empty", null, -1))
+                    }
+                }
+                .addOnFailureListener {
+                    liveData.postValue(Resource.error("Failed to get exerciseList list", null, -1))
+                }
+        }
+
+        return liveData
+    }
+
 //    fun getUserPortfolios(userId: String): MutableLiveData<Resource<Portfolios>> {
 //        val liveData = MutableLiveData<Resource<Portfolios>>()
 //        firestoreInstance.collection(PORTFOLIO).document(userId).get().addOnSuccessListener {
@@ -675,6 +743,8 @@ class UserDatabase : AppDatabase() {
     companion object {
         const val ALARM_PATH = "alarms"
         const val ACTIVITY_PATH = "activities"
+        const val WORKOUT_PATH = "workouts"
+        const val EXERCISES_PATH = "exercises"
 
         const val ID_FIELD = "id"
         const val NAME_FIELD = "name"

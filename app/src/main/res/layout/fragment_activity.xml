@@ -4,12 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.activity.ActivityFragment">
+    tools:context=".ui.activity.WorkoutFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/workout_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:clipToPadding="false"
         android:paddingTop="@dimen/page_margin"
         android:layout_marginHorizontal="@dimen/element_margin"
@@ -17,6 +17,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:spanCount="2"
+        tools:itemCount="2"
         tools:listitem="@layout/item_workout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
