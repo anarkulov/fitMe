@@ -349,6 +349,9 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                 if (item.createdAt < pushUp.createdAt) {
                     pushUp.createdAt = item.createdAt
                 }
+                if (item.imageUrl.isNotEmpty() && pushUp.imageUrl.isEmpty()) {
+                    pushUp.imageUrl = item.imageUrl
+                }
                 pushUp.counters += item.counters
                 pushUp.calories += item.calories
                 pushUp.seconds += item.seconds
@@ -362,6 +365,9 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                 if (item.createdAt < squat.createdAt) {
                     squat.createdAt = item.createdAt
                 }
+                if (item.imageUrl.isNotEmpty() && squat.imageUrl.isEmpty()) {
+                    squat.imageUrl = item.imageUrl
+                }
                 squat.counters += item.counters
                 squat.calories += item.calories
                 squat.seconds += item.seconds
@@ -374,6 +380,9 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             for (item in pushUps) {
                 if (item.createdAt < plank.createdAt) {
                     plank.createdAt = item.createdAt
+                }
+                if (item.imageUrl.isNotEmpty() && plank.imageUrl.isEmpty()) {
+                    plank.imageUrl = item.imageUrl
                 }
                 plank.counters += item.counters
                 plank.calories += item.calories

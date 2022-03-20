@@ -127,7 +127,7 @@ fun EditText.getPhoneNumber(code: String): String {
 
 fun ImageView.loadUrl(url: String?) {
 
-    if (url == null) {
+    if (url == null || url.isEmpty()) {
         return
     }
 
@@ -136,9 +136,9 @@ fun ImageView.loadUrl(url: String?) {
         .into(this)
 }
 
-fun ImageView.loadUrl(url: String, placeholderResId: Int) {
+fun ImageView.loadUrl(url: String?, placeholderResId: Int) {
 
-    if (url.isEmpty()) {
+    if (url == null || url.isEmpty()) {
         return
     }
 
