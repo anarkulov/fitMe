@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
+import com.example.fitme.core.extentions.formatCount
 import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
@@ -168,7 +169,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
     private fun setStatisticData() {
         binding.lineChart.animation.duration = 1000
-        val labelsFormatter: (Float) -> String = { it.roundToInt().toString() }
+        val labelsFormatter: (Float) -> String = { it.roundToInt().formatCount() }
         binding.lineChart.labelsFormatter = labelsFormatter
     }
 
@@ -271,8 +272,11 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         currentCalendar.set(Calendar.MINUTE, 0)
         currentCalendar.set(Calendar.SECOND, 0)
         currentCalendar.set(Calendar.MILLISECOND, 0)
-        val today = currentCalendar[Calendar.DAY_OF_WEEK] - 2
-        val startDay = currentCalendar[Calendar.DAY_OF_YEAR] - currentCalendar[Calendar.DAY_OF_WEEK]
+
+        val weekday = currentCalendar[Calendar.DAY_OF_WEEK]
+        val monday = Calendar.MONDAY
+        val today = if ((weekday - monday) < 0) (7 - (monday - weekday)) else (weekday - monday)
+        val startDay = currentCalendar[Calendar.DAY_OF_YEAR] - today
 
         statisticDataList = mutableListOf(
             "Mon" to 0F,
@@ -286,12 +290,12 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
         val hashMapCur = mutableMapOf<Long, Int>()
         val colorList = arrayListOf<Int>()
-        for (day in 2 until 9) {
+        for (day in 0 until 7) {
             val weekDay = startDay + day
             currentCalendar.set(Calendar.DAY_OF_YEAR, weekDay)
             hashMapCur[currentCalendar.timeInMillis] = day
 
-            if (day - 2 == today) {
+            if (day == today) {
                 colorList.add(fetchColor(R.color.purple))
             } else {
                 colorList.add(Color.WHITE)
@@ -308,7 +312,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
             val key = itemCalendar.timeInMillis
             if (hashMapCur.containsKey(key)) {
-                val index = hashMapCur[key]?.minus(2)
+                val index = hashMapCur[key]
                 index?.let {
                     val data = when (type) {
                         TYPE_COUNTERS -> statisticDataList[index].second + item.counters

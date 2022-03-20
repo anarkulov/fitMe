@@ -494,7 +494,11 @@ class UserDatabase : AppDatabase() {
 
         val startDay = when(type) {
             PERIOD_WEEK -> {
-                calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_WEEK]
+                val weekday = calendar[Calendar.DAY_OF_WEEK]
+                val monday = Calendar.MONDAY
+                val day = if ((weekday - monday) < 0) (7 - (monday - weekday)) else (weekday - monday)
+                Log.d("dayOfWeek ${day} ", myTag)
+                calendar[Calendar.DAY_OF_YEAR] - day
             }
             PERIOD_MONTH -> {
                 1
