@@ -24,4 +24,8 @@ class AlarmRepository(
     fun updateAlarm(alarm: Alarm): MutableLiveData<Resource<Boolean>> {
         return db.updateAlarm(alarm)
     }
+
+    fun deleteAlarm(docId: String?): MutableLiveData<Resource<Boolean>> {
+        return db.deleteAlarm(docId)
+    }
 }

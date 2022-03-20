@@ -28,4 +28,8 @@ class AlarmViewModel(
     fun updateAlarm(alarm: Alarm): MutableLiveData<Resource<Boolean>> {
         return alarmRepository.updateAlarm(alarm)
     }
+
+    fun deleteAlarmData(docId: String?): MutableLiveData<Resource<Boolean>> {
+        return alarmRepository.deleteAlarm(docId)
+    }
 }

@@ -445,6 +445,36 @@ class UserDatabase : AppDatabase() {
         return liveData
     }
 
+
+    fun deleteAlarm(docId: String?): MutableLiveData<Resource<Boolean>> {
+        val liveData = MutableLiveData<Resource<Boolean>>()
+
+        liveData.value = Resource.loading(null)
+        if (docId == null) {
+            liveData.value = Resource.error("id is null", null, null)
+            return liveData
+        }
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ALARM_PATH)
+                .document(docId)
+                .delete()
+                .addOnSuccessListener {
+                    liveData.value = Resource.success(true)
+                    Log.d("DocumentSnapshot successfully deleted!")
+                }
+                .addOnFailureListener { e ->
+                    liveData.value = Resource.error(e.toString(), null, null)
+                }
+        }
+
+        return liveData
+    }
+
+
+
     fun getActivityList(): MutableLiveData<Resource<List<Activity>>> {
         val liveData = MutableLiveData<Resource<List<Activity>>>()
         liveData.value = Resource.loading(null)

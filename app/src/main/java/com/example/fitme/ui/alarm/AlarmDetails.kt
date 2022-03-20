@@ -16,6 +16,7 @@ import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
+import com.example.fitme.core.ui.widgets.MainToolbar
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.databinding.FragmentAlarmDetailsBinding
 import com.example.fitme.ui.alarm.pose.PoseBottomSheetFragment
@@ -90,19 +91,19 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
                     }
                     3 -> {
                         binding.cvThursday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvThursday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvThursday.setTextColor(fetchColor(R.color.white))
                     }
                     4 -> {
                         binding.cvFriday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvFriday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvFriday.setTextColor(fetchColor(R.color.white))
                     }
                     5 -> {
                         binding.cvSaturday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvSaturday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvSaturday.setTextColor(fetchColor(R.color.white))
                     }
                     6 -> {
                         binding.cvSunday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvSunday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvSunday.setTextColor(fetchColor(R.color.white))
                     }
                 }
             }
@@ -246,6 +247,27 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
     }
 
 
+    private fun onDeleteClick() {
+        if (navArgs.alarm != null) {
+            viewModel.deleteAlarmData(navArgs.alarm?.docId).observe(this) { response ->
+                when (response.status) {
+                    Status.LOADING -> {
+                        viewModel.loading.postValue(true)
+                    }
+                    Status.ERROR -> {
+                        viewModel.loading.postValue(false)
+                    }
+                    Status.SUCCESS -> {
+                        viewModel.loading.postValue(false)
+                        requireActivity().showSnackBar("Alarm is deleted")
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        }
+    }
+
+
     private fun updateData(alarm: Alarm) {
         viewModel.updateAlarm(alarm).observe(this) { response ->
             when (response.status) {
@@ -283,6 +305,14 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         return FragmentAlarmDetailsBinding.inflate(inflater, container, false).apply {
             toolbar.leftIcon.setOnClickListener {
                 findNavController().popBackStack()
+            }
+            if (navArgs.alarm != null) {
+                toolbar.bind(
+                    rightButton = MainToolbar.ActionInfo(
+                        R.drawable.ic_delete,
+                        iconTint = R.color.blue,
+                        onClick = { onDeleteClick() })
+                )
             }
         }
     }
