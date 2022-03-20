@@ -127,20 +127,17 @@ open class  CoreUtils {
         val minute = splitTime[1].toInt()
 
         val calendar = Calendar.getInstance().apply {
+            set(Calendar.AM_PM, Calendar.PM)
             set(Calendar.HOUR, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
         }
 
-        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
-        val nowTime = simpleDateFormat.format(Date())
-
-        val currentTime = nowTime.split(":")
-        val hr = currentTime[0].toInt()
-
-        if (hr >= 12) {
-            calendar.set(Calendar.AM_PM, Calendar.AM)
-        }
+//        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+//        val nowTime = simpleDateFormat.format(Date())
+//
+////        val currentTime = nowTime.split(":")
+////        val hr = currentTime[0].toInt()
 
         timeInMs = calendar.timeInMillis
 
@@ -149,16 +146,19 @@ open class  CoreUtils {
             for (i in 0 until 7) {
                 var repeatTime = timeInMs
 
-                if (days.containsKey(i)) {
+                if (days[i] == true) {
                     val calendar = Calendar.getInstance()
-                    var currentDay = calendar.get(Calendar.DAY_OF_WEEK)
+//                    val weekday = calendar[Calendar.DAY_OF_WEEK]
+//                    val monday = Calendar.MONDAY
+//                    var currentDay = if ((weekday - monday) < 0) (7 - (monday - weekday)) else (weekday - monday)
+                    var currentDay = calendar.get(Calendar.DAY_OF_WEEK)-1
                     currentDay--
                     if ((repeatTime < System.currentTimeMillis() && currentDay == i) || currentDay != i) {
                         if (i > currentDay) {
-                            repeatTime += TimeUnit.MICROSECONDS.convert((i - currentDay).toLong(), TimeUnit.DAYS)
+                            repeatTime += TimeUnit.MILLISECONDS.convert((i - currentDay).toLong(), TimeUnit.DAYS)
                         } else {
-                            repeatTime += TimeUnit.MICROSECONDS.convert((7 - currentDay).toLong(), TimeUnit.DAYS)
-                            TimeUnit.MICROSECONDS.convert(i.toLong(), TimeUnit.DAYS)
+                            repeatTime += TimeUnit.MILLISECONDS.convert((7 - currentDay).toLong(), TimeUnit.DAYS)
+                            TimeUnit.MILLISECONDS.convert(i.toLong(), TimeUnit.DAYS)
                         }
                         timeSet.add(repeatTime)
                     } else if (currentDay == i) {
@@ -166,6 +166,8 @@ open class  CoreUtils {
                     }
                 }
             }
+
+            Log.d("Repeated times: $timeSet", "AlarmManager")
 
             if (timeSet.isNotEmpty()) {
                 return timeSet.first()
