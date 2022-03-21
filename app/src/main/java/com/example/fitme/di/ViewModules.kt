@@ -1,6 +1,6 @@
 package com.example.fitme.di
 
-import com.example.fitme.ui.activity.WorkoutViewModel
+import com.example.fitme.ui.workout.WorkoutViewModel
 import com.example.fitme.ui.alarm.AlarmViewModel
 import com.example.fitme.ui.auth.AuthViewModel
 import com.example.fitme.ui.home.HomeViewModel

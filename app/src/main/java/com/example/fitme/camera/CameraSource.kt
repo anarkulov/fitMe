@@ -51,6 +51,7 @@ class CameraSource(
     private var detector: PoseDetector? = null
     private var classifier: PoseClassifier? = null
     private var isTrackerEnabled = false
+    private var isCorrect = true
     private var yuvConverter: YuvToRgbConverter = YuvToRgbConverter(surfaceView.context)
     private lateinit var imageBitmap: Bitmap
 
@@ -212,6 +213,13 @@ class CameraSource(
         (this.detector as? MoveNetMultiPose)?.setTracker(trackerType)
     }
 
+    /**
+     * Set correction
+     */
+    fun isCorrect(value: Boolean) {
+        isCorrect = value
+    }
+
     fun resume() {
         imageReaderThread = HandlerThread("imageReaderThread").apply { start() }
         imageReaderHandler = Handler(imageReaderThread!!.looper)
@@ -280,7 +288,9 @@ class CameraSource(
 
         val outputBitmap = VisualizationUtils.drawBodyKeypoints(
             bitmap,
-            persons.filter { it.score > MIN_CONFIDENCE }, isTrackerEnabled
+            persons.filter { it.score > MIN_CONFIDENCE },
+            isTrackerEnabled,
+            isCorrect
         )
 
         val holder = surfaceView.holder
@@ -323,6 +333,14 @@ class CameraSource(
             imageReaderHandler = null
         } catch (e: InterruptedException) {
             Log.d(TAG, e.message.toString())
+        }
+    }
+
+    fun setError(s: String) {
+        when(s) {
+            "back" -> {
+
+            }
         }
     }
 

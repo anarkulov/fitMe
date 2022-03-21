@@ -10,11 +10,14 @@ import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.navArgs
 import com.example.fitme.R
 import com.example.fitme.camera.CameraSource
 import com.example.fitme.core.extentions.showToast
+import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.utils.Log
+import com.example.fitme.data.enums.Exercise
 import com.example.fitme.data.models.ml.BodyPart
 import com.example.fitme.data.models.ml.Device
 import com.example.fitme.data.models.ml.KeyPoint
@@ -22,7 +25,6 @@ import com.example.fitme.databinding.FragmentExerciseBinding
 import com.example.fitme.tf.ml.ModelType
 import com.example.fitme.tf.ml.MoveNet
 import com.example.fitme.tf.ml.PoseClassifier
-import com.example.fitme.tf.ml.PoseDetector
 import com.example.fitme.ui.alarm.AlarmViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,6 +42,11 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
     private var cameraSource: CameraSource? = null
     private var isHandDown = false
     private var isHandUp = false
+    private var counter = 0
+    private var isCorrect = false
+    private var isPoseCorrect = false
+    private var exercisePose: Exercise = Exercise.BasicSquat
+    private val args: ExerciseFragmentArgs by navArgs()
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -52,11 +59,58 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             }
         }
 
-    private fun createPoseEstimator() {
-        val poseDetectors = {
-            MoveNet.create(requireContext(), Device.CPU, ModelType.Lightning)
+    private var cameraSourceListener = object : CameraSource.CameraSourceListener {
+
+        override fun onFPSListener(fps: Int) {}
+
+        override fun onDetectedInfo(
+            personScore: Float?,
+            keyPoint: List<KeyPoint>?,
+            poseLabels: List<Pair<String, Float>>?,
+        ) {
+            activity?.runOnUiThread {
+                binding.tvScore.text = getString(R.string.tv_score, personScore ?: 0f)
+            }
+            poseLabels?.sortedByDescending { it.second }?.let {
+                activity?.runOnUiThread {
+//                    binding.tvFirstClassification.text = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
+//                    binding.tvSecondClassification.text = convertPoseLabels(if (it.size >= 2) it[1] else null)
+//                    binding.tvThirdClassification.text = convertPoseLabels(if (it.size >= 3) it[2] else null)
+                }
+            }
+
+            keyPoint?.let {
+                isPoseCorrect = if (personScore == null || personScore <= 0.3) {
+                    isPoseCorrect = false
+                    return@let
+                } else {
+                    true
+                }
+                calculate(keyPoint)
+            }
+            activity?.runOnUiThread {
+                checkCorrect()
+            }
+
+//            poseByKeyPoints?.let {
+//                Log.d("onDetectedInfo: poseByKeyPoints - $poseByKeyPoints, ", myTag)
+//                activity?.runOnUiThread {
+//                    binding.tvFirstClassification.text = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
+//                    binding.tvSecondClassification.text = convertPoseLabels(if (it.size >= 2) it[1] else null)
+//                    binding.tvThirdClassification.text = convertPoseLabels(if (it.size >= 3) it[2] else null)
+//                }
+//            }
         }
-        cameraSource?.setDetector(poseDetectors as PoseDetector)
+    }
+
+    private fun checkCorrect() {
+        cameraSource?.isCorrect(isCorrect&&isPoseCorrect)
+        binding.tvWarning.visible = !(isCorrect && isPoseCorrect)
+    }
+
+    private fun createPoseEstimator() {
+        val poseDetector = MoveNet.create(requireContext(), Device.CPU, ModelType.Lightning)
+        cameraSource?.setDetector(poseDetector)
     }
 
     // Open camera
@@ -96,13 +150,142 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         }
     }
 
+    private fun requestPermission() {
+        when (PackageManager.PERMISSION_GRANTED) {
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.CAMERA
+            ),
+            -> {
+                openCamera()
+            }
+            else -> {
+                requestPermissionLauncher.launch(
+                    Manifest.permission.CAMERA
+                )
+            }
+        }
+    }
+
     override fun initListeners() {
         super.initListeners()
     }
 
-    //   Biceps
-    private var counter = 0
-    private fun calculate(keyPoints: List<KeyPoint>) {
+    private fun calculate(keyPoint: List<KeyPoint>) {
+
+        when(args.pose) {
+            Exercise.StandartPushUp.name -> {
+                calculateStandartPushUp(keyPoint)
+            }
+        }
+    }
+
+    /**
+     * for calculating standartPushUp
+     ***/
+    private fun calculateStandartPushUp(keyPoint: List<KeyPoint>) {
+        checkBack(keyPoint)
+
+        val leftWrist = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_WRIST }
+        val rightWrist = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_WRIST }
+
+        val leftElbow = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_ELBOW }
+        val rightElbow = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_ELBOW }
+
+        val leftShoulder = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_SHOULDER }
+        val rightShoulder = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_SHOULDER }
+
+        if (rightElbow == null || rightShoulder == null || rightWrist == null || leftElbow == null || leftShoulder == null || leftWrist == null) return
+
+        val leftWristY = leftWrist.coordinate.y
+        val leftWristX = leftWrist.coordinate.x
+        val rightWristY = rightWrist.coordinate.y
+        val rightWristX = rightWrist.coordinate.x
+
+        val leftElbowY = leftElbow.coordinate.y
+        val leftElbowX = leftElbow.coordinate.x
+        val rightElbowY = rightElbow.coordinate.y
+        val rightElbowX = rightElbow.coordinate.x
+
+        val leftShoulderY = leftShoulder.coordinate.y
+        val leftShoulderX = leftShoulder.coordinate.x
+        val rightShoulderY = rightShoulder.coordinate.y
+        val rightShoulderX = rightShoulder.coordinate.x
+
+        val rightRadians =
+            atan2(rightShoulderY.minus(rightElbowY), rightShoulderX.minus(rightElbowX)) -
+                    atan2(rightWristY.minus(rightElbowY), rightWristX.minus(rightElbowX))
+
+        val leftRadians =
+            atan2(leftShoulderY.minus(leftElbowY), leftShoulderX.minus(leftElbowX)) -
+                    atan2(leftWristY.minus(leftElbowY), leftWristX.minus(leftElbowX))
+
+        val angle = abs((rightRadians + leftRadians) / 2 * (180.0 / PI))
+
+        if (angle > 160 && angle < 200) {
+            isHandUp = true
+            isHandDown = false
+        }
+
+        if (angle > 20 && angle < 70) {
+            if (isHandUp) {
+                counter = binding.tvCounter.text.toString().toInt()
+                if (isCorrect) counter += 1
+                activity?.runOnUiThread {
+                    binding.tvCounter.text = counter.toString()
+                }
+            }
+            isHandDown = true
+            isHandUp = false
+        }
+
+        Log.d("calculate: $angle", myTag)
+    }
+
+    private fun checkBack(keyPoint: List<KeyPoint>) {
+        val leftShoulder = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_SHOULDER }
+        val rightShoulder = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_SHOULDER }
+
+        val leftHip = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_HIP }
+        val rightHip = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_HIP }
+
+        val leftKnee = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_KNEE }
+        val rightKnee = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_KNEE }
+
+        if (leftHip == null || rightShoulder == null || rightHip == null || leftKnee == null || leftShoulder == null || rightKnee == null) return
+
+        val leftKneeY = leftKnee.coordinate.y
+        val leftKneeX = leftKnee.coordinate.x
+        val rightKneeY = rightKnee.coordinate.y
+        val rightKneeX = rightKnee.coordinate.x
+
+        val leftHipY = leftHip.coordinate.y
+        val leftHipX = leftHip.coordinate.x
+        val rightHipY = rightHip.coordinate.y
+        val rightHipX = rightHip.coordinate.x
+
+        val leftShoulderY = leftShoulder.coordinate.y
+        val leftShoulderX = leftShoulder.coordinate.x
+        val rightShoulderY = rightShoulder.coordinate.y
+        val rightShoulderX = rightShoulder.coordinate.x
+
+        val rightRadians = // atan2((a.y - b.y), (a.x - b.x)) - atan2((c.y-b.y), (c.x - b.x))
+            atan2(rightShoulderY.minus(rightHipY), rightShoulderX.minus(rightHipX)) - atan2(rightKneeY.minus(rightHipY), rightKneeX.minus(rightHipX))
+
+        val leftRadians =
+            atan2(leftShoulderY.minus(leftHipY), leftShoulderX.minus(leftHipX)) - atan2(leftKneeY.minus(leftHipY), leftKneeX.minus(leftHipX))
+
+        val angle = abs((rightRadians + leftRadians) / 2 * (180.0 / PI))
+
+        isCorrect = angle in 160.0 .. 200.0
+
+        Log.d("isCorrect: $isCorrect, angle: $angle", myTag)
+    }
+
+    /**
+     * for calculating biceps
+     ***/
+    private fun calculateBiceps(keyPoints: List<KeyPoint>) {
 
         val rightWrist = keyPoints.lastOrNull { keyPoint ->
             keyPoint.bodyPart == BodyPart.RIGHT_WRIST
@@ -217,59 +400,6 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 //        Log.d("calculatePushUpAngle: $angle", myTag)
 //
 //    }
-
-    private fun requestPermission() {
-        when (PackageManager.PERMISSION_GRANTED) {
-            ContextCompat.checkSelfPermission(
-                requireContext(),
-                Manifest.permission.CAMERA
-            ),
-            -> {
-                openCamera()
-            }
-            else -> {
-                requestPermissionLauncher.launch(
-                    Manifest.permission.CAMERA
-                )
-            }
-        }
-    }
-
-    private var cameraSourceListener = object : CameraSource.CameraSourceListener {
-
-        override fun onFPSListener(fps: Int) {}
-
-        override fun onDetectedInfo(
-            personScore: Float?,
-            keyPoint: List<KeyPoint>?,
-            poseLabels: List<Pair<String, Float>>?,
-        ) {
-            activity?.runOnUiThread {
-                binding.tvScore.text = getString(R.string.tv_score, personScore ?: 0f)
-            }
-            poseLabels?.sortedByDescending { it.second }?.let {
-                activity?.runOnUiThread {
-//                    binding.tvFirstClassification.text = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-//                    binding.tvSecondClassification.text = convertPoseLabels(if (it.size >= 2) it[1] else null)
-//                    binding.tvThirdClassification.text = convertPoseLabels(if (it.size >= 3) it[2] else null)
-                }
-            }
-
-            keyPoint?.let {
-                if (personScore == null || personScore <= 0.3) return@let
-                calculate(keyPoint)
-            }
-
-//            poseByKeyPoints?.let {
-//                Log.d("onDetectedInfo: poseByKeyPoints - $poseByKeyPoints, ", myTag)
-//                activity?.runOnUiThread {
-//                    binding.tvFirstClassification.text = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-//                    binding.tvSecondClassification.text = convertPoseLabels(if (it.size >= 2) it[1] else null)
-//                    binding.tvThirdClassification.text = convertPoseLabels(if (it.size >= 3) it[2] else null)
-//                }
-//            }
-        }
-    }
 
     override fun onStart() {
         super.onStart()

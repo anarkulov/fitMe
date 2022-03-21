@@ -1,7 +1,7 @@
 package com.example.fitme.di
 
 import com.example.fitme.repo.MainRepository
-import com.example.fitme.ui.activity.WorkoutRepository
+import com.example.fitme.ui.workout.WorkoutRepository
 import com.example.fitme.ui.alarm.AlarmRepository
 import com.example.fitme.ui.auth.AuthRepository
 import org.koin.core.module.Module

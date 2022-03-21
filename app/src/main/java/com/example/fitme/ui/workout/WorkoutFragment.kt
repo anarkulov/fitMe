@@ -1,11 +1,11 @@
-package com.example.fitme.ui.activity
+package com.example.fitme.ui.workout
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
@@ -19,8 +19,7 @@ class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentActivityBinding>(
     private val myTag = "ActivityFragment"
 
     override val viewModel: WorkoutViewModel by viewModel()
-    private val workoutList = ArrayList<Workout>()
-    private val workoutAdapter = WorkoutListAdapter(workoutList, this::onWorkoutClick)
+    private val workoutAdapter = WorkoutListAdapter(this::onWorkoutClick, type = 0)
 
     override fun initViewModel() {
         super.initViewModel()
@@ -41,7 +40,7 @@ class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentActivityBinding>(
                     viewModel.loading.postValue(false)
                     response.data?.let {
                         Log.d("getWorkoutList: $it", myTag)
-                        workoutAdapter.updateItems(it)
+                        workoutAdapter.updateWorkoutItems(it)
                     }
                 }
             }
@@ -63,7 +62,7 @@ class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentActivityBinding>(
     }
 
     private fun onWorkoutClick(workout: Workout) {
-        showToast(workout.name)
+        findNavController().navigate(WorkoutFragmentDirections.actionActivityFragmentToWorkoutDetailsFragment(workout))
     }
 
     override fun initListeners() {

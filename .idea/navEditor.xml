@@ -124,9 +124,18 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-121" />
-                            <option name="y" value="-2" />
+                            <option name="x" value="-120" />
+                            <option name="y" value="289" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_activityFragment_to_workoutDetailsFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>
@@ -136,8 +145,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="479" />
-                            <option name="y" value="-306" />
+                            <option name="x" value="237" />
+                            <option name="y" value="656" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -148,8 +157,29 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="252" />
-                            <option name="y" value="-318" />
+                            <option name="x" value="-111" />
+                            <option name="y" value="657" />
+                          </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_alarmFragment_to_alarmDetails">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="exerciseFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="578" />
+                            <option name="y" value="287" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -160,8 +190,20 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-62" />
-                            <option name="y" value="-336" />
+                            <option name="x" value="-122" />
+                            <option name="y" value="-55" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
+                  <entry key="workoutDetailsFragment">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="x" value="233" />
+                            <option name="y" value="289" />
                           </Point>
                         </option>
                       </LayoutPositions>
