@@ -343,11 +343,11 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (alarmList.isNotEmpty()) {
-                        liveData.value = Resource.success(alarmList)
-                    } else {
-                        liveData.value = Resource.error("Alarm list is empty", null, -1)
-                    }
+                    liveData.postValue(Resource.success(alarmList))
+//                    if (alarmList.isNotEmpty()) {
+//                    } else {
+//                        liveData.value = Resource.error("Alarm list is empty", null, -1)
+//                    }
                 }
                 .addOnFailureListener {
                     liveData.value = Resource.error("Failed to get alarm list", null, -1)
@@ -498,11 +498,11 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (activityList.isNotEmpty()) {
-                        liveData.postValue(Resource.success(activityList))
-                    } else {
-                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
-                    }
+                    liveData.postValue(Resource.success(activityList))
+//                    if (activityList.isNotEmpty()) {
+//                    } else {
+//                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
+//                    }
                 }
                 .addOnFailureListener {
                     liveData.postValue(Resource.error("Failed to get activity list", null, -1))
@@ -562,11 +562,7 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (activityList.isNotEmpty()) {
-                        liveData.postValue(Resource.success(activityList))
-                    } else {
-                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
-                    }
+                    liveData.postValue(Resource.success(activityList))
                 }
                 .addOnFailureListener {
                     liveData.postValue(Resource.error("Failed to get activity list", null, -1))
@@ -663,11 +659,7 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (workoutList.isNotEmpty()) {
-                        liveData.postValue(Resource.success(workoutList))
-                    } else {
-                        liveData.postValue(Resource.error("workout list is empty", null, -1))
-                    }
+                    liveData.postValue(Resource.success(workoutList))
                 }
                 .addOnFailureListener {
                     liveData.postValue(Resource.error("Failed to get workout list", null, -1))
@@ -699,11 +691,11 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (exerciseList.isNotEmpty()) {
-                        liveData.postValue(Resource.success(exerciseList))
-                    } else {
-                        liveData.postValue(Resource.error("exerciseList list is empty", null, -1))
-                    }
+                    liveData.postValue(Resource.success(exerciseList))
+//                    if (exerciseList.isNotEmpty()) {
+//                    } else {
+//                        liveData.postValue(Resource.error("exerciseList list is empty", null, -1))
+//                    }
                 }
                 .addOnFailureListener {
                     liveData.postValue(Resource.error("Failed to get exerciseList list", null, -1))
