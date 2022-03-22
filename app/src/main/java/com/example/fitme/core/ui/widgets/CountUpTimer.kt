@@ -12,6 +12,5 @@ abstract class CountUpTimer protected constructor(private val duration: Long) : 
     }
 
     override fun onFinish() {
-        onTicks(duration/1000)
     }
 }

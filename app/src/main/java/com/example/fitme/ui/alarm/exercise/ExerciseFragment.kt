@@ -17,6 +17,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.fitme.R
 import com.example.fitme.camera.CameraSource
+import com.example.fitme.core.extentions.runAfter
 import com.example.fitme.core.extentions.showSnackBar
 import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.extentions.visible
@@ -61,8 +62,8 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
     private var isPoseCorrect = true
     private var exerciseCounter = 0
     private var caloriesCounter = 0
-    private var secondsCounter = 0
-    private lateinit var countDownTimer: CountDownTimer
+    private var secondsCounter = 0L
+    private lateinit var countUpTimer: CountDownTimer
 
 
     private val requestPermissionLauncher =
@@ -144,15 +145,17 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
                 }
             }
             createPoseEstimator()
-            setSecondsMeasurement()
+            runAfter(5000) {
+                setSecondsMeasurement()
+            }
         }
     }
 
     private fun setSecondsMeasurement() {
-        countDownTimer = object : CountUpTimer(108000) {
+        countUpTimer = object : CountUpTimer(108000000) {
             override fun onTicks(second: Long) {
                 if (isAdded) {
-                    secondsCounter = second.toInt()
+                    secondsCounter = second
                     binding.tvSeconds.text = second.toString()
                 }
             }
@@ -200,6 +203,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         super.initListeners()
 
         binding.btnStop.setOnClickListener {
+            countUpTimer.cancel()
             showStopExerciseDialog()
         }
     }
@@ -212,9 +216,10 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             setCancelable(false)
         }
 
+        caloriesCounter = calculateCalories()
         dialogBinding.etExerciseCounter.text = exerciseCounter.toString()
         dialogBinding.etSecondsCounter.text = secondsCounter.toString()
-        dialogBinding.etCaloriesCounter.text = calculateCalories()
+        dialogBinding.etCaloriesCounter.text = caloriesCounter.toString()
 
         dialog = dialogBuilder.create()
         dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
@@ -235,7 +240,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
                     dialogBinding.etActivityName.text.toString(),
                     "",
                     exerciseCounter,
-                    secondsCounter,
+                    secondsCounter.toInt(),
                     caloriesCounter,
                     args.exercise.workout,
                     args.exercise.exercise,
@@ -342,14 +347,14 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
     //
 
-    private fun calculateCalories(): String {
+    private fun calculateCalories(): Int {
         //MET * WIEGHT(kg) / (hour(60minutes) or (* seconds / 3600)
 
         val weight: Float = appPrefs.profile?.weight ?: 170f
-        val metValue: Float = if (args.exercise.metValue == 0f) 5f else args.exercise.metValue
-        caloriesCounter = (weight * metValue * 3.5f * (secondsCounter/3600)).toInt()
+        val metValue: Float = if (args.exercise.metValue == 0f) 3f else args.exercise.metValue
+        val caloriesCounter = weight.times(metValue).times(3.5f).times(secondsCounter.div(3600f))
 
-        return if (caloriesCounter <= 0) return "0" else caloriesCounter.toString()
+        return if (caloriesCounter <= 0) return 0 else caloriesCounter.toInt()
     }
 
     /**
