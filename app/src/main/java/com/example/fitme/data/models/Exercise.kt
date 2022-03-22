@@ -10,6 +10,7 @@ data class Exercise(
     val minutes: Int = 0,
     val imageUrl: String = "",
     val videoUrl: String = "",
+    val workout: String = "",
     val exercise: String = ""
 ): Serializable {
     override fun equals(other: Any?): Boolean {
@@ -25,6 +26,7 @@ data class Exercise(
         if (minutes != other.minutes) return false
         if (imageUrl != other.imageUrl) return false
         if (videoUrl != other.videoUrl) return false
+        if (workout != other.workout) return false
         if (exercise != other.exercise) return false
 
         return true
@@ -38,6 +40,7 @@ data class Exercise(
         result = 31 * result + minutes
         result = 31 * result + imageUrl.hashCode()
         result = 31 * result + videoUrl.hashCode()
+        result = 31 * result + workout.hashCode()
         result = 31 * result + exercise.hashCode()
         return result
     }

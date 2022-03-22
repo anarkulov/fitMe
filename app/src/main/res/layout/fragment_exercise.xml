@@ -13,6 +13,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/appCompatTextView"
+        style="@style/Text.Medium.Normal_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_input_field"
+        android:paddingHorizontal="@dimen/element_margin"
+        android:text="counter"
+        app:layout_constraintEnd_toEndOf="@+id/cv_counter"
+        app:layout_constraintStart_toStartOf="@+id/cv_counter"
+        app:layout_constraintTop_toBottomOf="@+id/cv_counter" />
+
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_counter"
         android:layout_width="70dp"
@@ -43,8 +55,56 @@
         android:paddingHorizontal="10dp"
         app:layout_constraintEnd_toEndOf="@+id/cv_counter"
         app:layout_constraintStart_toStartOf="@+id/cv_counter"
-        app:layout_constraintTop_toBottomOf="@+id/cv_counter"
+        app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
         tools:text="23.0" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/btn_stop"
+        style="@style/Button.Blue"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_marginTop="@dimen/element_margin"
+        android:background="@drawable/bg_text_button_blue"
+        android:paddingHorizontal="10dp"
+        android:text="@string/stop"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_second"
+        app:textAllCaps="true" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cv_seconds"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:background="@drawable/bg_button"
+        app:cardBackgroundColor="@color/blue_30"
+        app:cardCornerRadius="45dp"
+        app:cardElevation="@dimen/small_margin"
+        app:layout_constraintEnd_toEndOf="@+id/btn_stop"
+        app:layout_constraintStart_toStartOf="@+id/btn_stop"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_seconds"
+            style="@style/Button.Blue"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:text="@string/zero" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_second"
+        style="@style/Text.Medium.Normal_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_input_field"
+        android:paddingHorizontal="@dimen/element_margin"
+        android:text="seconds"
+        app:layout_constraintEnd_toEndOf="@+id/cv_seconds"
+        app:layout_constraintStart_toStartOf="@+id/cv_seconds"
+        app:layout_constraintTop_toBottomOf="@+id/cv_seconds" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_warning"
@@ -52,15 +112,16 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/element_margin"
         android:background="@drawable/bg_input_field"
-        android:backgroundTint="@color/red"
+        android:backgroundTint="@color/red_50"
         android:paddingHorizontal="10dp"
         android:layout_marginBottom="@dimen/big_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:textSize="32sp"
+        android:textSize="22sp"
         android:visibility="gone"
+        tools:visibility="visible"
         android:textColor="@color/white"
-        android:text="Error!!!" />
+        android:text="Check your pose!" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

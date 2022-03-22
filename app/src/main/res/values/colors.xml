@@ -20,6 +20,7 @@
     <color name="purple">#C58BF2</color>
     <color name="splash_color">@color/blue</color>
     <color name="red">#FF564D</color>
+    <color name="red_50">#80FF564D</color>
 
     <color name="gray">#979797</color>
     <color name="gray_1">#7B6F72</color>

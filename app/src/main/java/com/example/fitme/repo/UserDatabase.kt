@@ -581,6 +581,7 @@ class UserDatabase : AppDatabase() {
             DESCRIPTION_FIELD to activity.description,
             SECONDS_FIELD to activity.seconds,
             WORKOUT_FIELD to activity.workout,
+            EXERCISE_FIELD to activity.exercise,
             ACTIVITY_KCAL_FIELD to activity.calories,
             ACTIVITY_COUNTERS_FIELD to activity.counters,
             ACTIVITY_CREATED_AT_FIELD to activity.createdAt
@@ -613,6 +614,7 @@ class UserDatabase : AppDatabase() {
             NAME_FIELD to activity.name,
             DESCRIPTION_FIELD to activity.description,
             WORKOUT_FIELD to activity.workout,
+            EXERCISE_FIELD to activity.exercise,
             SECONDS_FIELD to activity.seconds,
             ACTIVITY_KCAL_FIELD to activity.calories,
             ACTIVITY_COUNTERS_FIELD to activity.counters,
@@ -775,6 +777,7 @@ class UserDatabase : AppDatabase() {
         const val ID_FIELD = "id"
         const val NAME_FIELD = "name"
         const val WORKOUT_FIELD = "workout"
+        const val EXERCISE_FIELD = "exercise"
         const val SECONDS_FIELD = "seconds"
         const val WORKOUT_ID_FIELD = "workoutId"
         const val DESCRIPTION_FIELD = "description"

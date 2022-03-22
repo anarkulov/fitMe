@@ -25,7 +25,7 @@
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out"/>
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
@@ -53,9 +53,9 @@
 
         <argument
             android:name="alarm"
+            android:defaultValue="@null"
             app:argType="com.example.fitme.data.models.Alarm"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
 
     </fragment>
 
@@ -75,7 +75,7 @@
             app:enterAnim="@anim/fade_in"
             app:exitAnim="@anim/fade_out"
             app:popEnterAnim="@anim/fade_in"
-            app:popExitAnim="@anim/fade_out"/>
+            app:popExitAnim="@anim/fade_out" />
 
     </fragment>
 
@@ -83,10 +83,14 @@
         android:id="@+id/exerciseFragment"
         android:name="com.example.fitme.ui.alarm.exercise.ExerciseFragment"
         android:label="fragment_exercise"
-        tools:layout="@layout/fragment_exercise" >
+        tools:layout="@layout/fragment_exercise">
 
         <argument
-            android:name="pose"
+            android:name="workout"
+            app:argType="string" />
+
+        <argument
+            android:name="exercise"
             app:argType="string" />
 
     </fragment>

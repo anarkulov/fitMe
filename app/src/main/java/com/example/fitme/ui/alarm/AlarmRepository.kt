@@ -2,6 +2,7 @@ package com.example.fitme.ui.alarm
 
 import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
+import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.repo.UserDatabase
 
@@ -15,6 +16,10 @@ class AlarmRepository(
 
     fun getUserId() : String? {
         return db.getUserId()
+    }
+
+    fun saveActivity(activity: Activity): MutableLiveData<Resource<Boolean>>  {
+        return db.createActivity(activity)
     }
 
     fun saveAlarmData(alarm: Alarm): MutableLiveData<Resource<String>>  {

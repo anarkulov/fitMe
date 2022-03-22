@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
@@ -58,7 +59,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
 
     private fun initBottomNavigation() {
         this.navController = findNavController(R.id.nav_host_fragment)
-        binding.navView.setupWithNavController(navController!!)
+        NavigationUI.setupWithNavController(binding.navView, navController!!, false)
         binding.navView.itemIconTintList = null
     }
 

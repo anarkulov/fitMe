@@ -1,27 +1,36 @@
 package com.example.fitme.ui.alarm.exercise
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.os.Process
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.example.fitme.R
 import com.example.fitme.camera.CameraSource
+import com.example.fitme.core.extentions.showSnackBar
 import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.extentions.visible
+import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
+import com.example.fitme.core.ui.widgets.CountUpTimer
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.enums.Exercise
+import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.ml.BodyPart
 import com.example.fitme.data.models.ml.Device
 import com.example.fitme.data.models.ml.KeyPoint
 import com.example.fitme.databinding.FragmentExerciseBinding
+import com.example.fitme.databinding.FragmentSaveExerciseActivityDialogBinding
 import com.example.fitme.tf.ml.ModelType
 import com.example.fitme.tf.ml.MoveNet
 import com.example.fitme.tf.ml.PoseClassifier
@@ -34,19 +43,23 @@ import kotlin.math.abs
 import kotlin.math.atan2
 
 class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>() {
-
-    override val viewModel: AlarmViewModel by viewModel()
-
     private val myTag = "ExerciseFragment"
 
+    override val viewModel: AlarmViewModel by viewModel()
+    private val args: ExerciseFragmentArgs by navArgs()
+
     private var cameraSource: CameraSource? = null
+    lateinit var dialog: AlertDialog
+
     private var isHandDown = false
     private var isHandUp = false
-    private var counter = 0
-    private var isCorrect = false
+
+    private var isBodyPartCorrect = false
     private var isPoseCorrect = false
-    private var exercisePose: Exercise = Exercise.BasicSquat
-    private val args: ExerciseFragmentArgs by navArgs()
+    private var exerciseCounter = 0
+    private var caloriesCounter = 0
+    private lateinit var countDownTimer: CountDownTimer
+
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -69,7 +82,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             poseLabels: List<Pair<String, Float>>?,
         ) {
             activity?.runOnUiThread {
-                binding.tvScore.text = getString(R.string.tv_score, personScore ?: 0f)
+                binding.tvScore.text = activity?.getString(R.string.tv_score, personScore ?: 0f)
             }
             poseLabels?.sortedByDescending { it.second }?.let {
                 activity?.runOnUiThread {
@@ -104,8 +117,8 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
     }
 
     private fun checkCorrect() {
-        cameraSource?.isCorrect(isCorrect&&isPoseCorrect)
-        binding.tvWarning.visible = !(isCorrect && isPoseCorrect)
+        cameraSource?.isCorrect(isBodyPartCorrect&&isPoseCorrect)
+        binding.tvWarning.visible = !(isBodyPartCorrect && isPoseCorrect)
     }
 
     private fun createPoseEstimator() {
@@ -127,7 +140,18 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
                 }
             }
             createPoseEstimator()
+            setSecondsMeasurement()
         }
+    }
+
+    private fun setSecondsMeasurement() {
+        countDownTimer = object : CountUpTimer(108000) {
+            override fun onTicks(second: Long) {
+                if (isAdded) {
+                    binding.tvSeconds.text = second.toString()
+                }
+            }
+        }.start()
     }
 
     override fun initViewModel() {
@@ -169,11 +193,77 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
     override fun initListeners() {
         super.initListeners()
+
+        binding.btnStop.setOnClickListener {
+            showStopExerciseDialog()
+        }
+    }
+
+    private fun showStopExerciseDialog() {
+        val dialogBinding = FragmentSaveExerciseActivityDialogBinding.inflate(requireActivity().layoutInflater)
+
+        val dialogBuilder = AlertDialog.Builder(activity).apply {
+            setView(dialogBinding.root)
+            setCancelable(false)
+        }
+
+        val secondsCounter = binding.tvSeconds.text.toString().toIntOrNull()
+        dialogBinding.etExerciseCounter.text = exerciseCounter.toString()
+        dialogBinding.etSecondsCounter.text = secondsCounter.toString()
+        dialogBinding.etCaloriesCounter.text = "0"
+
+        dialog = dialogBuilder.create()
+        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog.show()
+
+        dialogBinding.btnCancel.setOnClickListener {
+            dialog.cancel()
+        }
+
+        dialogBinding.btnSave.setOnClickListener {
+
+            if (dialogBinding.etActivityName.text.isNullOrEmpty()) {
+                showToast("Please type name for activity")
+            } else {
+                val activity = Activity(
+                    System.currentTimeMillis().toString(),
+                    "", dialogBinding.etActivityName.text.toString(),
+                    "",
+                    exerciseCounter,
+                    secondsCounter ?: 0,
+                    caloriesCounter,
+                    args.workout,
+                    args.exercise,
+                    "",
+                    System.currentTimeMillis()
+                )
+                saveActivity(activity)
+            }
+        }
+    }
+
+    private fun saveActivity(activity: Activity) {
+        viewModel.createActivity(activity).observe(this) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    requireActivity().showSnackBar("Activity is created")
+                    dialog.cancel()
+                    findNavController().popBackStack()
+                }
+            }
+        }
     }
 
     private fun calculate(keyPoint: List<KeyPoint>) {
 
-        when(args.pose) {
+        when(args.exercise) {
             Exercise.StandartPushUp.name -> {
                 calculateStandartPushUp(keyPoint)
             }
@@ -229,10 +319,10 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         if (angle > 20 && angle < 70) {
             if (isHandUp) {
-                counter = binding.tvCounter.text.toString().toInt()
-                if (isCorrect) counter += 1
+                exerciseCounter = binding.tvCounter.text.toString().toInt()
+                if (isBodyPartCorrect) exerciseCounter += 1
                 activity?.runOnUiThread {
-                    binding.tvCounter.text = counter.toString()
+                    binding.tvCounter.text = exerciseCounter.toString()
                 }
             }
             isHandDown = true
@@ -277,9 +367,9 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         val angle = abs((rightRadians + leftRadians) / 2 * (180.0 / PI))
 
-        isCorrect = angle in 160.0 .. 200.0
+        isBodyPartCorrect = angle in 160.0 .. 200.0
 
-        Log.d("isCorrect: $isCorrect, angle: $angle", myTag)
+        Log.d("isCorrect: $isBodyPartCorrect, angle: $angle", myTag)
     }
 
     /**
@@ -328,10 +418,10 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         if (angle > 25 && angle < 45) {
             if (isHandUp) {
-                counter = binding.tvCounter.text.toString().toInt()
-                counter += 1
+                exerciseCounter = binding.tvCounter.text.toString().toInt()
+                exerciseCounter += 1
                 activity?.runOnUiThread {
-                    binding.tvCounter.text = counter.toString()
+                    binding.tvCounter.text = exerciseCounter.toString()
                 }
             }
             isHandDown = true

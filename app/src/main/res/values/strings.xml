@@ -45,6 +45,10 @@
     <string name="my_activities">My Activities</string>
     <string name="start">start</string>
     <string name="zero">0</string>
+    <string name="stop_exercise_confirmation">Are you sure you want to finish exercise?</string>
+    <string name="yes">Yes</string>
+    <string name="continue_text">Continue</string>
+    <string name="cancel">Cancel</string>
 
     <string-array name="categories_array">
         <item>counters</item>

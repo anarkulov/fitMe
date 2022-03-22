@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
 import com.example.fitme.core.ui.BaseViewModel
 import com.example.fitme.data.local.AppPrefs
+import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.Alarm
 
 class AlarmViewModel(
@@ -23,6 +24,10 @@ class AlarmViewModel(
 
     fun saveAlarmData(alarm: Alarm): MutableLiveData<Resource<String>> {
         return alarmRepository.saveAlarmData(alarm)
+    }
+
+    fun createActivity(activity: Activity): MutableLiveData<Resource<Boolean>> {
+        return alarmRepository.saveActivity(activity)
     }
 
     fun updateAlarm(alarm: Alarm): MutableLiveData<Resource<Boolean>> {
