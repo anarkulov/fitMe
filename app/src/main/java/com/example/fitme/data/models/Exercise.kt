@@ -8,6 +8,7 @@ data class Exercise(
     val description: String = "",
     val instructions: String = "",
     val minutes: Int = 0,
+    val metValue: Float = 0f,
     val imageUrl: String = "",
     val videoUrl: String = "",
     val workout: String = "",
@@ -24,6 +25,7 @@ data class Exercise(
         if (description != other.description) return false
         if (instructions != other.instructions) return false
         if (minutes != other.minutes) return false
+        if (metValue != other.metValue) return false
         if (imageUrl != other.imageUrl) return false
         if (videoUrl != other.videoUrl) return false
         if (workout != other.workout) return false
@@ -37,7 +39,8 @@ data class Exercise(
         result = 31 * result + name.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + instructions.hashCode()
-        result = 31 * result + minutes
+        result = 31 * result + minutes.hashCode()
+        result = 31 * result + metValue.hashCode()
         result = 31 * result + imageUrl.hashCode()
         result = 31 * result + videoUrl.hashCode()
         result = 31 * result + workout.hashCode()

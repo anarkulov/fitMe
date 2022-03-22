@@ -83,7 +83,7 @@ class WorkoutDetailsFragment : BaseFragment<WorkoutViewModel, FragmentWorkoutDet
     }
 
     private fun onExerciseClick(exercise: Exercise) {
-        findNavController().navigate(WorkoutDetailsFragmentDirections.actionWorkoutDetailsFragmentToExerciseFragment(exercise.workout, exercise.exercise))
+        findNavController().navigate(WorkoutDetailsFragmentDirections.actionWorkoutDetailsFragmentToExerciseFragment(exercise))
     }
 
     override fun inflateViewBinding(

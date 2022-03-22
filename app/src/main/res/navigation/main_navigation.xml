@@ -86,12 +86,8 @@
         tools:layout="@layout/fragment_exercise">
 
         <argument
-            android:name="workout"
-            app:argType="string" />
-
-        <argument
             android:name="exercise"
-            app:argType="string" />
+            app:argType="com.example.fitme.data.models.Exercise" />
 
     </fragment>
 

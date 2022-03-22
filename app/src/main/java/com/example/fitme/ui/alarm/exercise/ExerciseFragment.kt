@@ -25,6 +25,7 @@ import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.ui.widgets.CountUpTimer
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.enums.Exercise
+import com.example.fitme.data.local.AppPrefs
 import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.ml.BodyPart
 import com.example.fitme.data.models.ml.Device
@@ -37,6 +38,7 @@ import com.example.fitme.tf.ml.PoseClassifier
 import com.example.fitme.ui.alarm.AlarmViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import kotlin.math.PI
 import kotlin.math.abs
@@ -47,6 +49,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
     override val viewModel: AlarmViewModel by viewModel()
     private val args: ExerciseFragmentArgs by navArgs()
+    private val appPrefs: AppPrefs by inject()
 
     private var cameraSource: CameraSource? = null
     lateinit var dialog: AlertDialog
@@ -54,10 +57,11 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
     private var isHandDown = false
     private var isHandUp = false
 
-    private var isBodyPartCorrect = false
-    private var isPoseCorrect = false
+    private var isBodyPartCorrect = true
+    private var isPoseCorrect = true
     private var exerciseCounter = 0
     private var caloriesCounter = 0
+    private var secondsCounter = 0
     private lateinit var countDownTimer: CountDownTimer
 
 
@@ -102,7 +106,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
                 calculate(keyPoint)
             }
             activity?.runOnUiThread {
-                checkCorrect()
+                checkCorrect(isBodyPartCorrect, isPoseCorrect)
             }
 
 //            poseByKeyPoints?.let {
@@ -116,9 +120,9 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         }
     }
 
-    private fun checkCorrect() {
-        cameraSource?.isCorrect(isBodyPartCorrect&&isPoseCorrect)
-        binding.tvWarning.visible = !(isBodyPartCorrect && isPoseCorrect)
+    private fun checkCorrect(firstValue: Boolean, secondValue:Boolean) {
+        cameraSource?.isCorrect(firstValue&&secondValue)
+        binding.tvWarning.visible = !(firstValue && secondValue)
     }
 
     private fun createPoseEstimator() {
@@ -148,6 +152,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         countDownTimer = object : CountUpTimer(108000) {
             override fun onTicks(second: Long) {
                 if (isAdded) {
+                    secondsCounter = second.toInt()
                     binding.tvSeconds.text = second.toString()
                 }
             }
@@ -207,10 +212,9 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             setCancelable(false)
         }
 
-        val secondsCounter = binding.tvSeconds.text.toString().toIntOrNull()
         dialogBinding.etExerciseCounter.text = exerciseCounter.toString()
         dialogBinding.etSecondsCounter.text = secondsCounter.toString()
-        dialogBinding.etCaloriesCounter.text = "0"
+        dialogBinding.etCaloriesCounter.text = calculateCalories()
 
         dialog = dialogBuilder.create()
         dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
@@ -227,13 +231,14 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             } else {
                 val activity = Activity(
                     System.currentTimeMillis().toString(),
-                    "", dialogBinding.etActivityName.text.toString(),
+                    "",
+                    dialogBinding.etActivityName.text.toString(),
                     "",
                     exerciseCounter,
-                    secondsCounter ?: 0,
+                    secondsCounter,
                     caloriesCounter,
-                    args.workout,
-                    args.exercise,
+                    args.exercise.workout,
+                    args.exercise.exercise,
                     "",
                     System.currentTimeMillis()
                 )
@@ -263,9 +268,12 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
     private fun calculate(keyPoint: List<KeyPoint>) {
 
-        when(args.exercise) {
+        when(args.exercise.exercise) {
             Exercise.StandartPushUp.name -> {
                 calculateStandartPushUp(keyPoint)
+            }
+            Exercise.BasicSquat.name -> {
+                calculateBasicSquat(keyPoint)
             }
         }
     }
@@ -329,7 +337,82 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             isHandUp = false
         }
 
-        Log.d("calculate: $angle", myTag)
+        Log.d("calculateStandartPushUp: $angle", myTag)
+    }
+
+    //
+
+    private fun calculateCalories(): String {
+        //MET * WIEGHT(kg) / (hour(60minutes) or (* seconds / 3600)
+
+        val weight: Float = appPrefs.profile?.weight ?: 170f
+        val metValue: Float = if (args.exercise.metValue == 0f) 5f else args.exercise.metValue
+        caloriesCounter = (weight * metValue * 3.5f * (secondsCounter/3600)).toInt()
+
+        return if (caloriesCounter <= 0) return "0" else caloriesCounter.toString()
+    }
+
+    /**
+     * for calculating BasicSquat
+     ***/
+    private fun calculateBasicSquat(keyPoint: List<KeyPoint>) {
+//        checkBack(keyPoint)
+
+        val leftHip = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_HIP }
+        val rightHip = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_HIP }
+
+        val leftKnee = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_KNEE }
+        val rightKnee = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_KNEE }
+
+        val leftAnkle = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_ANKLE }
+        val rightAnkle = keyPoint.lastOrNull { it.bodyPart == BodyPart.RIGHT_ANKLE }
+
+        if (rightKnee == null || rightAnkle == null || rightHip == null || leftKnee == null || leftAnkle == null || leftHip == null) return
+
+        val leftHipY = leftHip.coordinate.y
+        val leftHipX = leftHip.coordinate.x
+        val rightHipY = rightHip.coordinate.y
+        val rightHipX = rightHip.coordinate.x
+
+
+        val leftKneeY = leftKnee.coordinate.y
+        val leftKneeX = leftKnee.coordinate.x
+        val rightKneeY = rightKnee.coordinate.y
+        val rightKneeX = rightKnee.coordinate.x
+
+        val leftAnkleY = leftAnkle.coordinate.y
+        val leftAnkleX = leftAnkle.coordinate.x
+        val rightAnkleY = rightAnkle.coordinate.y
+        val rightAnkleX = rightAnkle.coordinate.x
+
+        val rightRadians =
+            atan2(rightAnkleY.minus(rightKneeY), rightAnkleX.minus(rightKneeX)) -
+                    atan2(rightHipY.minus(rightKneeY), rightHipX.minus(rightKneeX))
+
+        val leftRadians =
+            atan2(leftAnkleY.minus(leftKneeY), leftAnkleX.minus(leftKneeX)) -
+                    atan2(leftHipY.minus(leftKneeY), leftHipX.minus(leftKneeX))
+
+        val angle = abs((rightRadians + leftRadians) / 2 * (180.0 / PI))
+
+        if (angle > 160 && angle < 200) {
+            isHandUp = true
+            isHandDown = false
+        }
+
+        if (angle > 60 && angle < 110) {
+            if (isHandUp) {
+                exerciseCounter = binding.tvCounter.text.toString().toInt()
+                if (isBodyPartCorrect) exerciseCounter += 1
+                activity?.runOnUiThread {
+                    binding.tvCounter.text = exerciseCounter.toString()
+                }
+            }
+            isHandDown = true
+            isHandUp = false
+        }
+
+        Log.d("calculateBasicSquat: $angle", myTag)
     }
 
     private fun checkBack(keyPoint: List<KeyPoint>) {

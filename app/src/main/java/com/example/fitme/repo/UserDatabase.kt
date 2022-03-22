@@ -681,6 +681,7 @@ class UserDatabase : AppDatabase() {
                 .collection(WORKOUT_PATH)
                 .document(id)
                 .collection(EXERCISES_PATH)
+                .orderBy(ID_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { snapshots ->
                     if (snapshots != null) {

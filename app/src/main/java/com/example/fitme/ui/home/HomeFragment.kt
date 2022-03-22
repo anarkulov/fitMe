@@ -16,6 +16,7 @@ import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.enums.Workout
+import com.example.fitme.data.local.AppPrefs
 import com.example.fitme.data.local.Constants.Home.PERIOD_DAY
 import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
 import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
@@ -25,6 +26,7 @@ import com.example.fitme.data.local.Constants.Home.TYPE_SECONDS
 import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentHomeBinding
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.math.roundToInt
@@ -33,6 +35,7 @@ import kotlin.math.roundToInt
 class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
     override val viewModel: HomeViewModel by viewModel()
+    private val appPrefs: AppPrefs by inject()
 
     private val activityList = ArrayList<Activity>()
     private val myTag = "HomeFragment"
@@ -59,6 +62,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                     viewModel.loading.postValue(false)
                     response.data?.let {
                         Log.d("getProfile: $it", myTag)
+                        appPrefs.profile = it
                         setData(it)
                     }
                 }
