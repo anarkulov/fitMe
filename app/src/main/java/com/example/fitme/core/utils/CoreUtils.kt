@@ -127,22 +127,29 @@ open class  CoreUtils {
         val minute = splitTime[1].toInt()
 
         val calendar = Calendar.getInstance().apply {
-            set(Calendar.AM_PM, Calendar.PM)
             set(Calendar.HOUR, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
         }
 
-//        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
-//        val nowTime = simpleDateFormat.format(Date())
+        val simpleDateFormat = SimpleDateFormat("HH:mm:ss")
+        val nowTime = simpleDateFormat.format(Date())
 //
-////        val currentTime = nowTime.split(":")
-////        val hr = currentTime[0].toInt()
+        val currentTime = nowTime.split(":")
+        val hr = currentTime[0].toInt()
+
+        if (hr > 12) {
+            calendar.set(Calendar.AM_PM, Calendar.AM)
+        }
+
+
+
+        Log.d("convertHMtoMS: ${calendar.timeInMillis}", "AlarmManager")
 
         timeInMs = calendar.timeInMillis
 
         if (isRepeating) {
-            val timeSet = TreeSet<Long>()
+            val timeSet = TreeSet<Long>() // 0 to false; 1 to false, 2 true; ...
             for (i in 0 until 7) {
                 var repeatTime = timeInMs
 
@@ -151,17 +158,19 @@ open class  CoreUtils {
 //                    val weekday = calendar[Calendar.DAY_OF_WEEK]
 //                    val monday = Calendar.MONDAY
 //                    var currentDay = if ((weekday - monday) < 0) (7 - (monday - weekday)) else (weekday - monday)
-                    var currentDay = calendar.get(Calendar.DAY_OF_WEEK)-1
-                    currentDay--
+                    val currentDay = calendar.get(Calendar.DAY_OF_WEEK)-2
                     if ((repeatTime < System.currentTimeMillis() && currentDay == i) || currentDay != i) {
                         if (i > currentDay) {
                             repeatTime += TimeUnit.MILLISECONDS.convert((i - currentDay).toLong(), TimeUnit.DAYS)
+                            Log.d("i($i) > cd($currentDay): $repeatTime}", "AlarmManager")
                         } else {
-                            repeatTime += TimeUnit.MILLISECONDS.convert((7 - currentDay).toLong(), TimeUnit.DAYS)
+                            Log.d("i($i) < cd($currentDay): $repeatTime}", "AlarmManager")
+                            repeatTime += TimeUnit.MILLISECONDS.convert(((7 + i) - currentDay).toLong(), TimeUnit.DAYS)
                             TimeUnit.MILLISECONDS.convert(i.toLong(), TimeUnit.DAYS)
                         }
                         timeSet.add(repeatTime)
                     } else if (currentDay == i) {
+                        Log.d("cd($currentDay) == i($i): $repeatTime}", "AlarmManager")
                         timeSet.add(repeatTime)
                     }
                 }
