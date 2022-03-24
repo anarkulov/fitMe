@@ -6,6 +6,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Process
+import android.speech.tts.TextToSpeech
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,11 +42,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
 import kotlin.math.PI
 import kotlin.math.abs
 import kotlin.math.atan2
 
-class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>() {
+class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>(), TextToSpeech.OnInitListener {
     private val myTag = "ExerciseFragment"
 
     override val viewModel: AlarmViewModel by viewModel()
@@ -65,6 +67,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
     private var secondsCounter = 0L
     private lateinit var countUpTimer: CountDownTimer
 
+    private var tts: TextToSpeech? = null
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -98,7 +101,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             }
 
             keyPoint?.let {
-                isPoseCorrect = if (personScore == null || personScore <= 0.3) {
+                isPoseCorrect = if (personScore == null || personScore <= 0.4) {
                     isPoseCorrect = false
                     return@let
                 } else {
@@ -162,10 +165,6 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         }.start()
     }
 
-    override fun initViewModel() {
-        super.initViewModel()
-    }
-
     private fun isCameraPermissionGranted(): Boolean {
         return activity?.checkPermission(
             Manifest.permission.CAMERA,
@@ -174,12 +173,24 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         ) == PackageManager.PERMISSION_GRANTED
     }
 
+    override fun onInit(status: Int) {
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts!!.setLanguage(Locale.US)
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Log.e("The Language specified is not supported!", myTag)
+            }
+        } else {
+            Log.e("TTS", "Initilization Failed!")
+        }
+    }
+
     override fun initView() {
         super.initView()
 
         if (!isCameraPermissionGranted()) {
             requestPermission()
         }
+        tts = TextToSpeech(requireContext(), this)
     }
 
     private fun requestPermission() {
@@ -204,7 +215,19 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         binding.btnStop.setOnClickListener {
             countUpTimer.cancel()
+            if (secondsCounter > 10) {
+                tts?.speak(
+                    "Good job ${appPrefs.profile?.firstName}!",
+                    TextToSpeech.QUEUE_FLUSH,
+                    null,
+                    ""
+                )
+            }
             showStopExerciseDialog()
+        }
+
+        binding.tvSecond.setOnClickListener {
+            incrementCounter()
         }
     }
 
@@ -332,11 +355,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         if (angle > 20 && angle < 70) {
             if (isHandUp) {
-                exerciseCounter = binding.tvCounter.text.toString().toInt()
-                if (isBodyPartCorrect) exerciseCounter += 1
-                activity?.runOnUiThread {
-                    binding.tvCounter.text = exerciseCounter.toString()
-                }
+                incrementCounter()
             }
             isHandDown = true
             isHandUp = false
@@ -407,11 +426,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         if (angle > 60 && angle < 110) {
             if (isHandUp) {
-                exerciseCounter = binding.tvCounter.text.toString().toInt()
-                if (isBodyPartCorrect) exerciseCounter += 1
-                activity?.runOnUiThread {
-                    binding.tvCounter.text = exerciseCounter.toString()
-                }
+                incrementCounter()
             }
             isHandDown = true
             isHandUp = false
@@ -506,17 +521,22 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         if (angle > 25 && angle < 45) {
             if (isHandUp) {
-                exerciseCounter = binding.tvCounter.text.toString().toInt()
-                exerciseCounter += 1
-                activity?.runOnUiThread {
-                    binding.tvCounter.text = exerciseCounter.toString()
-                }
+                incrementCounter()
             }
             isHandDown = true
             isHandUp = false
         }
 
         Log.d("calculateBiceps: $angle", myTag)
+    }
+
+    private fun incrementCounter() {
+        exerciseCounter = binding.tvCounter.text.toString().toInt()
+        exerciseCounter += 1
+        activity?.runOnUiThread {
+            binding.tvCounter.text = exerciseCounter.toString()
+            tts!!.speak(binding.tvCounter.text, TextToSpeech.QUEUE_FLUSH, null, "")
+        }
     }
 
 // pushUpAngle
@@ -593,6 +613,14 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         super.onPause()
         cameraSource?.close()
         cameraSource = null
+    }
+
+    override fun onDestroy() {
+        if (tts != null) {
+            tts!!.stop()
+            tts!!.shutdown()
+        }
+        super.onDestroy()
     }
 
     override fun inflateViewBinding(

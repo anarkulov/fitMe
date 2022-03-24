@@ -50,13 +50,14 @@
         android:id="@+id/tv_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/element_margin"
+        android:layout_marginTop="@dimen/element_margin"
         android:background="@drawable/bg_input_field"
         android:paddingHorizontal="10dp"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintEnd_toEndOf="@+id/cv_counter"
         app:layout_constraintStart_toStartOf="@+id/cv_counter"
         app:layout_constraintTop_toBottomOf="@+id/appCompatTextView"
-        tools:text="23.0" />
+        tools:text="person score 23.0" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/btn_stop"
