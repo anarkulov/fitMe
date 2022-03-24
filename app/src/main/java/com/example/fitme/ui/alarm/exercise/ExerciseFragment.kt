@@ -101,7 +101,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             }
 
             keyPoint?.let {
-                isPoseCorrect = if (personScore == null || personScore <= 0.4) {
+                isPoseCorrect = if (personScore == null || personScore <= 0.5) {
                     isPoseCorrect = false
                     return@let
                 } else {
@@ -126,7 +126,13 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
     private fun checkCorrect(firstValue: Boolean, secondValue:Boolean) {
         cameraSource?.isCorrect(firstValue&&secondValue)
-        binding.tvWarning.visible = !(firstValue && secondValue)
+
+        if (!(firstValue && secondValue) && !binding.tvWarning.visible) {
+            binding.tvWarning.visible = true
+            if (tts?.isSpeaking == false) ttsSpeakOut(binding.tvWarning.text)
+        } else if (firstValue && secondValue && binding.tvWarning.visible){
+            binding.tvWarning.visible = false
+        }
     }
 
     private fun createPoseEstimator() {
@@ -154,12 +160,19 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         }
     }
 
+    var secondsMod = 1
     private fun setSecondsMeasurement() {
         countUpTimer = object : CountUpTimer(108000000) {
             override fun onTicks(second: Long) {
                 if (isAdded) {
                     secondsCounter = second
                     binding.tvSeconds.text = second.toString()
+
+                    val temp = secondsCounter
+                    if (temp.toInt() / 15 == secondsMod) {
+                        secondsMod++
+                        ttsSpeakOut("$temp seconds")
+                    }
                 }
             }
         }.start()
@@ -216,12 +229,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         binding.btnStop.setOnClickListener {
             countUpTimer.cancel()
             if (secondsCounter > 10) {
-                tts?.speak(
-                    "Good job ${appPrefs.profile?.firstName}!",
-                    TextToSpeech.QUEUE_FLUSH,
-                    null,
-                    ""
-                )
+                ttsSpeakOut("Good job ${appPrefs.profile?.firstName}!")
             }
             showStopExerciseDialog()
         }
@@ -535,8 +543,12 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         exerciseCounter += 1
         activity?.runOnUiThread {
             binding.tvCounter.text = exerciseCounter.toString()
-            tts!!.speak(binding.tvCounter.text, TextToSpeech.QUEUE_FLUSH, null, "")
+            ttsSpeakOut(binding.tvCounter.text)
         }
+    }
+
+    private fun ttsSpeakOut(text: CharSequence?) {
+        tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, "")
     }
 
 // pushUpAngle
