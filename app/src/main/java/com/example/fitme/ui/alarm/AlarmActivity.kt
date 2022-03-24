@@ -40,8 +40,6 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
     private var alarm: Alarm? = null
     private var alarmPoseName: String = ""
 
-
-
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -66,11 +64,19 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
 //                binding.tvScore.text = getString(R.string.tv_score, personScore ?: 0f)
 //            }
             poseLabels?.sortedByDescending { it.second }?.let {
-                runOnUiThread {
+                if (it.isNotEmpty()) {
+                    Log.d("name: ${it[0].first} - ${it[0].second} - $personScore", myTag)
+                }
+            }
+
+            if (personScore != null && personScore > 0.6f) {
+                poseLabels?.sortedByDescending { it.second }?.let {
+                    runOnUiThread {
+                        checkPose(if (it.isNotEmpty()) it[0] else null)
 //                    val poseName = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-                    checkPose(if (it.isNotEmpty()) it[0] else null)
 //                    convertPoseLabels(if (it.size >= 2) it[1] else null)
 //                    convertPoseLabels(if (it.size >= 3) it[2] else null)
+                    }
                 }
             }
         }
@@ -78,9 +84,12 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
 
     private fun checkPose(pair: Pair<String, Float>?) {
         if (pair == null) return
-
         val poseName = pair.first
-        if (poseName == alarmPoseName) {
+
+//        binding.tvAlarmPoseName.text = poseName
+
+        Log.d("poseName: $poseName - ${pair.second}", myTag)
+        if (poseName.uppercase() == alarmPoseName.uppercase()) {
             if (pair.second >= 0.95) {
                 stopAlarm()
             }
@@ -127,8 +136,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
             ContextCompat.checkSelfPermission(
                 this,
                 Manifest.permission.CAMERA
-            ),
-            -> {
+            ) -> {
                 openCamera()
             }
             else -> {
@@ -209,7 +217,6 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
     override fun initView() {
         super.initView()
 
-
         if (!isCameraPermissionGranted()) {
             requestPermission()
         }
@@ -225,17 +232,23 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
 //        }
     }
 
+    private var isStopClicked = false
     private fun stopAlarm() {
-        MyAlarmManager.stopAlarm(this)
-        binding.tvTimer.visible = true
-        object : CountDownTimer(3000, 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                binding.tvTimer.text = (millisUntilFinished / 1000).toString()
-            }
-            override fun onFinish() {
-                binding.tvTimer.visible = false
-            }
-        }.start()
+
+        if (!isStopClicked) {
+            MyAlarmManager.stopAlarm(this)
+            binding.tvTimer.visible = true
+            object : CountDownTimer(3000, 1000) {
+                override fun onTick(millisUntilFinished: Long) {
+                    binding.tvTimer.text = (millisUntilFinished / 1000).toString()
+                }
+
+                override fun onFinish() {
+                    binding.tvTimer.visible = false
+                }
+            }.start()
+            isStopClicked = true
+        }
     }
 
     override fun onStart() {
@@ -262,6 +275,20 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
 
     private fun handleMyIntent(intent: Intent?) {
         alarm = intent?.getBundleExtra(MyAlarmManager.ALARM_KEY)?.getSerializable(MyAlarmManager.ALARM_KEY) as Alarm?
+
+        Log.d("handleMyIntent: ${!Pose.values().equals(alarm?.challenge)}", myTag)
+        if (alarm == null || alarm?.challenge.isNullOrEmpty()) {
+            binding.surfaceView.visible = false
+            binding.ivPose.visible = false
+            binding.btnStop.visible = true
+            cameraSource = null
+            binding.tvAlarmPoseName.text = alarm?.title
+            binding.btnStop.setOnClickListener {
+                stopAlarm()
+            }
+            return
+        }
+
         setAlarmPose()
     }
 

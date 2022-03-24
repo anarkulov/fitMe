@@ -13,6 +13,19 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_stop"
+        style="@style/Button.Blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/stop"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_timer"
         style="@style/Text.H1.Bold"
@@ -22,6 +35,7 @@
         android:textColor="@color/blue"
         android:textSize="70sp"
         android:visibility="gone"
+        android:layout_marginBottom="@dimen/big_margin"
         app:layout_constraintBottom_toBottomOf="@+id/surfaceView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,11 +45,13 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_alarm_pose_name"
         style="@style/Text.Medium"
+        android:layout_marginTop="@dimen/page_margin"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_input_field"
         android:gravity="center"
         android:textSize="@dimen/text_headline_1"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="213" />
@@ -45,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginVertical="100dp"
-        android:src="@drawable/iv_pose_tree"
+        android:src="@drawable/iv_pose_chair"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

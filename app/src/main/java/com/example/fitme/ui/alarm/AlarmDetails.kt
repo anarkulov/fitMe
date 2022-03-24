@@ -218,7 +218,7 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         }
 
         val challenge: String = binding.tvPoseName.text.ifEmpty {
-            "none"
+            ""
         } as String
 
         val alarm =

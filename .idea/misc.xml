@@ -56,7 +56,9 @@
         <entry key="app/src/main/res/drawable/ic_pushup.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/ic_stretching.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/ic_workout_active.xml" value="0.288" />
+        <entry key="app/src/main/res/drawable/iv_pose_chair.xml" value="0.1895" />
         <entry key="app/src/main/res/drawable/iv_pose_dog.xml" value="0.258" />
+        <entry key="app/src/main/res/drawable/iv_pose_tree.xml" value="0.258" />
         <entry key="app/src/main/res/drawable/nav_activity_state.xml" value="0.2865" />
         <entry key="app/src/main/res/drawable/nav_alarm_state.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/nav_home_state.xml" value="0.2495" />

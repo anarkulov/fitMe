@@ -6,11 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.example.fitme.App
+import com.example.fitme.core.extentions.runAfter
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.managers.MyAlarmManager.Companion.ALARM_KEY
 import com.example.fitme.managers.MyAlarmService
 import com.example.fitme.ui.alarm.AlarmActivity
-import com.readystatesoftware.chuck.internal.ui.MainActivity
+import com.example.fitme.ui.main.MainActivity
 
 fun stopAlarm() {
     val app = App.getInstance()
@@ -19,8 +20,13 @@ fun stopAlarm() {
         MyAlarmService::class.java
     )
     app.stopService(intent)
-    val mainActivityIntent = Intent(app, MainActivity::class.java)
-    app.startActivity(mainActivityIntent)
+
+    runAfter(1000) {
+        val mainActivityIntent = Intent(app, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+        }
+        app.startActivity(mainActivityIntent)
+    }
 }
 
 fun startAlarmActivity(ctx: Context, alarm: Alarm?) {
