@@ -87,8 +87,8 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
         findNavController().navigate(AlarmFragmentDirections.actionAlarmFragmentToAlarmDetails(alarm))
     }
 
-    private fun onSwitchChecked(alarm: Alarm, checked:Boolean) {
-        updateOnFirebase(alarm)
+    private fun onSwitchChecked(alarm: Alarm, checked:Boolean, update: Boolean) {
+        if (update) updateOnFirebase(alarm)
 
         if (checked) {
             MyAlarmManager.scheduleAlarm(requireContext(), alarm)

@@ -12,11 +12,11 @@ import com.example.fitme.databinding.ItemAlarmBinding
 class AlarmListRecycler(
     private var items: ArrayList<Alarm>,
     private val onAlarmClick: (id: Alarm) -> Unit,
-    private val onAlarmSwitch: (alarm: Alarm, checked: Boolean) -> Unit,
+    private val onAlarmSwitch: (alarm: Alarm, checked: Boolean, update: Boolean) -> Unit,
 ) : RecyclerView.Adapter<AlarmListRecycler.ViewHolder>() {
 
     inner class ViewHolder(val binding: ItemAlarmBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(item: Alarm, onAlarmSwitch: (alarm: Alarm, isChecked: Boolean) -> Unit) {
+        fun bind(item: Alarm, onAlarmSwitch: (alarm: Alarm, isChecked: Boolean, update: Boolean) -> Unit) {
             val splitTime = item.time.split(":")
             val hour = splitTime[0].toInt()
             val minute = splitTime[1].toInt()
@@ -43,9 +43,11 @@ class AlarmListRecycler(
             binding.tvDuration.text = days.trim()
             binding.btnSwitch.isChecked = item.isTurnedOn
 
+            onAlarmSwitch(item, binding.btnSwitch.isChecked, false)
+
             binding.btnSwitch.setOnCheckedChangeListener { _, isChecked ->
                 item.isTurnedOn = isChecked
-                onAlarmSwitch(item, isChecked)
+                onAlarmSwitch(item, isChecked, true)
                 updateItemValue(absoluteAdapterPosition, item)
             }
         }

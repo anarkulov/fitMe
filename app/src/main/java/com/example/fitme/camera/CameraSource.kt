@@ -279,7 +279,7 @@ class CameraSource(
 
         // if the model returns only one item, show that item's score.
         if (persons.isNotEmpty()) {
-            listener?.onDetectedInfo(persons[0].score, persons[0].keyPoints,classificationResult)
+            listener?.onDetectedInfo(persons[0].score, persons[0].keyPoints, classificationResult)
         }
         visualize(persons, bitmap)
     }
