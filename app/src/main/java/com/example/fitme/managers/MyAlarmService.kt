@@ -27,7 +27,7 @@ class MyAlarmService : Service() {
         const val ACTION_STOP = "a.stop_alarm"
         const val ACTION_STOP_POSE = "stop_alarm"
         const val NOTIFICATION_ID = 1
-        var mAlarm: Alarm? = null
+        lateinit var mAlarm: Alarm
     }
 
     private var isPlaying = false
@@ -35,7 +35,8 @@ class MyAlarmService : Service() {
     override fun onCreate() {
         super.onCreate()
         createAlarmNotificationChannel(this)
-        startForeground(NOTIFICATION_ID, buildStartupNotification(this))
+        Log.d("onCreate", myTag)
+//        startForeground(NOTIFICATION_ID, buildStartupNotification(this))
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -48,23 +49,20 @@ class MyAlarmService : Service() {
 
         if (!isPlaying) {
             playAlarm()
-//            val bundle = Bundle().apply {
-//                putSerializable(ALARM_KEY, alarm)
-//            }
-//            intent?.putExtra(ALARM_KEY, bundle)
-
             startAlarmActivity(this, alarm)
 
             Log.d("intentAlarms: $alarm", myTag)
-            startForeground(NOTIFICATION_ID, buildNotification(this, alarm?.title, alarm?.time, isPlaying))
+            startForeground(NOTIFICATION_ID, buildNotification(this, alarm))
         }
-
         isPlaying = true
+
         when (intent?.action) {
-            ACTION_SHOW_ALARM, ACTION_STOP -> {
+            ACTION_SHOW_ALARM -> {
+                Log.d("ACTION_SHOW_ALARM: $alarm", myTag)
                 startAlarmActivity(this, alarm)
             }
             ACTION_STOP_POSE -> {
+                Log.d("ACTION_STOP_POSE: $alarm", myTag)
                 stopAlarmPlay()
                 stopAlarm()
             }
