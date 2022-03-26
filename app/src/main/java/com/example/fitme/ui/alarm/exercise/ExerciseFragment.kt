@@ -92,13 +92,6 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             activity?.runOnUiThread {
                 binding.tvScore.text = activity?.getString(R.string.tv_score, personScore ?: 0f)
             }
-            poseLabels?.sortedByDescending { it.second }?.let {
-                activity?.runOnUiThread {
-//                    binding.tvFirstClassification.text = convertPoseLabels(if (it.isNotEmpty()) it[0] else null)
-//                    binding.tvSecondClassification.text = convertPoseLabels(if (it.size >= 2) it[1] else null)
-//                    binding.tvThirdClassification.text = convertPoseLabels(if (it.size >= 3) it[2] else null)
-                }
-            }
 
             keyPoint?.let {
                 isPoseCorrect = if (personScore == null || personScore <= 0.5) {
@@ -311,6 +304,12 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             Exercise.BasicSquat.name -> {
                 calculateBasicSquat(keyPoint)
             }
+            Exercise.OverheadSquat.name -> {
+//                calculateBasicSquat(keyPoint)
+            }
+            Exercise.StandartPlank.name -> {
+//                calculateBasicSquat(keyPoint)
+            }
         }
     }
 
@@ -356,17 +355,17 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         val angle = abs((rightRadians + leftRadians) / 2 * (180.0 / PI))
 
-        if (angle > 160 && angle < 200) {
-            isHandUp = true
-            isHandDown = false
-        }
-
         if (angle > 20 && angle < 70) {
-            if (isHandUp) {
-                incrementCounter()
-            }
             isHandDown = true
             isHandUp = false
+        }
+
+        if (angle > 160 && angle < 190) {
+            if (isHandDown) {
+                incrementCounter()
+            }
+            isHandUp = true
+            isHandDown = false
         }
 
         Log.d("calculateStandartPushUp: $angle", myTag)

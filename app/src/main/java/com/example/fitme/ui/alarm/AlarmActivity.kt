@@ -90,7 +90,7 @@ class AlarmActivity : BaseActivity<AlarmViewModel, ActivityAlarmBinding>() {
 
         Log.d("poseName: $poseName - ${pair.second}", myTag)
         if (poseName.uppercase() == alarmPoseName.uppercase()) {
-            if (pair.second >= 1.0) {
+            if (pair.second >= 0.99) {
                 stopAlarm()
             }
         }
