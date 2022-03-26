@@ -5,7 +5,7 @@ enum class Workout {
 }
 
 enum class Exercise {
-    StandartPushUp,
+    StandardPushUp,
     PrisonerSquat, BasicSquat, OverheadSquat,
-    TabletopPlank, ElbowPlank, StandartPlank
+    TabletopPlank, ElbowPlank, StandardPlank
 }
