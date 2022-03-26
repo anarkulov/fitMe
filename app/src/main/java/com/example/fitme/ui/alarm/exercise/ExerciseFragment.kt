@@ -298,8 +298,8 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
     private fun calculate(keyPoint: List<KeyPoint>) {
 
         when(args.exercise.exercise) {
-            Exercise.StandartPushUp.name -> {
-                calculateStandartPushUp(keyPoint)
+            Exercise.StandardPushUp.name -> {
+                calculateStandardPushUp(keyPoint)
             }
             Exercise.BasicSquat.name -> {
                 calculateBasicSquat(keyPoint)
@@ -307,16 +307,16 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
             Exercise.OverheadSquat.name -> {
 //                calculateBasicSquat(keyPoint)
             }
-            Exercise.StandartPlank.name -> {
+            Exercise.StandardPlank.name -> {
 //                calculateBasicSquat(keyPoint)
             }
         }
     }
 
     /**
-     * for calculating standartPushUp
+     * for calculating standardPushUp
      ***/
-    private fun calculateStandartPushUp(keyPoint: List<KeyPoint>) {
+    private fun calculateStandardPushUp(keyPoint: List<KeyPoint>) {
         checkBack(keyPoint)
 
         val leftWrist = keyPoint.lastOrNull { it.bodyPart == BodyPart.LEFT_WRIST }
