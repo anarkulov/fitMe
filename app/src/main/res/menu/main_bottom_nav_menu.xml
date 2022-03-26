@@ -9,7 +9,7 @@
     <item
         android:id="@+id/activityFragment"
         android:icon="@drawable/nav_activity_state"
-        android:title="@string/activity" />
+        android:title="@string/workouts" />
 
     <item
         android:id="@+id/alarmFragment"

@@ -36,7 +36,7 @@ class AlarmReceiver: BroadcastReceiver() {
                 alarm.isPlayed = false
                 val bundle = Bundle()
                 bundle.putSerializable(ALARM_KEY, alarm)
-                intent.putExtra(ALARM_KEY, bundle)
+//                intent.putExtra(ALARM_KEY, bundle)
                 service.putExtra(ALARM_KEY, bundle)
             }
 

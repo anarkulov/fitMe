@@ -32,20 +32,18 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
             binding.loading.visible = it
         }
 
-        if (alarmList.isEmpty()) {
-            viewModel.getAlarmList().observe(this) { response ->
-                when (response.status) {
-                    Status.LOADING -> {
-                        viewModel.loading.postValue(true)
-                    }
-                    Status.ERROR -> {
-                        viewModel.loading.postValue(false)
-                    }
-                    Status.SUCCESS -> {
-                        viewModel.loading.postValue(false)
-                        response.data?.let {
-                            alarmAdapter.updateItems(it)
-                        }
+        viewModel.getAlarmList().observe(this) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    response.data?.let {
+                        alarmAdapter.updateItems(it)
                     }
                 }
             }
@@ -89,8 +87,8 @@ class AlarmFragment : BaseFragment<AlarmViewModel, FragmentAlarmBinding>() {
         findNavController().navigate(AlarmFragmentDirections.actionAlarmFragmentToAlarmDetails(alarm))
     }
 
-    private fun onSwitchChecked(alarm: Alarm, checked:Boolean) {
-        updateOnFirebase(alarm)
+    private fun onSwitchChecked(alarm: Alarm, checked:Boolean, update: Boolean) {
+        if (update) updateOnFirebase(alarm)
 
         if (checked) {
             MyAlarmManager.scheduleAlarm(requireContext(), alarm)

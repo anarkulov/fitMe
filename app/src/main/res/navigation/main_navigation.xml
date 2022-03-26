@@ -15,10 +15,17 @@
 
     <fragment
         android:id="@+id/activityFragment"
-        android:name="com.example.fitme.ui.activity.ActivityFragment"
+        android:name="com.example.fitme.ui.workout.WorkoutFragment"
         android:label="ActivityFragment"
         tools:layout="@layout/fragment_activity">
 
+        <action
+            android:id="@+id/action_activityFragment_to_workoutDetailsFragment"
+            app:destination="@id/workoutDetailsFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
     </fragment>
 
     <fragment
@@ -46,9 +53,41 @@
 
         <argument
             android:name="alarm"
+            android:defaultValue="@null"
             app:argType="com.example.fitme.data.models.Alarm"
-            app:nullable="true"
-            android:defaultValue="@null" />
+            app:nullable="true" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutDetailsFragment"
+        android:name="com.example.fitme.ui.workout.WorkoutDetailsFragment"
+        android:label="fragment_workout_details"
+        tools:layout="@layout/fragment_workout_details">
+
+        <argument
+            android:name="workout"
+            app:argType="com.example.fitme.data.models.Workout" />
+
+        <action
+            android:id="@+id/action_workoutDetailsFragment_to_exerciseFragment"
+            app:destination="@id/exerciseFragment"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/exerciseFragment"
+        android:name="com.example.fitme.ui.alarm.exercise.ExerciseFragment"
+        android:label="fragment_exercise"
+        tools:layout="@layout/fragment_exercise">
+
+        <argument
+            android:name="exercise"
+            app:argType="com.example.fitme.data.models.Exercise" />
 
     </fragment>
 

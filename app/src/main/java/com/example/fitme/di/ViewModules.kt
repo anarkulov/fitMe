@@ -1,5 +1,6 @@
 package com.example.fitme.di
 
+import com.example.fitme.ui.workout.WorkoutViewModel
 import com.example.fitme.ui.alarm.AlarmViewModel
 import com.example.fitme.ui.auth.AuthViewModel
 import com.example.fitme.ui.home.HomeViewModel
@@ -11,6 +12,7 @@ import org.koin.dsl.module
 val viewModules: Module = module {
     viewModel { AuthViewModel(get()) }
     viewModel { MainViewModel() }
+    viewModel { WorkoutViewModel(get()) }
     viewModel { HomeViewModel(get()) }
     viewModel { AlarmViewModel(get(), get()) }
 

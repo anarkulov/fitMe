@@ -16,6 +16,8 @@ import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
+import com.example.fitme.core.ui.widgets.MainToolbar
+import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Alarm
 import com.example.fitme.databinding.FragmentAlarmDetailsBinding
 import com.example.fitme.ui.alarm.pose.PoseBottomSheetFragment
@@ -23,6 +25,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>() {
+
+    private val myTag = "AlarmDetails"
 
     override val viewModel: AlarmViewModel by viewModel()
     private val navArgs: AlarmDetailsArgs by navArgs()
@@ -79,30 +83,41 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
                     0 -> {
                         binding.cvMonday.setCardBackgroundColor(fetchColor(R.color.blue))
                         binding.tvMonday.setTextColor(fetchColor(R.color.white))
+                        binding.cvMonday.isSelected = true
                     }
                     1 -> {
                         binding.cvTuesday.setCardBackgroundColor(fetchColor(R.color.blue))
                         binding.tvTuesday.setTextColor(fetchColor(R.color.white))
+                        binding.cvTuesday.isSelected = true
                     }
                     2 -> {
                         binding.cvWednesday.setCardBackgroundColor(fetchColor(R.color.blue))
                         binding.tvWednesday.setTextColor(fetchColor(R.color.white))
+                        binding.cvWednesday.isSelected = true
+
                     }
                     3 -> {
                         binding.cvThursday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvThursday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvThursday.setTextColor(fetchColor(R.color.white))
+                        binding.cvThursday.isSelected = true
+
                     }
                     4 -> {
                         binding.cvFriday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvFriday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvFriday.setTextColor(fetchColor(R.color.white))
+                        binding.cvFriday.isSelected = true
+
                     }
                     5 -> {
                         binding.cvSaturday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvSaturday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvSaturday.setTextColor(fetchColor(R.color.white))
+                        binding.cvSaturday.isSelected = true
+
                     }
                     6 -> {
                         binding.cvSunday.setCardBackgroundColor(fetchColor(R.color.blue))
-                        binding.tvSunday.setTextColor(fetchColor(R.color.blue))
+                        binding.tvSunday.setTextColor(fetchColor(R.color.white))
+                        binding.cvSunday.isSelected = true
                     }
                 }
             }
@@ -172,10 +187,8 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         }
     }
 
-    var pose = ""
     private fun poseSelect(pose: String) {
-        this.pose = pose
-        binding.tvPoseName.text = pose
+        binding.tvPoseName.text = pose.trim()
         viewModel.isChanged.postValue(true)
     }
 
@@ -204,9 +217,9 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
             }
         }
 
-        val challenge: String = pose.ifEmpty {
-            "none"
-        }
+        val challenge: String = binding.tvPoseName.text.ifEmpty {
+            ""
+        } as String
 
         val alarm =
             Alarm(System.currentTimeMillis().toString(),
@@ -219,6 +232,8 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
                 isRepeatable = isRepeatable,
                 timeInMs = 0
             )
+
+        Log.d("alarm : $alarm", myTag)
 
         if (navArgs.alarm == null) {
             saveAlarm(alarm)
@@ -240,6 +255,27 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
                     viewModel.loading.postValue(false)
                     requireActivity().showSnackBar("Alarm is added")
                     findNavController().popBackStack()
+                }
+            }
+        }
+    }
+
+
+    private fun onDeleteClick() {
+        if (navArgs.alarm != null) {
+            viewModel.deleteAlarmData(navArgs.alarm?.docId).observe(this) { response ->
+                when (response.status) {
+                    Status.LOADING -> {
+                        viewModel.loading.postValue(true)
+                    }
+                    Status.ERROR -> {
+                        viewModel.loading.postValue(false)
+                    }
+                    Status.SUCCESS -> {
+                        viewModel.loading.postValue(false)
+                        requireActivity().showSnackBar("Alarm is deleted")
+                        findNavController().popBackStack()
+                    }
                 }
             }
         }
@@ -283,6 +319,14 @@ class AlarmDetails : BaseFragment<AlarmViewModel, FragmentAlarmDetailsBinding>()
         return FragmentAlarmDetailsBinding.inflate(inflater, container, false).apply {
             toolbar.leftIcon.setOnClickListener {
                 findNavController().popBackStack()
+            }
+            if (navArgs.alarm != null) {
+                toolbar.bind(
+                    rightButton = MainToolbar.ActionInfo(
+                        R.drawable.ic_delete,
+                        iconTint = R.color.blue,
+                        onClick = { onDeleteClick() })
+                )
             }
         }
     }

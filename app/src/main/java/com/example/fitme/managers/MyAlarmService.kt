@@ -8,7 +8,6 @@ import android.content.Context
 import android.content.Intent
 import android.media.Ringtone
 import android.media.RingtoneManager
-import android.os.Bundle
 import android.os.IBinder
 import com.example.fitme.R
 import com.example.fitme.core.utils.Log
@@ -28,7 +27,7 @@ class MyAlarmService : Service() {
         const val ACTION_STOP = "a.stop_alarm"
         const val ACTION_STOP_POSE = "stop_alarm"
         const val NOTIFICATION_ID = 1
-        var alarm: Alarm? = null
+        lateinit var mAlarm: Alarm
     }
 
     private var isPlaying = false
@@ -36,7 +35,8 @@ class MyAlarmService : Service() {
     override fun onCreate() {
         super.onCreate()
         createAlarmNotificationChannel(this)
-        startForeground(NOTIFICATION_ID, buildStartupNotification(this))
+        Log.d("onCreate", myTag)
+//        startForeground(NOTIFICATION_ID, buildStartupNotification(this))
     }
 
     override fun onBind(p0: Intent?): IBinder? {
@@ -45,25 +45,24 @@ class MyAlarmService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d("onStartCommand: ${intent?.action}", myTag)
+        val alarm = intent?.getBundleExtra(ALARM_KEY)?.getSerializable(ALARM_KEY) as Alarm?
 
         if (!isPlaying) {
             playAlarm()
-            startAlarmActivity(this, intent?.getBundleExtra(ALARM_KEY))
-            val alarm = intent?.getBundleExtra(ALARM_KEY)?.getSerializable(ALARM_KEY) as Alarm?
-            val bundle = Bundle().apply {
-                putSerializable(ALARM_KEY, alarm)
-            }
-            intent?.putExtra(ALARM_KEY, bundle)
-            Log.d("intentAlarms: $alarm", myTag)
-            startForeground(NOTIFICATION_ID, buildNotification(this, alarm?.title, alarm?.time, isPlaying))
-        }
+            startAlarmActivity(this, alarm)
 
+            Log.d("intentAlarms: $alarm", myTag)
+            startForeground(NOTIFICATION_ID, buildNotification(this, alarm))
+        }
         isPlaying = true
+
         when (intent?.action) {
-            ACTION_SHOW_ALARM, ACTION_STOP -> {
-                startAlarmActivity(this, intent.getBundleExtra(ALARM_KEY))
+            ACTION_SHOW_ALARM -> {
+                Log.d("ACTION_SHOW_ALARM: $alarm", myTag)
+                startAlarmActivity(this, alarm)
             }
             ACTION_STOP_POSE -> {
+                Log.d("ACTION_STOP_POSE: $alarm", myTag)
                 stopAlarmPlay()
                 stopAlarm()
             }

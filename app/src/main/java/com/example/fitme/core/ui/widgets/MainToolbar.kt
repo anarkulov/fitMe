@@ -52,6 +52,14 @@ class MainToolbar : AppBarLayout {
 
     var leftIcon = findViewById<ImageView>(R.id.action_left)
 
+    var rightIconVisible = true
+        set(value) {
+            field = value
+            findViewById<ImageView>(R.id.action_right).visible = value
+        }
+
+    var rightIcon = findViewById<ImageView>(R.id.action_right)
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) { init(attrs) }
 

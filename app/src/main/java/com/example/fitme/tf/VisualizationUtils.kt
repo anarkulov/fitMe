@@ -47,22 +47,23 @@ object VisualizationUtils {
     fun drawBodyKeypoints(
         input: Bitmap,
         persons: List<Person>,
-        isTrackerEnabled: Boolean = false
+        isTrackerEnabled: Boolean = false,
+        isCorrect: Boolean = true
     ): Bitmap {
         val paintCircle = Paint().apply {
             strokeWidth = CIRCLE_RADIUS
-            color = Color.RED
+            color = if (isCorrect) Color.GREEN else Color.RED
             style = Paint.Style.FILL
         }
         val paintLine = Paint().apply {
             strokeWidth = LINE_WIDTH
-            color = Color.RED
+            color = if (isCorrect) Color.GREEN else Color.RED
             style = Paint.Style.STROKE
         }
 
         val paintText = Paint().apply {
             textSize = PERSON_ID_TEXT_SIZE
-            color = Color.BLUE
+            color = if (isCorrect) Color.GREEN else Color.RED
             textAlign = Paint.Align.LEFT
         }
 

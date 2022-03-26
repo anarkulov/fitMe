@@ -3,6 +3,7 @@ package com.example.fitme.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.fitme.core.utils.Log
+import com.example.fitme.data.models.User
 import com.google.gson.Gson
 import org.json.JSONObject
 import org.koin.android.ext.koin.androidContext
@@ -40,6 +41,16 @@ class AppPrefs(context: Context) {
         refreshToken = null
         accessToken = null
     }
+
+    var profile: User?
+        get() {
+            val json = prefs.getString("profile", null) ?: return null
+            return gson.fromJson(json, User::class.java)
+        }
+        set(value) {
+            if (value == null) prefs.edit().remove("profile").apply()
+            else prefs.edit().putString("profile", gson.toJson(value)).apply()
+        }
 
     fun saveToMap(id: String, value: String) {
         val map = getMap()

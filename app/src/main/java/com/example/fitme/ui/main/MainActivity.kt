@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.navigation.ui.NavigationUI
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
 import com.example.fitme.core.extentions.visible
@@ -22,6 +22,9 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
             R.id.homeFragment -> {
                 window.statusBarColor = fetchColor(R.color.primary_bg)
                 binding.navView.visible = true
+            }
+            R.id.exerciseFragment -> {
+                binding.navView.visible = false
             }
             else -> {
                 window.statusBarColor = fetchColor(R.color.white)
@@ -58,7 +61,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
 
     private fun initBottomNavigation() {
         this.navController = findNavController(R.id.nav_host_fragment)
-        binding.navView.setupWithNavController(navController!!)
+        NavigationUI.setupWithNavController(binding.navView, navController!!, false)
         binding.navView.itemIconTintList = null
     }
 

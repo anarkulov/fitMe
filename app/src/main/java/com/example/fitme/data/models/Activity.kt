@@ -12,6 +12,8 @@ data class Activity(
     var seconds: Int = 0,
     var calories: Int = 0,
     var workout: String = "",
+    var exercise: String = "",
+    var imageUrl: String = "",
     var createdAt: Long = 0
 ) : Parcelable {
 
@@ -23,6 +25,8 @@ data class Activity(
         parcel.readInt(),
         parcel.readInt(),
         parcel.readInt(),
+        parcel.readString().toString(),
+        parcel.readString().toString(),
         parcel.readString().toString(),
         parcel.readLong(),
     ) {
@@ -37,6 +41,8 @@ data class Activity(
         parcel.writeInt(seconds)
         parcel.writeInt(calories)
         parcel.writeString(workout)
+        parcel.writeString(exercise)
+        parcel.writeString(imageUrl)
         parcel.writeLong(createdAt)
     }
 

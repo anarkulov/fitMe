@@ -207,6 +207,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_weight=".1"
+                android:tint="@color/black"
                 android:src="@drawable/ic_pushup" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -216,7 +217,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_weight=".8"
-                android:text="Select a pose" />
+                android:hint="Select a pose" />
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/btn_select_pose"
@@ -252,6 +253,7 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_weight=".1"
+                android:tint="@color/black"
                 android:src="@drawable/ic_pushup" />
 
             <androidx.appcompat.widget.AppCompatTextView

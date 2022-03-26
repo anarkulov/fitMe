@@ -27,12 +27,12 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_activity"
+                android:id="@+id/iv_workout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_pushup"
-                android:tint="@color/white" />
+                android:elevation="@dimen/small_margin" />
 
         </FrameLayout>
 
@@ -45,14 +45,14 @@
             android:maxLines="2"
             android:layout_marginStart="@dimen/element_margin"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintBottom_toTopOf="@+id/tv_description"
+            app:layout_constraintBottom_toTopOf="@+id/tv_exercises"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/iv_container"
             tools:text="Title" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/tv_description"
+            android:id="@+id/tv_exercises"
             style="@style/Text.Caption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

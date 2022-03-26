@@ -10,9 +10,7 @@ import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
 import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
-import com.example.fitme.data.models.Activity
-import com.example.fitme.data.models.Alarm
-import com.example.fitme.data.models.User
+import com.example.fitme.data.models.*
 import com.example.fitme.utils.Constants.Collection.USERS
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.DocumentSnapshot
@@ -345,11 +343,11 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (alarmList.isNotEmpty()) {
-                        liveData.value = Resource.success(alarmList)
-                    } else {
-                        liveData.value = Resource.error("Alarm list is empty", null, -1)
-                    }
+                    liveData.postValue(Resource.success(alarmList))
+//                    if (alarmList.isNotEmpty()) {
+//                    } else {
+//                        liveData.value = Resource.error("Alarm list is empty", null, -1)
+//                    }
                 }
                 .addOnFailureListener {
                     liveData.value = Resource.error("Failed to get alarm list", null, -1)
@@ -447,6 +445,36 @@ class UserDatabase : AppDatabase() {
         return liveData
     }
 
+
+    fun deleteAlarm(docId: String?): MutableLiveData<Resource<Boolean>> {
+        val liveData = MutableLiveData<Resource<Boolean>>()
+
+        liveData.value = Resource.loading(null)
+        if (docId == null) {
+            liveData.value = Resource.error("id is null", null, null)
+            return liveData
+        }
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .document(id)
+                .collection(ALARM_PATH)
+                .document(docId)
+                .delete()
+                .addOnSuccessListener {
+                    liveData.value = Resource.success(true)
+                    Log.d("DocumentSnapshot successfully deleted!")
+                }
+                .addOnFailureListener { e ->
+                    liveData.value = Resource.error(e.toString(), null, null)
+                }
+        }
+
+        return liveData
+    }
+
+
+
     fun getActivityList(): MutableLiveData<Resource<List<Activity>>> {
         val liveData = MutableLiveData<Resource<List<Activity>>>()
         liveData.value = Resource.loading(null)
@@ -470,11 +498,11 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (activityList.isNotEmpty()) {
-                        liveData.postValue(Resource.success(activityList))
-                    } else {
-                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
-                    }
+                    liveData.postValue(Resource.success(activityList))
+//                    if (activityList.isNotEmpty()) {
+//                    } else {
+//                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
+//                    }
                 }
                 .addOnFailureListener {
                     liveData.postValue(Resource.error("Failed to get activity list", null, -1))
@@ -496,7 +524,11 @@ class UserDatabase : AppDatabase() {
 
         val startDay = when(type) {
             PERIOD_WEEK -> {
-                calendar[Calendar.DAY_OF_YEAR] - calendar[Calendar.DAY_OF_WEEK]
+                val weekday = calendar[Calendar.DAY_OF_WEEK]
+                val monday = Calendar.MONDAY
+                val day = if ((weekday - monday) < 0) (7 - (monday - weekday)) else (weekday - monday)
+                Log.d("dayOfWeek ${day} ", myTag)
+                calendar[Calendar.DAY_OF_YEAR] - day
             }
             PERIOD_MONTH -> {
                 1
@@ -530,11 +562,7 @@ class UserDatabase : AppDatabase() {
                             }
                         }
                     }
-                    if (activityList.isNotEmpty()) {
-                        liveData.postValue(Resource.success(activityList))
-                    } else {
-                        liveData.postValue(Resource.error("Activity list is empty", null, -1))
-                    }
+                    liveData.postValue(Resource.success(activityList))
                 }
                 .addOnFailureListener {
                     liveData.postValue(Resource.error("Failed to get activity list", null, -1))
@@ -553,6 +581,7 @@ class UserDatabase : AppDatabase() {
             DESCRIPTION_FIELD to activity.description,
             SECONDS_FIELD to activity.seconds,
             WORKOUT_FIELD to activity.workout,
+            EXERCISE_FIELD to activity.exercise,
             ACTIVITY_KCAL_FIELD to activity.calories,
             ACTIVITY_COUNTERS_FIELD to activity.counters,
             ACTIVITY_CREATED_AT_FIELD to activity.createdAt
@@ -585,6 +614,7 @@ class UserDatabase : AppDatabase() {
             NAME_FIELD to activity.name,
             DESCRIPTION_FIELD to activity.description,
             WORKOUT_FIELD to activity.workout,
+            EXERCISE_FIELD to activity.exercise,
             SECONDS_FIELD to activity.seconds,
             ACTIVITY_KCAL_FIELD to activity.calories,
             ACTIVITY_COUNTERS_FIELD to activity.counters,
@@ -605,6 +635,73 @@ class UserDatabase : AppDatabase() {
                 }
                 .addOnFailureListener { e ->
                     liveData.postValue(Resource.error(e.toString(), null, null))
+                }
+        }
+
+        return liveData
+    }
+
+    fun getWorkouts(): MutableLiveData<Resource<List<Workout>>> {
+        val liveData = MutableLiveData<Resource<List<Workout>>>()
+        liveData.value = Resource.loading(null)
+
+        val workoutList = ArrayList<Workout>()
+        firebaseAuth.uid?.let {
+            firestoreInstance
+                .collection(WORKOUT_PATH)
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (snapshots != null) {
+                        for (snapshot: DocumentSnapshot in snapshots) {
+                            val workout : Workout? = snapshot.toObject(Workout::class.java)
+                            Log.d("getWorkoutList - workout: $workout", myTag)
+                            workout?.let { item ->
+                                item.docId = snapshot.id
+                                workoutList.add(item)
+                            }
+                        }
+                    }
+                    liveData.postValue(Resource.success(workoutList))
+                }
+                .addOnFailureListener {
+                    liveData.postValue(Resource.error("Failed to get workout list", null, -1))
+                }
+        }
+
+        return liveData
+    }
+
+    fun getExercisesByWorkoutId(id: String): MutableLiveData<Resource<List<Exercise>>> {
+        val liveData = MutableLiveData<Resource<List<Exercise>>>()
+        liveData.value = Resource.loading(null)
+
+        val exerciseList = ArrayList<Exercise>()
+        firebaseAuth.uid?.let {
+            firestoreInstance
+                .collection(WORKOUT_PATH)
+                .document(id)
+                .collection(EXERCISES_PATH)
+                .orderBy(ID_FIELD, Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener { snapshots ->
+                    if (snapshots != null) {
+                        for (snapshot: DocumentSnapshot in snapshots) {
+                            val workout : Exercise? = snapshot.toObject(Exercise::class.java)
+                            Log.d("getExerciseListList - exerciseList: $workout", myTag)
+                            workout?.let { item ->
+                                item.docId = snapshot.id
+                                exerciseList.add(item)
+                            }
+                        }
+                    }
+                    liveData.postValue(Resource.success(exerciseList))
+//                    if (exerciseList.isNotEmpty()) {
+//                    } else {
+//                        liveData.postValue(Resource.error("exerciseList list is empty", null, -1))
+//                    }
+                }
+                .addOnFailureListener {
+                    liveData.postValue(Resource.error("Failed to get exerciseList list", null, -1))
                 }
         }
 
@@ -675,10 +772,13 @@ class UserDatabase : AppDatabase() {
     companion object {
         const val ALARM_PATH = "alarms"
         const val ACTIVITY_PATH = "activities"
+        const val WORKOUT_PATH = "workouts"
+        const val EXERCISES_PATH = "exercises"
 
         const val ID_FIELD = "id"
         const val NAME_FIELD = "name"
         const val WORKOUT_FIELD = "workout"
+        const val EXERCISE_FIELD = "exercise"
         const val SECONDS_FIELD = "seconds"
         const val WORKOUT_ID_FIELD = "workoutId"
         const val DESCRIPTION_FIELD = "description"

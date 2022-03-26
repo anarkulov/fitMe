@@ -10,11 +10,13 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
+import com.example.fitme.core.extentions.formatCount
 import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.utils.Log
-import com.example.fitme.data.Workout
+import com.example.fitme.data.enums.Workout
+import com.example.fitme.data.local.AppPrefs
 import com.example.fitme.data.local.Constants.Home.PERIOD_DAY
 import com.example.fitme.data.local.Constants.Home.PERIOD_MONTH
 import com.example.fitme.data.local.Constants.Home.PERIOD_WEEK
@@ -24,6 +26,7 @@ import com.example.fitme.data.local.Constants.Home.TYPE_SECONDS
 import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentHomeBinding
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 import kotlin.math.roundToInt
@@ -32,12 +35,15 @@ import kotlin.math.roundToInt
 class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
     override val viewModel: HomeViewModel by viewModel()
+    private val appPrefs: AppPrefs by inject()
 
     private val activityList = ArrayList<Activity>()
     private val myTag = "HomeFragment"
-    private val activitiesAdapter: ActivityListRecycler = ActivityListRecycler(activityList, this::onActivityClick)
+    private val activitiesAdapter: ActivityListRecycler =
+        ActivityListRecycler(activityList, this::onActivityClick)
     private var statisticDataList: MutableList<Pair<String, Float>> = mutableListOf()
     private var statisticActivityList: ArrayList<Activity> = ArrayList()
+
     private var selectedType = TYPE_COUNTERS
     private var selectedPeriod = PERIOD_WEEK
 
@@ -45,7 +51,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         super.initViewModel()
 
         viewModel.getProfile.observe(this) { response ->
-            when(response.status) {
+            when (response.status) {
                 Status.LOADING -> {
                     viewModel.loading.postValue(true)
                 }
@@ -56,6 +62,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                     viewModel.loading.postValue(false)
                     response.data?.let {
                         Log.d("getProfile: $it", myTag)
+                        appPrefs.profile = it
                         setData(it)
                     }
                 }
@@ -63,7 +70,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         }
 
         viewModel.getActivityList().observe(this) { response ->
-            when(response.status) {
+            when (response.status) {
                 Status.LOADING -> {
                     viewModel.loading.postValue(true)
                 }
@@ -86,7 +93,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun getStatisticActivityList(period: Int) {
         selectedPeriod = period
         viewModel.getAllActivityCountersBy(period).observe(this) { response ->
-            when(response.status) {
+            when (response.status) {
                 Status.LOADING -> {
                     viewModel.loading.postValue(true)
                 }
@@ -118,22 +125,26 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun initTab() {
         when (selectedPeriod) {
             PERIOD_WEEK -> {
-                binding.btnWeek.isSelected = !binding.btnWeek.isSelected
+                binding.btnWeek.isSelected = true
             }
             PERIOD_MONTH -> {
-                binding.btnMonth.isSelected = !binding.btnMonth.isSelected
+                binding.btnMonth.isSelected = true
             }
             else -> {
-                binding.btnDay.isSelected = !binding.btnDay.isSelected
+//                binding.btnDay.isSelected = !binding.btnDay.isSelected
             }
         }
     }
 
     private fun initSpinner() {
-       ArrayAdapter.createFromResource(requireContext(), R.array.categories_array, R.layout.item_spinner).also { adapter ->
-           adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-           binding.btnFilterSpinner.adapter = adapter
-       }
+        ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.categories_array,
+            R.layout.item_spinner
+        ).also { adapter ->
+            adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+            binding.btnFilterSpinner.adapter = adapter
+        }
     }
 
     private fun setData(user: User) {
@@ -162,7 +173,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
     private fun setStatisticData() {
         binding.lineChart.animation.duration = 1000
-        val labelsFormatter: (Float) -> String = { it.roundToInt().toString() }
+        val labelsFormatter: (Float) -> String = { it.roundToInt().formatCount() }
         binding.lineChart.labelsFormatter = labelsFormatter
     }
 
@@ -185,7 +196,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun calculateStatisticDataForAllTime(type: Int) {
 
         statisticDataList = mutableListOf(
-            "Today" to 1F
+            "Today" to 0F
         )
         binding.lineChart.barsColorsList = listOf(Color.WHITE)
         binding.lineChart.animate(statisticDataList)
@@ -265,27 +276,30 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         currentCalendar.set(Calendar.MINUTE, 0)
         currentCalendar.set(Calendar.SECOND, 0)
         currentCalendar.set(Calendar.MILLISECOND, 0)
-        val today = currentCalendar[Calendar.DAY_OF_WEEK]-2
-        val startDay = currentCalendar[Calendar.DAY_OF_YEAR] - currentCalendar[Calendar.DAY_OF_WEEK]
+
+        val weekday = currentCalendar[Calendar.DAY_OF_WEEK]
+        val monday = Calendar.MONDAY
+        val today = if ((weekday - monday) < 0) (7 - (monday - weekday)) else (weekday - monday)
+        val startDay = currentCalendar[Calendar.DAY_OF_YEAR] - today
 
         statisticDataList = mutableListOf(
-            "Mon" to 1F,
+            "Mon" to 0F,
             "Tue" to 0F,
             "Wed" to 0F,
-            "Thu" to 1F,
-            "Fri" to 1F,
-            "Sat" to 1F,
-            "Sun" to 1F,
+            "Thu" to 0F,
+            "Fri" to 0F,
+            "Sat" to 0F,
+            "Sun" to 0F,
         )
 
         val hashMapCur = mutableMapOf<Long, Int>()
         val colorList = arrayListOf<Int>()
-        for (day in 2 until 9) {
+        for (day in 0 until 7) {
             val weekDay = startDay + day
             currentCalendar.set(Calendar.DAY_OF_YEAR, weekDay)
             hashMapCur[currentCalendar.timeInMillis] = day
 
-            if (day-2 == today) {
+            if (day == today) {
                 colorList.add(fetchColor(R.color.purple))
             } else {
                 colorList.add(Color.WHITE)
@@ -302,7 +316,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
             val key = itemCalendar.timeInMillis
             if (hashMapCur.containsKey(key)) {
-                val index = hashMapCur[key]?.minus(2)
+                val index = hashMapCur[key]
                 index?.let {
                     val data = when (type) {
                         TYPE_COUNTERS -> statisticDataList[index].second + item.counters
@@ -330,7 +344,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         val sortedActivities = ArrayList<Activity>()
 
         val pushUps = statisticDataList.filter { it.workout == Workout.PushUp.name }
-        val squads = statisticDataList.filter { it.workout == Workout.Squad.name }
+        val squats = statisticDataList.filter { it.workout == Workout.Squat.name }
         val planks = statisticDataList.filter { it.workout == Workout.Plank.name }
 
         if (pushUps.isNotEmpty()) {
@@ -339,6 +353,9 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                 if (item.createdAt < pushUp.createdAt) {
                     pushUp.createdAt = item.createdAt
                 }
+                if (item.imageUrl.isNotEmpty() && pushUp.imageUrl.isEmpty()) {
+                    pushUp.imageUrl = item.imageUrl
+                }
                 pushUp.counters += item.counters
                 pushUp.calories += item.calories
                 pushUp.seconds += item.seconds
@@ -346,22 +363,31 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             sortedActivities.add(pushUp)
         }
 
-        if (squads.isNotEmpty()) {
-            val squad = Activity(name = "My Squads", createdAt = System.currentTimeMillis())
-            for (item in squads) {
-                if (item.createdAt < squad.createdAt) {
-                    squad.createdAt = item.createdAt
+        if (squats.isNotEmpty()) {
+            val squat = Activity(name = "My Squats", createdAt = System.currentTimeMillis())
+            for (item in squats) {
+                if (item.createdAt < squat.createdAt) {
+                    squat.createdAt = item.createdAt
                 }
-                squad.counters += item.counters
-                squad.calories += item.calories
-                squad.seconds += item.seconds
+                if (item.imageUrl.isNotEmpty() && squat.imageUrl.isEmpty()) {
+                    squat.imageUrl = item.imageUrl
+                }
+                squat.counters += item.counters
+                squat.calories += item.calories
+                squat.seconds += item.seconds
             }
-            sortedActivities.add(squad)
+            sortedActivities.add(squat)
         }
 
         if (planks.isNotEmpty()) {
-            val plank = Activity(name = "My Planks")
+            val plank = Activity(name = "My Planks", createdAt = System.currentTimeMillis())
             for (item in pushUps) {
+                if (item.createdAt < plank.createdAt) {
+                    plank.createdAt = item.createdAt
+                }
+                if (item.imageUrl.isNotEmpty() && plank.imageUrl.isEmpty()) {
+                    plank.imageUrl = item.imageUrl
+                }
                 plank.counters += item.counters
                 plank.calories += item.calories
                 plank.seconds += item.seconds
@@ -378,38 +404,40 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         binding.btnMonth.setOnClickListener {
             binding.btnMonth.isSelected = true
             binding.btnWeek.isSelected = false
-            binding.btnDay.isSelected = false
+//            binding.btnDay.isSelected = false
             getStatisticActivityList(PERIOD_MONTH)
         }
 
         binding.btnWeek.setOnClickListener {
             binding.btnWeek.isSelected = true
             binding.btnMonth.isSelected = false
-            binding.btnDay.isSelected = false
+//            binding.btnDay.isSelected = false
             getStatisticActivityList(PERIOD_WEEK)
         }
 
-        binding.btnDay.setOnClickListener {
-            binding.btnDay.isSelected = true
-            binding.btnWeek.isSelected = false
-            binding.btnMonth.isSelected = false
-            setTypeStatistic(PERIOD_DAY, selectedType)
-        }
+//        binding.btnDay.setOnClickListener {
+//            binding.btnDay.isSelected = true
+////            binding.btnWeek.isSelected = false
+//            binding.btnMonth.isSelected = false
+//            setTypeStatistic(PERIOD_DAY, selectedType)
+//        }
 
         binding.btnEdit.setOnClickListener {
             showToast("Edit is not implemented yet")
         }
 
-        binding.btnFilterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                when (p2) {
-                    0 -> setTypeStatistic(PERIOD_WEEK, TYPE_COUNTERS)
-                    1 -> setTypeStatistic(PERIOD_WEEK, TYPE_CALORIE)
-                    else -> setTypeStatistic(PERIOD_WEEK, TYPE_SECONDS)
+        binding.btnFilterSpinner.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    when (p2) {
+                        0 -> setTypeStatistic(selectedPeriod, TYPE_COUNTERS)
+                        1 -> setTypeStatistic(selectedPeriod, TYPE_CALORIE)
+                        else -> setTypeStatistic(selectedPeriod, TYPE_SECONDS)
+                    }
                 }
+
+                override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-        }
     }
 
     private fun onActivityClick(activity: Activity) {
