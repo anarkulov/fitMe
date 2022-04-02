@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
 import com.example.fitme.core.extentions.formatCount
-import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.utils.Log
@@ -427,7 +426,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 //        }
 
         binding.btnEdit.setOnClickListener {
-            showToast("Edit is not implemented yet")
+            findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToPeofileEditFragment())
         }
 
         binding.btnFilterSpinner.onItemSelectedListener =

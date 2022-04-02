@@ -1,5 +1,6 @@
 package com.example.fitme.repo
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
 import com.example.fitme.data.local.AppPrefs
@@ -34,6 +35,10 @@ class MainRepository(
 
     fun getAllActivityCountersBy(type: Int): MutableLiveData<Resource<List<Activity>>> {
         return db.getAllActivityCountersBy(type)
+    }
+
+    fun updateUser(user: User): MutableLiveData<Resource<Boolean>> {
+        return db.updateUser(user)
     }
 
 //    fun setAccessToken(accessToken: String) {

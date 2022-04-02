@@ -52,11 +52,18 @@
     <string name="calories_format">%d calories were burned out</string>
     <string name="time_waste_format">%d seconds spent</string>
     <string name="counter_format">%d counts</string>
+    <string name="plan">Plan</string>
 
     <string-array name="categories_array">
         <item>counters</item>
         <item>calories</item>
         <item>seconds</item>
+    </string-array>
+
+    <string-array name="plan_array">
+        <item>-</item>
+        <item>Weight Loss</item>
+        <item>Weight Gain</item>
     </string-array>
 
 </resources>

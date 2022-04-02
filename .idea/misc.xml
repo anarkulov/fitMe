@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.2861111111111111" />
+        <entry key="../../../../.gradle/caches/transforms-3/5bf6d67a4a227921f03143e4270ad6c0/transformed/appcompat-1.4.1/res/layout/support_simple_spinner_dropdown_item.xml" value="0.22735507246376813" />
         <entry key="../../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.3401268115942029" />
         <entry key="app/src/main/res/drawable/bg_border.xml" value="0.165" />
         <entry key="app/src/main/res/drawable/bg_bottom_nav_menu.xml" value="0.2984375" />
@@ -81,7 +82,8 @@
         <entry key="app/src/main/res/layout/fragment_password.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/layout/fragment_pose_bottom_sheet.xml" value="0.125" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.23641304347826086" />
-        <entry key="app/src/main/res/layout/fragment_registration.xml" value="0.3880208333333333" />
+        <entry key="app/src/main/res/layout/fragment_profile_edit.xml" value="0.22735507246376813" />
+        <entry key="app/src/main/res/layout/fragment_registration.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_save_exercise_activity_dialog.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_set_alarm.xml" value="0.3890625" />
         <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.20742753623188406" />

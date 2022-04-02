@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseUser
 class HomeViewModel(private val mainRepository: MainRepository): BaseViewModel() {
     val activityList = ArrayList<Activity>()
     val sortedActivityList = ArrayList<Activity>()
+    var profileId = ""
 
     fun getUser(): MutableLiveData<FirebaseUser?> {
         return mainRepository.getFirebaseUser()
@@ -35,5 +36,9 @@ class HomeViewModel(private val mainRepository: MainRepository): BaseViewModel()
 
     fun getAllActivityCountersBy(type: Int): LiveData<Resource<List<Activity>>> {
         return mainRepository.getAllActivityCountersBy(type)
+    }
+
+    fun updateUser(user: User): LiveData<Resource<Boolean>> {
+        return mainRepository.updateUser(user)
     }
 }
