@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
@@ -27,14 +28,13 @@ import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentHomeBinding
 import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
 import kotlin.math.roundToInt
 
-
 class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
-    override val viewModel: HomeViewModel by viewModel()
+    override val viewModel: HomeViewModel by sharedViewModel()
     private val appPrefs: AppPrefs by inject()
 
     private val activityList = ArrayList<Activity>()
@@ -81,6 +81,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                     viewModel.loading.postValue(false)
                     response.data?.let {
                         Log.d("getActivityList: $it", myTag)
+                        viewModel.activityList.clear()
+                        viewModel.activityList.addAll(it)
                         sortDataList(it)
                     }
                 }
@@ -348,7 +350,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         val planks = statisticDataList.filter { it.workout == Workout.Plank.name }
 
         if (pushUps.isNotEmpty()) {
-            val pushUp = Activity(name = "My PushUps", createdAt = System.currentTimeMillis())
+            val pushUp = Activity(name = "My PushUps", id = System.currentTimeMillis().toString(), createdAt = System.currentTimeMillis(), workout = Workout.PushUp.name)
             for (item in pushUps) {
                 if (item.createdAt < pushUp.createdAt) {
                     pushUp.createdAt = item.createdAt
@@ -364,7 +366,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         }
 
         if (squats.isNotEmpty()) {
-            val squat = Activity(name = "My Squats", createdAt = System.currentTimeMillis())
+            val squat = Activity(name = "My Squats", id = System.currentTimeMillis().toString(), createdAt = System.currentTimeMillis(), workout = Workout.Squat.name)
             for (item in squats) {
                 if (item.createdAt < squat.createdAt) {
                     squat.createdAt = item.createdAt
@@ -380,7 +382,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         }
 
         if (planks.isNotEmpty()) {
-            val plank = Activity(name = "My Planks", createdAt = System.currentTimeMillis())
+            val plank = Activity(name = "My Planks", id = System.currentTimeMillis().toString(), createdAt = System.currentTimeMillis(), workout = Workout.Plank.name)
             for (item in pushUps) {
                 if (item.createdAt < plank.createdAt) {
                     plank.createdAt = item.createdAt
@@ -396,6 +398,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         }
 
         activitiesAdapter.updateItems(sortedActivities)
+        viewModel.sortedActivityList.clear()
+        viewModel.sortedActivityList.addAll(sortedActivities)
     }
 
     override fun initListeners() {
@@ -440,8 +444,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             }
     }
 
-    private fun onActivityClick(activity: Activity) {
-
+    private fun onActivityClick(activityId: String) {
+        findNavController().navigate(HomeFragmentDirections.actionHomeFragmentToFragmentMyActivities(activityId))
     }
 
     override fun inflateViewBinding(

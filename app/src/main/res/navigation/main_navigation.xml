@@ -11,13 +11,21 @@
         android:label="HomeFragment"
         tools:layout="@layout/fragment_home">
 
+        <action
+            android:id="@+id/action_homeFragment_to_fragmentMyActivities"
+            app:destination="@id/fragmentMyActivities"
+            app:enterAnim="@anim/fade_in"
+            app:exitAnim="@anim/fade_out"
+            app:popEnterAnim="@anim/fade_in"
+            app:popExitAnim="@anim/fade_out" />
+
     </fragment>
 
     <fragment
         android:id="@+id/activityFragment"
         android:name="com.example.fitme.ui.workout.WorkoutFragment"
         android:label="ActivityFragment"
-        tools:layout="@layout/fragment_activity">
+        tools:layout="@layout/fragment_workout">
 
         <action
             android:id="@+id/action_activityFragment_to_workoutDetailsFragment"
@@ -90,5 +98,20 @@
             app:argType="com.example.fitme.data.models.Exercise" />
 
     </fragment>
+
+    <fragment
+        android:id="@+id/fragmentMyActivities"
+        android:name="com.example.fitme.ui.activity.MyActivitiesFragment"
+        android:label="fragment_my_activity"
+        tools:layout="@layout/fragment_my_activity">
+
+
+        <argument
+            android:name="activityId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+    </fragment>
+
 
 </navigation>

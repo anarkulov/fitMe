@@ -49,6 +49,9 @@
     <string name="yes">Yes</string>
     <string name="continue_text">Continue</string>
     <string name="cancel">Cancel</string>
+    <string name="calories_format">%d calories were burned out</string>
+    <string name="time_waste_format">%d seconds spent</string>
+    <string name="counter_format">%d counts</string>
 
     <string-array name="categories_array">
         <item>counters</item>

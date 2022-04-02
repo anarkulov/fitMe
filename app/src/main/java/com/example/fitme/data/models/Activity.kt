@@ -2,6 +2,7 @@ package com.example.fitme.data.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import java.io.Serializable
 
 data class Activity(
     var id: String = "",
@@ -15,7 +16,7 @@ data class Activity(
     var exercise: String = "",
     var imageUrl: String = "",
     var createdAt: Long = 0
-) : Parcelable {
+) : Parcelable, Serializable {
 
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),

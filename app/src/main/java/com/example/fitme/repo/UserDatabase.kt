@@ -485,6 +485,7 @@ class UserDatabase : AppDatabase() {
                 .collection(USERS)
                 .document(id)
                 .collection(ACTIVITY_PATH)
+                .orderBy(ACTIVITY_CREATED_AT_FIELD, Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { snapshots ->
                     if (snapshots != null) {

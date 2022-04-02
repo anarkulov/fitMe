@@ -185,6 +185,17 @@
                       </LayoutPositions>
                     </value>
                   </entry>
+                  <entry key="fragmentMyActivities">
+                    <value>
+                      <LayoutPositions>
+                        <option name="myPosition">
+                          <Point>
+                            <option name="y" value="-1261" />
+                          </Point>
+                        </option>
+                      </LayoutPositions>
+                    </value>
+                  </entry>
                   <entry key="homeFragment">
                     <value>
                       <LayoutPositions>
@@ -205,6 +216,15 @@
                             <option name="x" value="233" />
                             <option name="y" value="289" />
                           </Point>
+                        </option>
+                        <option name="myPositions">
+                          <map>
+                            <entry key="action_workoutDetailsFragment_to_exerciseFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
+                          </map>
                         </option>
                       </LayoutPositions>
                     </value>

@@ -5,6 +5,7 @@
       <map>
         <entry key="../../../../../../layout/custom_preview.xml" value="0.2861111111111111" />
         <entry key="../../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.3401268115942029" />
+        <entry key="app/src/main/res/drawable/bg_border.xml" value="0.165" />
         <entry key="app/src/main/res/drawable/bg_bottom_nav_menu.xml" value="0.2984375" />
         <entry key="app/src/main/res/drawable/bg_bottom_sheet.xml" value="0.192" />
         <entry key="app/src/main/res/drawable/bg_button.xml" value="0.321025641025641" />
@@ -67,7 +68,7 @@
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.13489583333333333" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.657601977750309" />
         <entry key="app/src/main/res/layout/content_alarm.xml" value="0.3734375" />
-        <entry key="app/src/main/res/layout/fragment_activity.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_activity.xml" value="0.165" />
         <entry key="app/src/main/res/layout/fragment_alarm.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_alarm_details.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_alarm_list.xml" value="0.22" />
@@ -75,6 +76,7 @@
         <entry key="app/src/main/res/layout/fragment_exercise.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/fragment_my_activity.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_otp.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/layout/fragment_password.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/layout/fragment_pose_bottom_sheet.xml" value="0.125" />
@@ -84,11 +86,12 @@
         <entry key="app/src/main/res/layout/fragment_set_alarm.xml" value="0.3890625" />
         <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/layout/fragment_splash.xml" value="0.14" />
-        <entry key="app/src/main/res/layout/fragment_workout_details.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/item_activity.xml" value="0.5" />
+        <entry key="app/src/main/res/layout/fragment_workout_details.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/item_activity.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_alarm.xml" value="0.33" />
         <entry key="app/src/main/res/layout/item_day_circle.xml" value="1.1" />
         <entry key="app/src/main/res/layout/item_exercise.xml" value="0.3401268115942029" />
+        <entry key="app/src/main/res/layout/item_my_activity.xml" value="0.22735507246376813" />
         <entry key="app/src/main/res/layout/item_pose.xml" value="0.2953125" />
         <entry key="app/src/main/res/layout/item_spinner.xml" value="0.3401268115942029" />
         <entry key="app/src/main/res/layout/item_workout.xml" value="0.375" />

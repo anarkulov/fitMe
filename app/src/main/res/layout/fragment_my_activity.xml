@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.activity.MyActivitiesFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_tab"
+        android:backgroundTint="@color/white"
+        android:elevation="@dimen/element_margin"
+        android:paddingBottom="@dimen/element_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/page_margin"
+            android:elevation="@dimen/element_margin"
+            android:src="@drawable/ic_back"
+            app:layout_constraintBottom_toBottomOf="@+id/main_toolbar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/main_toolbar" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/Text.H1.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/my_activities" />
+
+        </androidx.cardview.widget.CardView>
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:clipToPadding="false"
+            android:scrollbars="none"
+            app:layout_constraintTop_toBottomOf="@id/main_toolbar"
+            app:tabBackground="@color/white"
+            app:tabGravity="center"
+            app:tabIndicator="@drawable/bg_tab"
+            app:tabIndicatorFullWidth="true"
+            app:tabMinWidth="0dp"
+            app:tabMode="scrollable"
+            app:tabPaddingEnd="@dimen/page_margin"
+            app:tabPaddingStart="@dimen/page_margin"
+            app:tabRippleColor="@null"
+            app:tabSelectedTextColor="@color/blue"
+            app:tabTextAppearance="@style/Text.Regular.Normal_3"
+            app:tabTextColor="@color/black" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:saveEnabled="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tool_bar" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

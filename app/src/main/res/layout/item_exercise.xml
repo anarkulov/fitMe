@@ -31,13 +31,13 @@
                 android:layout_gravity="center"
                 android:src="@drawable/ic_circle" />
 
-            <com.makeramen.roundedimageview.RoundedImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_exercise"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_stretching"
-                app:riv_corner_radius="@dimen/radius_medium"
+                app:riv_corner_radius="@dimen/small_margin"
                 tools:ignore="ContentDescription" />
 
         </FrameLayout>

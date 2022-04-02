@@ -11,10 +11,10 @@ import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Workout
-import com.example.fitme.databinding.FragmentActivityBinding
+import com.example.fitme.databinding.FragmentWorkoutBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentActivityBinding>() {
+class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentWorkoutBinding>() {
 
     private val myTag = "ActivityFragment"
 
@@ -73,12 +73,12 @@ class WorkoutFragment : BaseFragment<WorkoutViewModel, FragmentActivityBinding>(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?,
-    ): FragmentActivityBinding {
-        return FragmentActivityBinding.inflate(inflater, container, false)
+    ): FragmentWorkoutBinding {
+        return FragmentWorkoutBinding.inflate(inflater, container, false)
     }
 
-    override fun bindViewBinding(view: View): FragmentActivityBinding {
-        return FragmentActivityBinding.bind(view)
+    override fun bindViewBinding(view: View): FragmentWorkoutBinding {
+        return FragmentWorkoutBinding.bind(view)
     }
 
 }

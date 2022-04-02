@@ -11,11 +11,12 @@ import com.example.fitme.repo.MainRepository
 import com.google.firebase.auth.FirebaseUser
 
 class HomeViewModel(private val mainRepository: MainRepository): BaseViewModel() {
+    val activityList = ArrayList<Activity>()
+    val sortedActivityList = ArrayList<Activity>()
 
     fun getUser(): MutableLiveData<FirebaseUser?> {
         return mainRepository.getFirebaseUser()
     }
-
     private var _getUser = MutableLiveData<Boolean>()
     var getProfile: LiveData<Resource<User>> = _getUser.switchMap {
         mainRepository.getUser()
