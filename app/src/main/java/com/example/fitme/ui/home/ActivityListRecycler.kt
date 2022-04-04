@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.fitme.R
 import com.example.fitme.core.extentions.loadUrl
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.data.models.Activity
@@ -20,7 +21,7 @@ class ActivityListRecycler(
         fun bind(item: Activity) {
             binding.tvActivityTitle.text = item.name
             val date = Utils.formatTimestampDate(Timestamp(item.createdAt/1000, 0))
-            val description = "${item.calories} calories were burn out since $date | ${item.seconds} seconds"
+            val description = itemView.context.getString(R.string.calories_format, item.calories) + " since $date | ${item.seconds} seconds"
             binding.tvDescription.text = description
             binding.ivActivity.loadUrl(item.imageUrl)
             binding.ivBackground.visible = item.imageUrl.isEmpty()
