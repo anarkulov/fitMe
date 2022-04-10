@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
-import com.example.fitme.core.extentions.showToast
+import com.example.fitme.core.extentions.setLightStatusBar
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.ui.BaseActivity
 import com.example.fitme.databinding.ActivityAuthBinding
@@ -23,12 +23,15 @@ class AuthActivity : BaseActivity<AuthViewModel, ActivityAuthBinding>() {
             R.id.loginFragment,
             R.id.boardingFragment,
             -> {
+                setLightStatusBar(true)
                 window.statusBarColor = fetchColor(R.color.white)
             }
             R.id.splashFragment -> {
+                setLightStatusBar(false)
                 window.statusBarColor = fetchColor(R.color.splash_color)
             }
             else -> {
+                setLightStatusBar(true)
                 window.statusBarColor = fetchColor(R.color.white)
             }
         }
