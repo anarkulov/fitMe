@@ -5,12 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
 import com.example.fitme.core.network.result.Resource
 import com.example.fitme.core.ui.BaseViewModel
+import com.example.fitme.data.local.AppPrefs
 import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.User
 import com.example.fitme.repo.MainRepository
 import com.google.firebase.auth.FirebaseUser
 
-class HomeViewModel(private val mainRepository: MainRepository): BaseViewModel() {
+class HomeViewModel(private val mainRepository: MainRepository, private val appPrefs: AppPrefs): BaseViewModel() {
     val activityList = ArrayList<Activity>()
     val sortedActivityList = ArrayList<Activity>()
     var profileId = ""
@@ -40,5 +41,9 @@ class HomeViewModel(private val mainRepository: MainRepository): BaseViewModel()
 
     fun updateUser(user: User): LiveData<Resource<Boolean>> {
         return mainRepository.updateUser(user)
+    }
+
+    fun clearPrefs() {
+        appPrefs.clearPrefs()
     }
 }

@@ -79,12 +79,12 @@ class UserDatabase : AppDatabase() {
                     setCurrentUser()
                 } else {
                     liveData.postValue(Resource.error("Failed to login",null, -1))
-                    Log.d("Failed to login")
+                    Log.d("Failed to login", myTag)
                 }
             }
             .addOnFailureListener {
                 liveData.postValue(Resource.error("Failed to login",null, -1))
-                Log.d("Failed to login")
+                Log.d("Failed to login", myTag)
             }
 
         return liveData
@@ -112,12 +112,12 @@ class UserDatabase : AppDatabase() {
                     liveData.value = Resource.success(it.result.user?.uid)
                     setCurrentUser()
                 } else {
-                    Log.d("Failed to register")
+                    Log.d("Failed to register", myTag)
                 }
             }
             .addOnFailureListener {
                 liveData.value = Resource.error(it.message, null, null)
-                Log.d("Failed to register")
+                Log.d("Failed to register", myTag)
             }
 
         return liveData
@@ -136,7 +136,7 @@ class UserDatabase : AppDatabase() {
             }
             .addOnFailureListener {
                 liveData.value = Resource.error(it.message, null, null)
-                Log.d("Failed to createUser")
+                Log.d("Failed to createUser", myTag)
             }
 
         return liveData
@@ -175,12 +175,12 @@ class UserDatabase : AppDatabase() {
                 liveData.value = Resource.success(1)
                 liveData.postValue(Resource(Status.SUCCESS, 1, "", 200))
                 setCurrentUser()
-                Log.d("Success to createProfile")
+                Log.d("Success to createProfile", myTag)
             }
             .addOnFailureListener { e ->
                 liveData.value = Resource.error(e.toString(), null, null)
                 liveData.postValue(Resource(Status.SUCCESS, null, e.message, 500))
-                Log.d("Failed to createProfile")
+                Log.d("Failed to createProfile", myTag)
             }
 
         return liveData
@@ -200,7 +200,7 @@ class UserDatabase : AppDatabase() {
             }
             .addOnFailureListener {
                 liveData.value = Resource.error(it.message, null, null)
-                Log.d("Failed to forgotPassword")
+                Log.d("Failed to forgotPassword", myTag)
             }
 
         return liveData
@@ -261,7 +261,7 @@ class UserDatabase : AppDatabase() {
                 .set(userMap)
                 .addOnSuccessListener {
                     liveData.postValue(Resource.success(true))
-                    Log.d("DocumentSnapshot successfully written!")
+                    Log.d("DocumentSnapshot successfully written!", myTag)
                 }
                 .addOnFailureListener { e ->
                     liveData.postValue(Resource.error(e.toString(), null, null))
@@ -433,7 +433,7 @@ class UserDatabase : AppDatabase() {
                 .set(alarmItem)
                 .addOnSuccessListener {
                     liveData.value = Resource.success(true)
-                    Log.d("DocumentSnapshot successfully written!")
+                    Log.d("DocumentSnapshot successfully written!", myTag)
                 }
                 .addOnFailureListener { e ->
                     liveData.value = Resource.error(e.toString(), null, null)
@@ -461,7 +461,7 @@ class UserDatabase : AppDatabase() {
                 .delete()
                 .addOnSuccessListener {
                     liveData.value = Resource.success(true)
-                    Log.d("DocumentSnapshot successfully deleted!")
+                    Log.d("DocumentSnapshot successfully deleted!", myTag)
                 }
                 .addOnFailureListener { e ->
                     liveData.value = Resource.error(e.toString(), null, null)
@@ -526,7 +526,7 @@ class UserDatabase : AppDatabase() {
                 val weekday = calendar[Calendar.DAY_OF_WEEK]
                 val monday = Calendar.MONDAY
                 val day = if ((weekday - monday) < 0) (7 - (monday - weekday)) else (weekday - monday)
-                Log.d("dayOfWeek ${day} ", myTag)
+                Log.d("dayOfWeek $day ", myTag)
                 calendar[Calendar.DAY_OF_YEAR] - day
             }
             PERIOD_MONTH -> {
@@ -595,7 +595,7 @@ class UserDatabase : AppDatabase() {
                 .add(activityMap)
                 .addOnSuccessListener {
                     liveData.postValue(Resource.success(true, 1))
-                    Log.d("DocumentSnapshot successfully written!")
+                    Log.d("DocumentSnapshot successfully written!", myTag)
                 }
                 .addOnFailureListener { e ->
                     liveData.postValue(Resource.error(e.toString(), null, null))
@@ -630,7 +630,7 @@ class UserDatabase : AppDatabase() {
                 .set(activityMap)
                 .addOnSuccessListener {
                     liveData.postValue(Resource.success(true, 1))
-                    Log.d("DocumentSnapshot successfully updated!")
+                    Log.d("DocumentSnapshot successfully updated!", myTag)
                 }
                 .addOnFailureListener { e ->
                     liveData.postValue(Resource.error(e.toString(), null, null))

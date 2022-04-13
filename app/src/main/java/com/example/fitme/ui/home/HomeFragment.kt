@@ -1,5 +1,7 @@
 package com.example.fitme.ui.home
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -26,6 +28,7 @@ import com.example.fitme.data.local.Constants.Home.TYPE_SECONDS
 import com.example.fitme.data.models.Activity
 import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentHomeBinding
+import com.example.fitme.ui.auth.AuthActivity
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import java.util.*
@@ -404,6 +407,22 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     override fun initListeners() {
         super.initListeners()
 
+        binding.btnSignOut.setOnClickListener {
+            val dialogBuilder = AlertDialog.Builder(requireContext())
+
+            dialogBuilder.setMessage("Are you sure you want to log out?")
+                .setCancelable(true)
+                .setPositiveButton(context?.getString(R.string.yes)) { _, _ ->
+                    signOut()
+                }
+                .setNegativeButton(context?.getString(R.string.cancel)) { dialog, _ ->
+                    dialog.cancel()
+                }
+
+            val alert = dialogBuilder.create()
+            alert.show()
+        }
+
         binding.btnMonth.setOnClickListener {
             binding.btnMonth.isSelected = true
             binding.btnWeek.isSelected = false
@@ -441,6 +460,14 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {}
             }
+    }
+
+    private fun signOut() {
+        viewModel.clearPrefs()
+        val intent = Intent(requireContext(), AuthActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun onActivityClick(activityId: String) {

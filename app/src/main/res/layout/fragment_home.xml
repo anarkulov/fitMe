@@ -12,6 +12,15 @@
         android:layout_height="match_parent"
         android:clipToPadding="false">
 
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/btn_sign_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_logout"
+            android:layout_margin="@dimen/page_margin"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/iv_avatar"
             android:layout_width="wrap_content"
