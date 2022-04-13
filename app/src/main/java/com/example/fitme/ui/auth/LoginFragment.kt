@@ -76,6 +76,7 @@ class LoginFragment : BaseNavFragment<AuthViewModel, FragmentLoginBinding>() {
                 }
                 Status.ERROR -> {
                     viewModel.loading.postValue(false)
+                    showSnackBar("Email or password is not correct. Try Again!")
                 }
                 Status.SUCCESS -> {
                     if (it != null) {

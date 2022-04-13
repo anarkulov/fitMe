@@ -44,8 +44,9 @@ class WorkoutListAdapter(
 
         fun bind(item: Exercise) {
             exerciseBinding.tvTitle.text = item.name
-            exerciseBinding.tvTime.text =
-                itemView.context.getString(R.string.exercises_format, item.minutes)
+            val info = "${itemView.context.getString(R.string.minutes_format, item.minutes)} | ${item.reps} reps"
+            exerciseBinding.tvTime.text = info
+
             exerciseBinding.ivExercise.loadUrl(item.imageUrl, R.drawable.ic_pushup)
         }
     }

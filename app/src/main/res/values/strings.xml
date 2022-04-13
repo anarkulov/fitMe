@@ -53,9 +53,11 @@
     <string name="time_waste_format">%d seconds spent</string>
     <string name="counter_format">%d counts</string>
     <string name="plan">Plan</string>
+    <string name="minutes_format">%d minutes</string>
+    <string name="dots">...</string>
 
     <string-array name="categories_array">
-        <item>counters</item>
+        <item>reps</item>
         <item>calories</item>
         <item>seconds</item>
     </string-array>

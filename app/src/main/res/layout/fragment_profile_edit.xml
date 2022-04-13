@@ -5,8 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
     <androidx.cardview.widget.CardView
         android:id="@+id/tv_toolbar"
         android:layout_width="match_parent"
@@ -20,9 +18,9 @@
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_back"
+            android:layout_gravity="start|center_vertical"
             android:layout_marginStart="@dimen/page_margin"
-            android:layout_gravity="start|center_vertical"/>
+            android:src="@drawable/ic_back" />
 
         <androidx.appcompat.widget.AppCompatTextView
             style="@style/Text.H1.Bold"
@@ -32,7 +30,7 @@
             android:text="Profile" />
     </androidx.cardview.widget.CardView>
 
-    <RelativeLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/phone_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -41,108 +39,240 @@
         android:layout_marginEnd="@dimen/page_margin"
         app:layout_constraintTop_toBottomOf="@+id/tv_toolbar">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_first_name"
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_first_name"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            android:layout_marginTop="@dimen/medium_margin"
             android:background="@drawable/bg_input_field"
+            android:backgroundTint="@color/white"
             android:drawableStart="@drawable/ic_person"
             android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/first_name"
+            android:elevation="@dimen/small_margin"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
             android:paddingHorizontal="@dimen/page_margin"
             android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            android:text="@string/first_name"
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/et_first_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:background="@drawable/bg_input_field"
+            android:drawablePadding="@dimen/page_margin"
+            android:hint="@string/dots"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/page_margin"
+            android:paddingVertical="@dimen/medium_margin"
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_first_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_first_name"
+            app:layout_constraintTop_toTopOf="@+id/tv_first_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_last_name"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            android:layout_marginTop="@dimen/element_margin"
+            android:background="@drawable/bg_input_field"
+            android:backgroundTint="@color/white"
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="@dimen/page_margin"
+            android:elevation="@dimen/small_margin"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/page_margin"
+            android:paddingVertical="@dimen/medium_margin"
+            android:text="@string/last_name"
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_first_name" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_last_name"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_first_name"
-            android:layout_marginTop="@dimen/element_margin"
+            android:layout_marginStart="@dimen/medium_margin"
             android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/last_name"
+            android:hint="@string/dots"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
             android:paddingHorizontal="@dimen/page_margin"
             android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintBottom_toBottomOf="@id/tv_last_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tv_last_name"
+            app:layout_constraintTop_toTopOf="@id/tv_last_name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_age"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            android:layout_marginTop="@dimen/element_margin"
+            android:background="@drawable/bg_input_field"
+            android:backgroundTint="@color/white"
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="@dimen/page_margin"
+            android:elevation="@dimen/small_margin"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/page_margin"
+            android:paddingVertical="@dimen/medium_margin"
+            android:text="@string/age"
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_last_name" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_age"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/et_last_name"
-            android:layout_marginTop="@dimen/element_margin"
+            android:layout_marginStart="@dimen/medium_margin"
             android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_person"
             android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/age"
+            android:hint="@string/dots"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
             android:paddingHorizontal="@dimen/page_margin"
             android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_age"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_age"
+            app:layout_constraintTop_toTopOf="@+id/tv_age" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_weight"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            android:layout_marginTop="@dimen/element_margin"
+            android:background="@drawable/bg_input_field"
+            android:backgroundTint="@color/white"
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="@dimen/page_margin"
+            android:elevation="@dimen/small_margin"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="@dimen/page_margin"
+            android:paddingVertical="@dimen/medium_margin"
+            android:text="@string/weight"
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_age" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_weight"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/et_age"
-            android:layout_marginTop="@dimen/element_margin"
             android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_person"
             android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/weight"
+            android:hint="@string/dots"
+            android:layout_marginStart="@dimen/medium_margin"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
             android:paddingHorizontal="@dimen/page_margin"
             android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_weight"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_weight"
+            app:layout_constraintTop_toTopOf="@+id/tv_weight" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_height"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/page_margin"
+            android:layout_marginTop="@dimen/element_margin"
+            android:background="@drawable/bg_input_field"
+            android:backgroundTint="@color/white"
+            android:drawableStart="@drawable/ic_person"
+            android:drawablePadding="@dimen/page_margin"
+            android:elevation="@dimen/small_margin"
+            android:imeOptions="actionNext"
+            android:importantForAutofill="no"
+            android:inputType="text"
+            android:maxLines="1"
+            android:layout_marginBottom="@dimen/medium_margin"
+            android:paddingHorizontal="@dimen/page_margin"
+            android:paddingVertical="@dimen/medium_margin"
+            android:text="@string/height"
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/et_weight" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/et_height"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/et_weight"
-            android:layout_marginTop="@dimen/element_margin"
             android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_person"
             android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/height"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:hint="@string/dots"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
             android:paddingHorizontal="@dimen/page_margin"
             android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            android:textSize="@dimen/text_normal_3"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tv_height"
+            app:layout_constraintTop_toTopOf="@+id/tv_height"/>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/tv_height"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="@dimen/element_margin"
             android:layout_below="@+id/et_height">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/et_plan"
                 android:layout_width="100dp"
+                android:layout_marginHorizontal="@dimen/page_margin"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/element_margin"
+                android:layout_marginVertical="@dimen/element_margin"
+                android:elevation="@dimen/small_margin"
                 android:background="@drawable/bg_input_field"
+                android:backgroundTint="@color/white"
                 android:drawablePadding="@dimen/page_margin"
                 android:gravity="center"
-                android:hint="@string/plan"
+                android:text="@string/plan"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:inputType="text"
@@ -164,19 +294,19 @@
                 tools:listitem="@layout/item_spinner" />
         </LinearLayout>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ProgressBar
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:theme="@style/ProgressBar"
         android:layout_marginTop="@dimen/page_margin"
         android:backgroundTint="@color/blue"
+        android:theme="@style/ProgressBar"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -186,8 +316,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/page_margin"
         android:layout_marginBottom="@dimen/big_margin"
-        android:text="@string/save"
         android:background="@drawable/bg_button_state"
+        android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

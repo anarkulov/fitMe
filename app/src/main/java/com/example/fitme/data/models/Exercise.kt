@@ -8,6 +8,7 @@ data class Exercise(
     val description: String = "",
     val instructions: String = "",
     val minutes: Int = 0,
+    val reps: Int = 0,
     val metValue: Float = 0f,
     val imageUrl: String = "",
     val videoUrl: String = "",
