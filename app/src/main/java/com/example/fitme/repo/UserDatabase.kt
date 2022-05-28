@@ -241,34 +241,31 @@ class UserDatabase : AppDatabase() {
     fun getUsers(): MutableLiveData<Resource<List<User>>> {
         val liveData = MutableLiveData<Resource<List<User>>>()
 
-        liveData.value = Resource.loading(null)
+    liveData.value = Resource.loading(null)
 
-        firebaseAuth.uid?.let { id ->
-            firestoreInstance
-                .collection(USERS)
-                .get()
-                .addOnSuccessListener {
-                    val document = it
-                    if (!document.isEmpty) {
-                        val users = document.documents
-                        val list = ArrayList<User>()
-                        for (item in users) {
-                            val user = item.toObject(User::class.java)
-                            if (user != null) {
-                                user.id = item.id
-                                list.add(user)
-                            }
-                        }
-                        liveData.postValue(Resource.success(list))
-                    } else {
-                        liveData.postValue(Resource.error("No user with $it id", null, null))
+    firestoreInstance
+        .collection(USERS)
+        .get()
+        .addOnSuccessListener {
+            val document = it
+            if (!document.isEmpty) {
+                val users = document.documents
+                val list = ArrayList<User>()
+                for (item in users) {
+                    val user = item.toObject(User::class.java)
+                    Log.d("user: ${user?.firstName}", myTag)
+                    if (user != null) {
+                        user.id = item.id
+                        list.add(user)
                     }
                 }
-                .addOnFailureListener {
-                    liveData.postValue(Resource.error(it.message.toString(), null, null))
-                }
-        } ?: run {
-            liveData.postValue(Resource.error("firebaseAuth is null", null, -1))
+                liveData.postValue(Resource.success(list))
+            } else {
+                liveData.postValue(Resource.error("No user with $it id", null, null))
+            }
+        }
+        .addOnFailureListener {
+            liveData.postValue(Resource.error(it.message.toString(), null, null))
         }
 
         return liveData

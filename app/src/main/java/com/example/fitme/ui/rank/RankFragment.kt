@@ -10,6 +10,7 @@ import com.example.fitme.core.extentions.loadUrl
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
+import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentRankBinding
 import com.example.fitme.ui.home.HomeViewModel
@@ -99,9 +100,11 @@ class RankFragment : BaseNavFragment<HomeViewModel, FragmentRankBinding>() {
             item.rank = index + 1
         }
 
+        Log.d("$itemList", "myTag")
+
         binding.recyclerView.apply {
             this.adapter = RankAdapter(items) {}
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         }
     }
 
