@@ -1,5 +1,6 @@
 package com.example.fitme.repo
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.fitme.core.network.result.Resource
@@ -39,6 +40,10 @@ class MainRepository(
 
     fun updateUser(user: User): MutableLiveData<Resource<Boolean>> {
         return db.updateUser(user)
+    }
+
+    fun uploadImageFile(filePath: Uri): LiveData<Resource<String>> {
+        return db.uploadImageFile(filePath)
     }
 
 //    fun setAccessToken(accessToken: String) {

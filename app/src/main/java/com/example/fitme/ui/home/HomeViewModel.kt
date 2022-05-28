@@ -1,5 +1,6 @@
 package com.example.fitme.ui.home
 
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.switchMap
@@ -45,5 +46,9 @@ class HomeViewModel(private val mainRepository: MainRepository, private val appP
 
     fun clearPrefs() {
         appPrefs.clearPrefs()
+    }
+
+    fun uploadImageFile(filePath: Uri): LiveData<Resource<String>> {
+        return mainRepository.uploadImageFile(filePath)
     }
 }

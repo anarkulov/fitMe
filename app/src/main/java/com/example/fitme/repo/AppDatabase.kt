@@ -10,5 +10,5 @@ open class AppDatabase {
     protected val firestoreInstance = FirebaseFirestore.getInstance()
     val firebaseAuth= FirebaseAuth.getInstance()
     protected val currentUser = FirebaseAuth.getInstance().currentUser
-    protected val storageReference = FirebaseStorage.getInstance().getReference("uploads")
+    protected val storageReference = FirebaseStorage.getInstance().reference
 }

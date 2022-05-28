@@ -245,6 +245,7 @@ class UserDatabase : AppDatabase() {
         val userMap = hashMapOf(
             "firstName" to user.firstName,
             "lastName" to user.lastName,
+            "image" to user.image,
             "email" to user.email,
             "phone" to user.phone,
             "age" to user.age,
@@ -292,24 +293,24 @@ class UserDatabase : AppDatabase() {
         return mimeTypeMap.getMimeTypeFromExtension(contentResolver.getType(uri))
     }
 
-//    fun addImageUrlInDatabase(imageUrl: String, mUri: String): LiveData<Boolean> {
-//        val successAddUriImage = MutableLiveData<Boolean>()
-//        val reference =
-//            currentUser?.uid?.let {
-//                firestoreInstance.collection(USERS).document(it)
-//            }
-//        val map = HashMap<String, Any>()
-//        map[imageUrl] = mUri
-//
-//        reference?.update(map)?.addOnCompleteListener { successAddUriImage.setValue(true) }
-//            ?.addOnFailureListener {
-//                successAddUriImage.setValue(
-//                    false
-//                )
-//            }
-//
-//        return successAddUriImage
-//    }
+    fun addImageUrlInDatabase(imageUrl: String, mUri: String): LiveData<Boolean> {
+        val successAddUriImage = MutableLiveData<Boolean>()
+        val reference =
+            currentUser?.uid?.let {
+                firestoreInstance.collection(USERS).document(it)
+            }
+        val map = HashMap<String, Any>()
+        map[imageUrl] = mUri
+
+        reference?.update(map)?.addOnCompleteListener { successAddUriImage.setValue(true) }
+            ?.addOnFailureListener {
+                successAddUriImage.setValue(
+                    false
+                )
+            }
+
+        return successAddUriImage
+    }
 
     fun getAlarmList(): MutableLiveData<Resource<List<Alarm>>> {
         val liveData = MutableLiveData<Resource<List<Alarm>>>()
@@ -703,6 +704,33 @@ class UserDatabase : AppDatabase() {
                     liveData.postValue(Resource.error("Failed to get exerciseList list", null, -1))
                 }
         }
+
+        return liveData
+    }
+
+    fun uploadImageFile(filePath: Uri): MutableLiveData<Resource<String>> {
+        val liveData = MutableLiveData<Resource<String>>()
+        liveData.value = Resource.loading(null)
+
+
+        val child = "images/"+UUID.randomUUID().toString()
+        Log.d("child: $child, file: $filePath", myTag)
+
+        storageReference
+            .child(child)
+            .putFile(filePath)
+            .addOnSuccessListener {
+                it.metadata?.path?.let { it1 ->
+                    storageReference.child(it1).downloadUrl.addOnSuccessListener { uri ->
+                        liveData.postValue(Resource.success(uri.toString(), null))
+                        Log.d("task: $uri", myTag)
+                    }
+                }
+            }
+            .addOnFailureListener {
+                Log.d("${it.message}", myTag)
+                liveData.postValue(Resource.error("Failed to upload file", null, -1))
+            }
 
         return liveData
     }

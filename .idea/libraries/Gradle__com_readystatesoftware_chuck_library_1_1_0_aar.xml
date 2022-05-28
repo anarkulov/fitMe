@@ -1,9 +1,15 @@
 <component name="libraryTable">
   <library name="Gradle: com.readystatesoftware.chuck:library:1.1.0@aar">
     <CLASSES>
-      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/3339591d153d0a9f9302d2988f900215/transformed/jetified-library-1.1.0/jars/classes.jar!/" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3339591d153d0a9f9302d2988f900215/transformed/jetified-library-1.1.0/res" />
-      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/3339591d153d0a9f9302d2988f900215/transformed/jetified-library-1.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/d3ac979cf58e28f88601b1bc664fb556/transformed/jetified-library-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d3ac979cf58e28f88601b1bc664fb556/transformed/jetified-library-1.1.0/res" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/d3ac979cf58e28f88601b1bc664fb556/transformed/jetified-library-1.1.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f561dfcaa21133a15c0feac4dc6da265/transformed/jetified-library-1.1.0/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/f561dfcaa21133a15c0feac4dc6da265/transformed/jetified-library-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/f561dfcaa21133a15c0feac4dc6da265/transformed/jetified-library-1.1.0/AndroidManifest.xml" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/228e54253f26566e1011ded05ce8303b/transformed/jetified-library-1.1.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/228e54253f26566e1011ded05ce8303b/transformed/jetified-library-1.1.0/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/228e54253f26566e1011ded05ce8303b/transformed/jetified-library-1.1.0/res" />
     </CLASSES>
     <JAVADOC>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.readystatesoftware.chuck/library/1.1.0/97523a88e5c088269cc0cd02b18731c2b5cad3d8/library-1.1.0-javadoc.jar!/" />

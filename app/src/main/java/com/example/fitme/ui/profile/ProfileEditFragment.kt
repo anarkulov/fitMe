@@ -1,11 +1,14 @@
 package com.example.fitme.ui.profile
 
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
 import com.example.fitme.R
 import com.example.fitme.core.extentions.showSnackBar
@@ -13,13 +16,16 @@ import com.example.fitme.core.extentions.showToast
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
+import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.User
 import com.example.fitme.databinding.FragmentProfileEditBinding
 import com.example.fitme.ui.home.HomeViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.IOException
 
 class ProfileEditFragment: BaseFragment<HomeViewModel, FragmentProfileEditBinding>() {
 
+    private val PICK_IMAGE_REQUEST: Int = 1001
     override val viewModel: HomeViewModel by viewModel()
     private var selectedPlan = ""
     private var profile: User? = null
@@ -120,6 +126,43 @@ class ProfileEditFragment: BaseFragment<HomeViewModel, FragmentProfileEditBindin
         binding.btnSave.setOnClickListener {
             saveProfile()
         }
+
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.ivAvatar.setOnClickListener {
+            selectImage()
+        }
+    }
+
+//    private val launchActivityForResult =
+//        registerForActivityResult(
+//            ActivityResultContracts.StartActivityForResult()
+//        ) {
+//            if (it.resultCode == RESULT_OK) {
+//                Intent
+//            }
+//        }
+
+    private var filePath : Uri = Uri.EMPTY
+
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            Log.d("uri: $uri", "ProfileEdit")
+            filePath = uri
+            try {
+                val bitmap = MediaStore.Images.Media.getBitmap(context?.contentResolver, uri)
+                binding.ivAvatar.setImageBitmap(bitmap)
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Log.d("exception: $e", "ProfileEdit")
+            }
+        }
+    }
+
+    private fun selectImage() {
+        getContent.launch("image/*")
     }
 
     private fun saveProfile() {
@@ -140,7 +183,8 @@ class ProfileEditFragment: BaseFragment<HomeViewModel, FragmentProfileEditBindin
             showToast("Something went wrong")
             findNavController().popBackStack()
         } else {
-            viewModel.updateUser(profile!!).observe(this) { response ->
+
+            viewModel.uploadImageFile(filePath).observe(this) { response ->
                 when (response.status) {
                     Status.LOADING -> {
                         viewModel.loading.postValue(true)
@@ -149,10 +193,28 @@ class ProfileEditFragment: BaseFragment<HomeViewModel, FragmentProfileEditBindin
                         viewModel.loading.postValue(false)
                     }
                     Status.SUCCESS -> {
-                        viewModel.loading.postValue(false)
-                        requireActivity().showSnackBar("Profile updated")
-                        findNavController().popBackStack()
+                        Log.d("success file: ${response.data}", "ProfileEdit")
+                        profile?.image = response.data
+                        updateUser()
                     }
+                }
+            }
+        }
+    }
+
+    private fun updateUser() {
+        viewModel.updateUser(profile!!).observe(this) { response ->
+            when (response.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    requireActivity().showSnackBar("Profile updated")
+                    findNavController().popBackStack()
                 }
             }
         }

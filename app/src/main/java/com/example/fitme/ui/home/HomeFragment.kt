@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
 import com.example.fitme.core.extentions.formatCount
+import com.example.fitme.core.extentions.loadUrl
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.utils.Log
@@ -154,6 +155,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun setData(user: User) {
         val fullName = "${user.firstName} ${user.lastName}"
         binding.tvName.text = fullName
+
+        binding.ivAvatar.loadUrl(user.image, R.drawable.ic_person_placeholder)
 
         if (user.age == null) {
             binding.tvAge.text = "0"
@@ -463,11 +466,10 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     }
 
     private fun signOut() {
-        viewModel.clearPrefs()
-        val intent = Intent(requireContext(), AuthActivity::class.java)
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        startActivity(intent)
-        requireActivity().finish()
+        viewModel.logOut().observe(this) {
+            requireActivity().startActivity(Intent(requireContext(), AuthActivity::class.java))
+            requireActivity().finish()
+        }
     }
 
     private fun onActivityClick(activityId: String) {
