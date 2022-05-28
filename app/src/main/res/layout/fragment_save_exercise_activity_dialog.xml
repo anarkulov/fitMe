@@ -9,14 +9,23 @@
    <androidx.constraintlayout.widget.ConstraintLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:paddingVertical="@dimen/big_margin">
+       android:paddingVertical="@dimen/page_margin">
+
+       <androidx.appcompat.widget.AppCompatImageView
+           android:id="@+id/close"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:src="@drawable/ic_close"
+           android:layout_marginEnd="@dimen/page_margin"
+           app:layout_constraintEnd_toEndOf="parent"
+           app:layout_constraintTop_toTopOf="parent" />
 
        <androidx.appcompat.widget.AppCompatEditText
            android:id="@+id/et_activity_name"
            android:layout_width="match_parent"
            android:layout_height="wrap_content"
-           android:layout_marginHorizontal="@dimen/page_margin"
-           android:layout_marginTop="@dimen/page_margin"
+           android:layout_marginHorizontal="@dimen/big_margin"
+           android:layout_marginTop="40dp"
            android:background="@drawable/bg_input_field"
            android:drawablePadding="@dimen/page_margin"
            android:elevation="@dimen/small_margin"
@@ -188,7 +197,7 @@
            android:layout_width="wrap_content"
            android:layout_height="40dp"
            android:layout_marginTop="@dimen/page_margin"
-           android:text="@string/cancel"
+           android:text="@string/back"
            app:layout_constraintEnd_toStartOf="@+id/btn_save"
            app:layout_constraintHorizontal_bias="0.5"
            app:layout_constraintHorizontal_chainStyle="spread"

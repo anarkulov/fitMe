@@ -3,6 +3,9 @@ package com.example.fitme.ui.alarm.exercise
 import android.Manifest
 import android.app.AlertDialog
 import android.content.pm.PackageManager
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Process
@@ -65,7 +68,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
     private var exerciseCounter = 0
     private var caloriesCounter = 0
     private var secondsCounter = 0L
-    private lateinit var countUpTimer: CountDownTimer
+    private var countUpTimer: CountDownTimer? = null
 
     private var tts: TextToSpeech? = null
 
@@ -220,7 +223,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         super.initListeners()
 
         binding.btnStop.setOnClickListener {
-            countUpTimer.cancel()
+            countUpTimer?.cancel()
             if (secondsCounter > 10) {
                 ttsSpeakOut("Good job ${appPrefs.profile?.firstName}!")
             }
@@ -247,16 +250,31 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
         dialog = dialogBuilder.create()
         dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        val colorDrawable = ColorDrawable(Color.TRANSPARENT)
+        val inset = InsetDrawable(colorDrawable, 24,0,24,0)
+        dialog.window?.setBackgroundDrawable(inset)
         dialog.show()
 
         dialogBinding.btnCancel.setOnClickListener {
             dialog.cancel()
+            findNavController().popBackStack()
+        }
+
+        dialogBinding.close.setOnClickListener {
+            dialog.cancel()
+            countUpTimer?.start()
         }
 
         dialogBinding.btnSave.setOnClickListener {
 
+            if (secondsCounter in 0L..5L || exerciseCounter == 0) {
+                showToast(getString(R.string.wrong_exercise))
+                dialog.cancel()
+                return@setOnClickListener
+            }
+
             if (dialogBinding.etActivityName.text.isNullOrEmpty()) {
-                showToast("Please type name for activity")
+                showToast(getString(R.string.error_activity_name))
             } else {
                 val activity = Activity(
                     System.currentTimeMillis().toString(),
