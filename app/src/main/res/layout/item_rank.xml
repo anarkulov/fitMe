@@ -10,13 +10,15 @@
     app:cardCornerRadius="@dimen/radius_primary"
     app:cardElevation="@dimen/cardview_default_elevation">
 
-    <androidx.appcompat.widget.AppCompatImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         android:id="@+id/iv_avatar"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
         android:layout_marginStart="@dimen/page_margin"
         android:src="@drawable/ic_person"
+        app:riv_oval="true"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,7 +29,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/element_margin"
-        android:layout_marginEnd="112dp"
+        android:layout_marginEnd="@dimen/element_margin"
         android:ellipsize="end"
         android:maxLines="2"
         app:layout_constraintBottom_toBottomOf="parent"
