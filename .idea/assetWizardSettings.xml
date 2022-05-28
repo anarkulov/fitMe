@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialicons/close/baseline_close_24.xml" />
+                                      <entry key="url" value="file:$USER_HOME$/Library/Android/sdk/icons/material/materialiconsoutlined/star_rate/outline_star_rate_24.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -29,7 +29,8 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="0598f3" />
-                            <entry key="outputName" value="ic_baseline_close_24" />
+                            <entry key="opacityPercent" value="90" />
+                            <entry key="outputName" value="ic_outline_star_rate_24" />
                             <entry key="sourceFile" value="$USER_HOME$/Downloads/iv_pose_chair.svg" />
                           </map>
                         </option>

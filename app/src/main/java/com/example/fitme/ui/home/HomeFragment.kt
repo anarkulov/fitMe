@@ -48,7 +48,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private var statisticActivityList: ArrayList<Activity> = ArrayList()
 
     private var selectedType = TYPE_COUNTERS
-    private var selectedPeriod = PERIOD_WEEK
+    private var selectedPeriod = PERIOD_MONTH
+    private var rank = 0
 
     override fun initViewModel() {
         super.initViewModel()
@@ -176,6 +177,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             binding.tvWeight.text = user.weight.toString()
         }
 
+        setRank(rank)
     }
 
     private fun setStatisticData() {
@@ -250,6 +252,8 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
             Log.d("month: $yearMonth ${currentCalendar.timeInMillis}", myTag)
         }
 
+        rank = 0
+
         for (item in statisticActivityList) {
             val itemCalendar = Calendar.getInstance()
             itemCalendar.timeInMillis = item.createdAt
@@ -264,9 +268,18 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                 val index = hashMapCur[key]
                 index?.let {
                     val data = when (type) {
-                        TYPE_COUNTERS -> statisticDataList[index].second + item.counters
-                        TYPE_CALORIE -> statisticDataList[index].second + item.calories
-                        else -> statisticDataList[index].second + item.seconds
+                        TYPE_COUNTERS -> {
+                            rank += item.counters
+                            statisticDataList[index].second + item.counters
+                        }
+                        TYPE_CALORIE -> {
+                            rank += item.calories
+                            statisticDataList[index].second + item.calories
+                        }
+                        else -> {
+                            rank += item.seconds
+                            statisticDataList[index].second + item.seconds
+                        }
                     }
                     statisticDataList[index] = statisticDataList[index].copy(second = data)
                 }
@@ -275,6 +288,13 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
 
         binding.lineChart.barsColorsList = colorList
         binding.lineChart.animate(statisticDataList)
+    }
+
+    private fun setRank(rank: Int) {
+        viewModel.getLocalProfile()?.apply {
+            this.score = rank
+            viewModel.updateUser(this)
+        }
     }
 
     private fun calculateStatisticDataForWeek(type: Int) {

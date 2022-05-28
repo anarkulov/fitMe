@@ -15,15 +15,16 @@ import com.google.firebase.auth.FirebaseUser
 class HomeViewModel(private val mainRepository: MainRepository, private val appPrefs: AppPrefs): BaseViewModel() {
     val activityList = ArrayList<Activity>()
     val sortedActivityList = ArrayList<Activity>()
-    var profileId = ""
 
     fun getUser(): MutableLiveData<FirebaseUser?> {
         return mainRepository.getFirebaseUser()
     }
+
     private var _getUser = MutableLiveData<Boolean>()
     var getProfile: LiveData<Resource<User>> = _getUser.switchMap {
         mainRepository.getUser()
     }
+
     fun getUserProfile() {
         _getUser.postValue(true)
     }
@@ -50,5 +51,13 @@ class HomeViewModel(private val mainRepository: MainRepository, private val appP
 
     fun uploadImageFile(filePath: Uri): LiveData<Resource<String>> {
         return mainRepository.uploadImageFile(filePath)
+    }
+
+    fun getUsers(): LiveData<Resource<List<User>>> {
+        return mainRepository.getUsers()
+    }
+
+    fun getLocalProfile(): User? {
+        return appPrefs.profile
     }
 }

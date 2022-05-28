@@ -14,5 +14,7 @@ data class User(
     var gender: String? = "",
     var height: Float? = 0f,
     var weight: Float? = 0f,
-    var plan: String? = ""
+    var plan: String? = "",
+    var rank: Int? = 0,
+    var score: Int? = 0
 )

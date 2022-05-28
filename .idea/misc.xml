@@ -48,6 +48,7 @@
         <entry key="app/src/main/res/drawable/ic_home.xml" value="0.321025641025641" />
         <entry key="app/src/main/res/drawable/ic_home_active.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/ic_home_inactive.xml" value="0.288" />
+        <entry key="app/src/main/res/drawable/ic_inactive_rank.xml" value="0.394" />
         <entry key="app/src/main/res/drawable/ic_item_alarm.xml" value="0.2765" />
         <entry key="app/src/main/res/drawable/ic_lock.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.216" />
@@ -57,6 +58,7 @@
         <entry key="app/src/main/res/drawable/ic_person_placeholder.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/ic_profile.xml" value="0.2984375" />
         <entry key="app/src/main/res/drawable/ic_pushup.xml" value="0.192" />
+        <entry key="app/src/main/res/drawable/ic_rank.xml" value="0.394" />
         <entry key="app/src/main/res/drawable/ic_stretching.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/ic_workout_active.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/iv_pose_chair.xml" value="0.1895" />
@@ -65,6 +67,7 @@
         <entry key="app/src/main/res/drawable/nav_activity_state.xml" value="0.2865" />
         <entry key="app/src/main/res/drawable/nav_alarm_state.xml" value="0.2495" />
         <entry key="app/src/main/res/drawable/nav_home_state.xml" value="0.2495" />
+        <entry key="app/src/main/res/drawable/nav_rank_state.xml" value="0.394" />
         <entry key="app/src/main/res/drawable/switch_state.xml" value="0.2495" />
         <entry key="app/src/main/res/layout/activity_alarm.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_auth.xml" value="0.13489583333333333" />
@@ -84,6 +87,7 @@
         <entry key="app/src/main/res/layout/fragment_pose_bottom_sheet.xml" value="0.125" />
         <entry key="app/src/main/res/layout/fragment_profile.xml" value="0.23641304347826086" />
         <entry key="app/src/main/res/layout/fragment_profile_edit.xml" value="0.22735507246376813" />
+        <entry key="app/src/main/res/layout/fragment_rank.xml" value="0.5" />
         <entry key="app/src/main/res/layout/fragment_registration.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_save_exercise_activity_dialog.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_set_alarm.xml" value="0.3890625" />
@@ -96,6 +100,7 @@
         <entry key="app/src/main/res/layout/item_exercise.xml" value="0.3401268115942029" />
         <entry key="app/src/main/res/layout/item_my_activity.xml" value="0.22735507246376813" />
         <entry key="app/src/main/res/layout/item_pose.xml" value="0.2953125" />
+        <entry key="app/src/main/res/layout/item_rank.xml" value="0.5765625" />
         <entry key="app/src/main/res/layout/item_spinner.xml" value="0.3401268115942029" />
         <entry key="app/src/main/res/layout/item_workout.xml" value="0.375" />
         <entry key="app/src/main/res/layout/view_toolbar.xml" value="0.33" />

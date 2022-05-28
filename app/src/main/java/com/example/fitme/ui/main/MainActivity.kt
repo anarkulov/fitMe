@@ -1,6 +1,5 @@
 package com.example.fitme.ui.main
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -35,25 +34,6 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-//        initializeTask.addOnSuccessListener(object: OnSuccessListener {
-//            override fun onSuccess(response: DataReadResponse) {
-//                interpreter = InterpreterApi.create(modelBuffer, object: InterpreterApi.Options().setRuntime(
-//                        InterpreterApi.Options.TfLiteRuntime.FROM_SYSTEM_ONLY))
-//            }
-//        })
-//            .addOnFailureListener(object: OnFailureListener {
-//                override fun onFailure(ex: Exception) {
-//                    Log.e("Interpreter", "Cannot initialize interpreter", ex)
-//                }
-//            })
-//
-//        lifecycleScope.launchWhenStarted { // uses coroutine
-//            initializeTask.await()
-//        }
-    }
 
     override fun initView() {
         super.initView()

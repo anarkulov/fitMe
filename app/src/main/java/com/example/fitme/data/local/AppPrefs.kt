@@ -45,6 +45,7 @@ class AppPrefs(context: Context) {
     var profile: User?
         get() {
             val json = prefs.getString("profile", null) ?: return null
+            if (json.isEmpty()) return null
             return gson.fromJson(json, User::class.java)
         }
         set(value) {

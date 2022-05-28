@@ -46,6 +46,10 @@ class MainRepository(
         return db.uploadImageFile(filePath)
     }
 
+    fun getUsers(): LiveData<Resource<List<User>>> {
+        return db.getUsers()
+    }
+
 //    fun setAccessToken(accessToken: String) {
 //        prefs.accessToken = accessToken
 //    }

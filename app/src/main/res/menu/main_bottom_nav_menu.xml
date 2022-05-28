@@ -16,4 +16,9 @@
         android:icon="@drawable/nav_alarm_state"
         android:title="@string/alarm" />
 
+    <item
+        android:id="@+id/rankFragment"
+        android:icon="@drawable/nav_rank_state"
+        android:title="@string/rank" />
+
 </menu>

@@ -29,6 +29,10 @@ abstract class BaseNavFragment<VM: BaseViewModel, VB: ViewBinding> : Fragment() 
         if(_view == null) {
             binding = inflateViewBinding(inflater, container, savedInstanceState)
             _view = binding.root
+
+            initViewModel()
+            initView()
+            initListeners()
         } else {
             binding = bindViewBinding(_view!!)
         }
@@ -40,10 +44,6 @@ abstract class BaseNavFragment<VM: BaseViewModel, VB: ViewBinding> : Fragment() 
 
         val navHostFragment = activity?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         _navController = navHostFragment.navController
-
-        initViewModel()
-        initView()
-        initListeners()
     }
 
     fun showLoading(value: Boolean) {

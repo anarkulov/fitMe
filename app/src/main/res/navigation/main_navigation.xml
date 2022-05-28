@@ -126,4 +126,9 @@
         android:name="com.example.fitme.ui.profile.ProfileEditFragment"
         android:label="ProfileEditFragment" />
 
+    <fragment
+        android:id="@+id/rankFragment"
+        android:name="com.example.fitme.ui.rank.RankFragment"
+        android:label="RankFragment"/>
+
 </navigation>

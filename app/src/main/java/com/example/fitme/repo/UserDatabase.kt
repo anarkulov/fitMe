@@ -238,6 +238,42 @@ class UserDatabase : AppDatabase() {
         return liveData
     }
 
+    fun getUsers(): MutableLiveData<Resource<List<User>>> {
+        val liveData = MutableLiveData<Resource<List<User>>>()
+
+        liveData.value = Resource.loading(null)
+
+        firebaseAuth.uid?.let { id ->
+            firestoreInstance
+                .collection(USERS)
+                .get()
+                .addOnSuccessListener {
+                    val document = it
+                    if (!document.isEmpty) {
+                        val users = document.documents
+                        val list = ArrayList<User>()
+                        for (item in users) {
+                            val user = item.toObject(User::class.java)
+                            if (user != null) {
+                                user.id = item.id
+                                list.add(user)
+                            }
+                        }
+                        liveData.postValue(Resource.success(list))
+                    } else {
+                        liveData.postValue(Resource.error("No user with $it id", null, null))
+                    }
+                }
+                .addOnFailureListener {
+                    liveData.postValue(Resource.error(it.message.toString(), null, null))
+                }
+        } ?: run {
+            liveData.postValue(Resource.error("firebaseAuth is null", null, -1))
+        }
+
+        return liveData
+    }
+
     fun updateUser(user: User): MutableLiveData<Resource<Boolean>> {
 
         val liveData = MutableLiveData<Resource<Boolean>>()
@@ -253,7 +289,9 @@ class UserDatabase : AppDatabase() {
             "height" to user.height,
             "plan" to user.plan,
             "state" to user.state,
-            "city" to user.city
+            "city" to user.city,
+            "rank" to user.rank,
+            "score" to user.score
         )
 
         liveData.value = Resource.loading(null)
