@@ -50,4 +50,7 @@
     <string name="back">Артка</string>
     <string name="wrong_exercise">Туура эмес көнүгүү</string>
     <string name="error_activity_name">Көнүгүү үчүн атын жазыңыз</string>
+    <string name="welcome_back">Кош келдиңиз</string>
+    <string name="create_an_account">Аккаунт түзүү</string>
+    <string name="join_to_our_sport_community">Биздин спорт коомчулугубузга кошулуңуз</string>
 </resources>

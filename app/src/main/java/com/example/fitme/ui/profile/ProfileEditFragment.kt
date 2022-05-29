@@ -182,7 +182,7 @@ class ProfileEditFragment: BaseFragment<HomeViewModel, FragmentProfileEditBindin
         if(profile == null) {
             showToast("Something went wrong")
             findNavController().popBackStack()
-        } else {
+        } else if (filePath != Uri.EMPTY) {
 
             viewModel.uploadImageFile(filePath).observe(this) { response ->
                 when (response.status) {
@@ -193,12 +193,15 @@ class ProfileEditFragment: BaseFragment<HomeViewModel, FragmentProfileEditBindin
                         viewModel.loading.postValue(false)
                     }
                     Status.SUCCESS -> {
+                        viewModel.loading.postValue(false)
                         Log.d("success file: ${response.data}", "ProfileEdit")
                         profile?.image = response.data
                         updateUser()
                     }
                 }
             }
+        } else {
+            updateUser()
         }
     }
 

@@ -73,5 +73,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="rank">Rank</string>
+    <string name="welcome_back">Welcome Back</string>
+    <string name="create_an_account">Create an Account</string>
+    <string name="join_to_our_sport_community">Join to our sport community</string>
 
 </resources>

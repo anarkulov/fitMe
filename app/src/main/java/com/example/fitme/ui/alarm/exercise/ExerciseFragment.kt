@@ -10,10 +10,7 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.Process
 import android.speech.tts.TextToSpeech
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
+import android.view.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -195,6 +192,8 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
 
     override fun initView() {
         super.initView()
+
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         if (!isCameraPermissionGranted()) {
             requestPermission()
@@ -642,6 +641,7 @@ class ExerciseFragment : BaseFragment<AlarmViewModel, FragmentExerciseBinding>()
         super.onPause()
         cameraSource?.close()
         cameraSource = null
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     override fun onDestroy() {

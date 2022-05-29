@@ -1,143 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/tucasa_your_home"
-        style="@style/Text.H1.Bold"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/big_margin"
-        android:text="Create an Account"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/sign_up_description"
-        style="@style/Text.Regular.Normal_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_margin"
-        android:text="Join to our sport community"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tucasa_your_home" />
-
-    <RelativeLayout
-        android:id="@+id/phone_container"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/page_margin"
-        android:layout_marginTop="@dimen/big_margin"
-        android:layout_marginEnd="@dimen/page_margin"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_description">
+        android:layout_height="wrap_content">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_first_name"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tucasa_your_home"
+            style="@style/Text.H1.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/big_margin"
+            android:text="@string/create_an_account"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/sign_up_description"
+            style="@style/Text.Regular.Normal_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:text="@string/join_to_our_sport_community"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tucasa_your_home" />
+
+        <RelativeLayout
+            android:id="@+id/phone_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/first_name"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingHorizontal="@dimen/page_margin"
-            android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            android:layout_marginStart="@dimen/page_margin"
+            android:layout_marginTop="@dimen/big_margin"
+            android:layout_marginEnd="@dimen/page_margin"
+            app:layout_constraintTop_toBottomOf="@+id/sign_up_description">
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_last_name"
-            android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_first_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_input_field"
+                android:drawableStart="@drawable/ic_person"
+                android:drawablePadding="@dimen/page_margin"
+                android:hint="@string/first_name"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingHorizontal="@dimen/page_margin"
+                android:paddingVertical="@dimen/medium_margin"
+                android:textSize="@dimen/text_normal_3" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_last_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_first_name"
+                android:layout_marginTop="@dimen/element_margin"
+                android:background="@drawable/bg_input_field"
+                android:drawableStart="@drawable/ic_person"
+                android:drawablePadding="@dimen/page_margin"
+                android:hint="@string/last_name"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingHorizontal="@dimen/page_margin"
+                android:paddingVertical="@dimen/medium_margin"
+                android:textSize="@dimen/text_normal_3" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_last_name"
+                android:layout_marginTop="@dimen/element_margin"
+                android:background="@drawable/bg_input_field"
+                android:drawableStart="@drawable/ic_message"
+                android:drawablePadding="@dimen/page_margin"
+                android:hint="@string/email"
+                android:maxLines="1"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:inputType="textEmailAddress"
+                android:paddingHorizontal="@dimen/page_margin"
+                android:paddingVertical="@dimen/medium_margin"
+                android:textSize="@dimen/text_normal_3" />
+
+            <androidx.appcompat.widget.AppCompatEditText
+                android:id="@+id/et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/et_email"
+                android:layout_marginTop="@dimen/element_margin"
+                android:background="@drawable/bg_input_field"
+                android:drawableStart="@drawable/ic_lock"
+                android:drawablePadding="@dimen/page_margin"
+                android:hint="@string/password"
+                android:maxLines="1"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:inputType="textPassword"
+                android:paddingHorizontal="@dimen/page_margin"
+                android:paddingVertical="@dimen/medium_margin"
+                android:textSize="@dimen/text_normal_3" />
+        </RelativeLayout>
+
+            <TextView
+                android:id="@+id/textView2"
+                style="@style/Text.Regular.Mini_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/element_margin"
+                android:text="@string/already_have_an_account"
+                app:layout_constraintBottom_toBottomOf="@+id/btn_sign_in"
+                app:layout_constraintEnd_toStartOf="@+id/btn_sign_in"
+                app:layout_constraintTop_toTopOf="@+id/btn_sign_in" />
+
+        <TextView
+            android:id="@+id/btn_sign_in"
+            style="@style/Text.Medium.Mini_1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/et_first_name"
-            android:layout_marginTop="@dimen/element_margin"
-            android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_person"
-            android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/last_name"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="no"
-            android:inputType="text"
-            android:maxLines="1"
-            android:paddingHorizontal="@dimen/page_margin"
-            android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            android:layout_margin="@dimen/page_margin"
+            android:text="@string/sign_in"
+            android:textColor="@color/blue"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone_container" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/et_last_name"
-            android:layout_marginTop="@dimen/element_margin"
-            android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_message"
-            android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/email"
-            android:maxLines="1"
-            android:imeOptions="actionNext"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
-            android:paddingHorizontal="@dimen/page_margin"
-            android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_sign_up"
+                style="@style/Button"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="@dimen/page_margin"
+                android:layout_marginBottom="@dimen/big_margin"
+                android:background="@drawable/bg_button"
+                android:text="@string/sign_up"
+                android:layout_marginTop="@dimen/page_margin"
+                app:layout_constraintVertical_bias="1"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
-        <androidx.appcompat.widget.AppCompatEditText
-            android:id="@+id/et_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/et_email"
-            android:layout_marginTop="@dimen/element_margin"
-            android:background="@drawable/bg_input_field"
-            android:drawableStart="@drawable/ic_lock"
-            android:drawablePadding="@dimen/page_margin"
-            android:hint="@string/password"
-            android:maxLines="1"
-            android:imeOptions="actionDone"
-            android:importantForAutofill="no"
-            android:inputType="textPassword"
-            android:paddingHorizontal="@dimen/page_margin"
-            android:paddingVertical="@dimen/medium_margin"
-            android:textSize="@dimen/text_normal_3" />
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <TextView
-        style="@style/Text.Regular.Mini_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/element_margin"
-        android:text="@string/already_have_an_account"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_sign_in"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sign_in"
-        app:layout_constraintTop_toTopOf="@+id/btn_sign_in" />
-
-    <TextView
-        android:id="@+id/btn_sign_in"
-        style="@style/Text.Medium.Mini_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/page_margin"
-        android:text="@string/sign_in"
-        android:textColor="@color/blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/phone_container" />
-
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_sign_up"
-        style="@style/Button"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="@dimen/page_margin"
-        android:layout_marginBottom="@dimen/big_margin"
-        android:background="@drawable/bg_button"
-        android:text="@string/sign_up"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

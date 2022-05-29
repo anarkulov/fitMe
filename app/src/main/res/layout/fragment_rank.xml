@@ -72,20 +72,8 @@
                     android:scaleX="0.7"
                     android:scaleY="0.7"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/rate_number"
-                    style="@style/Text.H1.Bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="@dimen/page_margin"
-                    android:textColor="@color/white"
-                    app:layout_constraintBottom_toTopOf="@+id/rate"
-                    app:layout_constraintEnd_toEndOf="@+id/rate"
-                    app:layout_constraintStart_toStartOf="@+id/rate"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="23" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

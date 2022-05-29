@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/tv_toolbar"
@@ -27,7 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="Profile" />
+            android:text="@string/profile" />
+
     </androidx.cardview.widget.CardView>
 
     <com.makeramen.roundedimageview.RoundedImageView
@@ -48,9 +54,9 @@
         android:id="@+id/phone_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/page_margin"
         android:layout_marginTop="@dimen/medium_margin"
-        android:layout_marginEnd="@dimen/page_margin"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintBottom_toTopOf="@+id/btn_save"
         app:layout_constraintTop_toBottomOf="@+id/iv_avatar">
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -206,10 +212,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/et_age"
+            android:layout_marginStart="@dimen/medium_margin"
             android:background="@drawable/bg_input_field"
             android:drawablePadding="@dimen/page_margin"
             android:hint="@string/dots"
-            android:layout_marginStart="@dimen/medium_margin"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
             android:inputType="text"
@@ -228,6 +234,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/page_margin"
             android:layout_marginTop="@dimen/element_margin"
+            android:layout_marginBottom="@dimen/medium_margin"
             android:background="@drawable/bg_input_field"
             android:backgroundTint="@color/white"
             android:drawableStart="@drawable/ic_person"
@@ -237,7 +244,6 @@
             android:importantForAutofill="no"
             android:inputType="text"
             android:maxLines="1"
-            android:layout_marginBottom="@dimen/medium_margin"
             android:paddingHorizontal="@dimen/page_margin"
             android:paddingVertical="@dimen/medium_margin"
             android:text="@string/height"
@@ -251,9 +257,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/et_weight"
+            android:layout_marginStart="@dimen/medium_margin"
             android:background="@drawable/bg_input_field"
             android:drawablePadding="@dimen/page_margin"
-            android:layout_marginStart="@dimen/medium_margin"
             android:hint="@string/dots"
             android:imeOptions="actionNext"
             android:importantForAutofill="no"
@@ -265,34 +271,34 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_height"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/tv_height"
-            app:layout_constraintTop_toTopOf="@+id/tv_height"/>
+            app:layout_constraintTop_toTopOf="@+id/tv_height" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@+id/tv_height"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_below="@+id/et_height"
             android:layout_marginBottom="@dimen/element_margin"
-            android:layout_below="@+id/et_height">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_height">
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/et_plan"
                 android:layout_width="100dp"
-                android:layout_marginHorizontal="@dimen/page_margin"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/page_margin"
                 android:layout_marginVertical="@dimen/element_margin"
-                android:elevation="@dimen/small_margin"
                 android:background="@drawable/bg_input_field"
                 android:backgroundTint="@color/white"
                 android:drawablePadding="@dimen/page_margin"
+                android:elevation="@dimen/small_margin"
                 android:gravity="center"
-                android:text="@string/plan"
                 android:imeOptions="actionNext"
                 android:importantForAutofill="no"
                 android:inputType="text"
                 android:maxLines="1"
                 android:paddingHorizontal="@dimen/page_margin"
                 android:paddingVertical="@dimen/medium_margin"
+                android:text="@string/plan"
                 android:textSize="@dimen/text_normal_3" />
 
             <Spinner
@@ -334,4 +340,6 @@
         android:text="@string/save"
         app:layout_constraintBottom_toBottomOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

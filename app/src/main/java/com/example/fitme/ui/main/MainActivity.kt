@@ -23,6 +23,7 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
                 binding.navView.visible = true
             }
             R.id.exerciseFragment,
+            R.id.profileEditFragment,
             R.id.fragmentMyActivities -> {
                 binding.navView.visible = false
                 window.statusBarColor = fetchColor(R.color.white)

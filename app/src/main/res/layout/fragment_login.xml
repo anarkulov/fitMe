@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title"
@@ -11,11 +16,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/big_margin"
-        android:text="Welcome Back"
+        android:text="@string/welcome_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
 
     <RelativeLayout
         android:id="@+id/phone_container"
@@ -59,7 +63,6 @@
             android:paddingHorizontal="@dimen/page_margin"
             android:paddingVertical="@dimen/medium_margin"
             android:textSize="@dimen/text_normal_3" />
-
     </RelativeLayout>
 
     <TextView
@@ -74,15 +77,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/phone_container" />
 
-    <TextView
-        style="@style/Text.Regular.Mini_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/element_margin"
-        android:text="Already have an account?"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_sign_up"
-        app:layout_constraintEnd_toStartOf="@+id/btn_sign_up"
-        app:layout_constraintTop_toTopOf="@+id/btn_sign_up" />
+        <TextView
+            android:id="@+id/textView"
+            style="@style/Text.Regular.Mini_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/element_margin"
+            android:text="@string/already_have_an_account"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_sign_up"
+            app:layout_constraintEnd_toStartOf="@+id/btn_sign_up"
+            app:layout_constraintTop_toTopOf="@+id/btn_sign_up" />
 
     <TextView
         android:id="@+id/btn_sign_up"
@@ -91,21 +95,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/element_margin"
         android:layout_marginEnd="@dimen/page_margin"
-        android:text="Sign Up"
+        android:text="@string/sign_up"
         android:textColor="@color/blue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_forgot_password" />
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_login"
-        style="@style/Button"
-        android:layout_width="match_parent"
-        android:layout_marginHorizontal="@dimen/big_margin"
-        android:layout_marginBottom="@dimen/big_margin"
-        android:background="@drawable/bg_button"
-        android:text="Sign In"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_login"
+            style="@style/Button"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="@dimen/big_margin"
+            android:layout_marginBottom="@dimen/big_margin"
+            android:background="@drawable/bg_button"
+            android:text="@string/sign_in"
+            android:layout_marginTop="@dimen/page_margin"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>
