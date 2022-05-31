@@ -35,6 +35,7 @@ class PasswordFragment : BaseNavFragment<AuthViewModel, FragmentPasswordBinding>
                 Status.SUCCESS -> {
                     viewModel.loading.postValue(false)
                     if (it.data == true) {
+                        activity?.showSnackBar(getString(R.string.reset_email_sent))
                         findNavController().popBackStack()
                     }
                 }

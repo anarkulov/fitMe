@@ -53,4 +53,5 @@
     <string name="welcome_back">Кош келдиңиз</string>
     <string name="create_an_account">Аккаунт түзүү</string>
     <string name="join_to_our_sport_community">Биздин спорт коомчулугубузга кошулуңуз</string>
+    <string name="reset_email_sent">Link for reset your password is sent to your email</string>
 </resources>
