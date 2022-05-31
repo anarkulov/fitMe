@@ -199,8 +199,8 @@ class UserDatabase : AppDatabase() {
                 }
             }
             .addOnFailureListener {
-                liveData.value = Resource.error(it.message, null, null)
-                Log.d("Failed to forgotPassword", myTag)
+                liveData.value = Resource.error("Failed to reset password &{it.message}", null, null)
+                Log.d("Failed to reset password", myTag)
             }
 
         return liveData

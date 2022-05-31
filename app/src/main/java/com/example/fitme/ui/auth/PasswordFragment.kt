@@ -1,22 +1,19 @@
 package com.example.fitme.ui.auth
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.Navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.example.fitme.R
 import com.example.fitme.core.extentions.hideError
 import com.example.fitme.core.extentions.showError
-import com.example.fitme.core.extentions.showToast
+import com.example.fitme.core.extentions.showSnackBar
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseNavFragment
 import com.example.fitme.core.ui.widgets.MainToolbar
 import com.example.fitme.databinding.FragmentPasswordBinding
 import com.example.fitme.utils.Utils
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class PasswordFragment : BaseNavFragment<AuthViewModel, FragmentPasswordBinding>() {
@@ -25,15 +22,24 @@ class PasswordFragment : BaseNavFragment<AuthViewModel, FragmentPasswordBinding>
 
     override fun initViewModel() {
         super.initViewModel()
-//
-//        viewModel.forgotPassword.observe(this, {
-//            showLoading(it.status == Status.LOADING)
-//            if (it.data == true) {
-//                findNavController().popBackStack()
-//            } else if (it.data == null) {
-//                showToast(it.message)
-//            }
-//        })
+
+        viewModel.forgotPassword.observe(this) {
+            when (it.status) {
+                Status.LOADING -> {
+                    viewModel.loading.postValue(true)
+                }
+                Status.ERROR -> {
+                    viewModel.loading.postValue(false)
+                    activity?.showSnackBar(getString(R.string.email_invalid))
+                }
+                Status.SUCCESS -> {
+                    viewModel.loading.postValue(false)
+                    if (it.data == true) {
+                        findNavController().popBackStack()
+                    }
+                }
+            }
+        }
     }
 
     override fun initListeners() {
@@ -58,7 +64,7 @@ class PasswordFragment : BaseNavFragment<AuthViewModel, FragmentPasswordBinding>
             binding.tilEmail.hideError()
         }
 
-//        viewModel.forgotPassword(email)
+        viewModel.forgotPassword(email)
     }
 
     override fun inflateViewBinding(
@@ -70,7 +76,7 @@ class PasswordFragment : BaseNavFragment<AuthViewModel, FragmentPasswordBinding>
         v.toolbar.bind(
             leftButton = MainToolbar.ActionInfo(
                 onClick = {
-                    requireActivity().onBackPressed()
+                    findNavController().popBackStack()
                 }
             )
         )
