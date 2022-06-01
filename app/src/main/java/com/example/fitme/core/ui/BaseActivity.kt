@@ -2,11 +2,11 @@ package com.example.fitme.core.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
 import com.example.fitme.R
-import com.example.fitme.core.extentions.visible
+import com.example.fitme.data.local.AppPrefs
+import com.example.fitme.utils.Utils
 
 abstract class BaseActivity<out VM : BaseViewModel, VB : ViewBinding>: AppCompatActivity() {
 
@@ -19,6 +19,14 @@ abstract class BaseActivity<out VM : BaseViewModel, VB : ViewBinding>: AppCompat
         super.onCreate(savedInstanceState)
 
         binding = inflateViewBinding(LayoutInflater.from(this))
+
+        val lang = AppPrefs(this).lang
+        if (lang != null) {
+            Utils.setLocale(resources, lang)
+        } else {
+            Utils.setLocale(resources, getString(R.string.en_locale))
+        }
+
         setContentView(binding.root)
 
         initViewModel()

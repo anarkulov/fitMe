@@ -21,6 +21,18 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/btn_lang"
+            style="@style/Text.Medium.Normal_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/page_margin"
+            android:text="@string/en_locale"
+            android:textColor="@color/blue"
+            app:layout_constraintBottom_toBottomOf="@+id/btn_sign_out"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_sign_out" />
+
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/iv_avatar"
             android:layout_width="100dp"
@@ -59,7 +71,7 @@
 
         <LinearLayout
             android:id="@+id/layout_weight"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/page_margin"
             android:orientation="vertical"
@@ -73,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="0"
+                android:text="@string/zero"
                 android:textColor="@color/blue_50" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -86,7 +98,7 @@
 
         <LinearLayout
             android:id="@+id/layout_height"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/page_margin"
             android:orientation="vertical"
@@ -100,7 +112,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="0"
+                android:text="@string/zero"
                 android:textColor="@color/blue_50" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -113,7 +125,7 @@
 
         <LinearLayout
             android:id="@+id/layout_age"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/page_margin"
             android:orientation="vertical"
@@ -127,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="0"
+                android:text="@string/zero"
                 android:textColor="@color/blue_50" />
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -248,7 +260,7 @@
                 android:layout_marginTop="@dimen/page_margin"
                 app:layout_constraintTop_toBottomOf="@+id/tv_month_name"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_activity" />
+                tools:listitem="@layout/item_my_activity" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

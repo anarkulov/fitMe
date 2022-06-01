@@ -53,5 +53,11 @@
     <string name="welcome_back">Кош келдиңиз</string>
     <string name="create_an_account">Аккаунт түзүү</string>
     <string name="join_to_our_sport_community">Биздин спорт коомчулугубузга кошулуңуз</string>
-    <string name="reset_email_sent">Link for reset your password is sent to your email</string>
+    <string name="reset_email_sent">Сырсөзүңүздү калыбына келтирүү үчүн шилтеме сиздин электрондук почтаңызга жөнөтүлөт</string>
+    <string name="track_your_activities">Машыгуу аракеттериңизге көз салыңыз</string>
+    <string name="boarding_desc">Прогрессиңизге көз салуу - көнүгүү жасоого түрткү берүүнүн эң сонун жолу. Бул көз салуу куралдарын колдонуп, көнүгүү тартибин сактоого жана прогрессиңизди көрүүгө жардам бериңиз!</string>
+    <string name="rank">Рейтинг</string>
+    <string name="select_language">Сураныч, тил тандаңыз</string>
+    <string name="kyrgyz">Кыргыз тили</string>
+    <string name="english">Англис тили</string>
 </resources>

@@ -77,9 +77,9 @@
         <entry key="app/src/main/res/layout/fragment_alarm.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_alarm_details.xml" value="0.22" />
         <entry key="app/src/main/res/layout/fragment_alarm_list.xml" value="0.22" />
-        <entry key="app/src/main/res/layout/fragment_boarding.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/fragment_boarding.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_exercise.xml" value="0.33" />
-        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.1854974365234375" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.47257569109258446" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_my_activity.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_otp.xml" value="0.20742753623188406" />

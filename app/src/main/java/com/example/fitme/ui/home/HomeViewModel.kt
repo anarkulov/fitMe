@@ -60,4 +60,12 @@ class HomeViewModel(private val mainRepository: MainRepository, private val appP
     fun getLocalProfile(): User? {
         return appPrefs.profile
     }
+
+    fun setLocale(lang: String){
+        appPrefs.lang = lang
+    }
+
+    fun setProfile(profile: User) {
+        appPrefs.profile = profile
+    }
 }

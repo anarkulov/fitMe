@@ -66,7 +66,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
                     viewModel.loading.postValue(false)
                     response.data?.let {
                         Log.d("getProfile: $it", myTag)
-                        appPrefs.profile = it
+                        viewModel.setProfile(it)
                         setData(it)
                     }
                 }
@@ -145,7 +145,7 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
     private fun initSpinner() {
         ArrayAdapter.createFromResource(
             requireContext(),
-            R.array.categories_array,
+            if (appPrefs.lang == requireContext().getString(R.string.en_locale)) R.array.categories_arra_en else R.array.categories_array_kg,
             R.layout.item_spinner
         ).also { adapter ->
             adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
@@ -427,8 +427,30 @@ class HomeFragment : BaseNavFragment<HomeViewModel, FragmentHomeBinding>() {
         viewModel.sortedActivityList.addAll(sortedActivities)
     }
 
+    private fun createDialog() {
+        val dialogBuilder = AlertDialog.Builder(context)
+        dialogBuilder.setMessage(getString(R.string.select_language))
+            .setCancelable(true)
+            .setPositiveButton(getString(R.string.kyrgyz)) { _, _ ->
+                viewModel.setLocale(getString(R.string.kg_locale))
+                startActivity(Intent(requireContext(), AuthActivity::class.java))
+                requireActivity().finish()
+            }
+            .setNegativeButton(getString(R.string.english)) { _, _ ->
+                viewModel.setLocale(getString(R.string.en_locale))
+                startActivity(Intent(requireContext(), AuthActivity::class.java))
+                requireActivity().finish()
+            }
+        val alert = dialogBuilder.create()
+        alert.show()
+    }
+
     override fun initListeners() {
         super.initListeners()
+
+        binding.btnLang.setOnClickListener {
+            createDialog()
+        }
 
         binding.btnSignOut.setOnClickListener {
             val dialogBuilder = AlertDialog.Builder(requireContext())

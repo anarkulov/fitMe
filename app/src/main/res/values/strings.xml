@@ -59,10 +59,16 @@
     <string name="wrong_exercise">Inappropriate exercise</string>
     <string name="error_activity_name">Please type name for exercise</string>
 
-    <string-array name="categories_array">
+    <string-array name="categories_arra_en">
         <item>reps</item>
         <item>calories</item>
         <item>seconds</item>
+    </string-array>
+
+    <string-array name="categories_array_kg">
+        <item>конугуулорум</item>
+        <item>калорияларым</item>
+        <item>мунотум</item>
     </string-array>
 
     <string-array name="plan_array">
@@ -77,5 +83,12 @@
     <string name="create_an_account">Create an Account</string>
     <string name="join_to_our_sport_community">Join to our sport community</string>
     <string name="reset_email_sent">Link for reset your password is sent to your email</string>
+    <string name="track_your_activities">Track Your Activities</string>
+    <string name="boarding_desc">Keeping track of your progress is a great way to stay motivated to exercise. Use these tracking tools to help stick to your exercise routine and see your progress!</string>
+    <string name="kg_locale" translatable="false">ky</string>
+    <string name="en_locale" translatable="false">en</string>
+    <string name="select_language">Please select language</string>
+    <string name="kyrgyz">Kyrgyz</string>
+    <string name="english">English</string>
 
 </resources>

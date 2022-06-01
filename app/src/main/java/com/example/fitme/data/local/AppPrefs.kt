@@ -53,6 +53,10 @@ class AppPrefs(context: Context) {
             else prefs.edit().putString("profile", gson.toJson(value)).apply()
         }
 
+    var lang: String?
+        get() = prefs.getString("lang", null)
+        set(value) = prefs.edit().putString("lang", value).apply()
+
     fun saveToMap(id: String, value: String) {
         val map = getMap()
         map[id] = value
