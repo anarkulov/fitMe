@@ -1,18 +1,26 @@
 package com.example.fitme.ui.workout
 
+import android.app.AlertDialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.fitme.R
+import com.example.fitme.core.extentions.loadGif
 import com.example.fitme.core.extentions.loadUrl
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.network.result.Status
 import com.example.fitme.core.ui.BaseFragment
 import com.example.fitme.core.utils.Log
 import com.example.fitme.data.models.Exercise
+import com.example.fitme.databinding.FragmentInstructionDialogBinding
 import com.example.fitme.databinding.FragmentWorkoutDetailsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -83,7 +91,31 @@ class WorkoutDetailsFragment : BaseFragment<WorkoutViewModel, FragmentWorkoutDet
     }
 
     private fun onExerciseClick(exercise: Exercise) {
-        findNavController().navigate(WorkoutDetailsFragmentDirections.actionWorkoutDetailsFragmentToExerciseFragment(exercise))
+
+        val dialogBinding = FragmentInstructionDialogBinding.inflate(requireActivity().layoutInflater)
+
+        val dialogBuilder = AlertDialog.Builder(activity).apply {
+            setView(dialogBinding.root)
+            setCancelable(false)
+        }
+
+        dialogBinding.image.loadGif(exercise.imageUrl, R.drawable.ic_pushup)
+
+        val dialog = dialogBuilder.create()
+        dialog.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        val colorDrawable = ColorDrawable(Color.TRANSPARENT)
+        val inset = InsetDrawable(colorDrawable, 24,0,24,0)
+        dialog.window?.setBackgroundDrawable(inset)
+        dialog.show()
+
+        dialogBinding.close.setOnClickListener {
+            dialog.cancel()
+        }
+
+        dialogBinding.ok.setOnClickListener {
+            dialog.cancel()
+            findNavController().navigate(WorkoutDetailsFragmentDirections.actionWorkoutDetailsFragmentToExerciseFragment(exercise))
+        }
     }
 
     override fun inflateViewBinding(

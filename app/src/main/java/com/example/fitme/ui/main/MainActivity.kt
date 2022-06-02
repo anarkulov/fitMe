@@ -6,6 +6,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.example.fitme.R
 import com.example.fitme.core.extentions.fetchColor
+import com.example.fitme.core.extentions.setLightStatusBar
 import com.example.fitme.core.extentions.visible
 import com.example.fitme.core.ui.BaseActivity
 import com.example.fitme.databinding.ActivityMainBinding
@@ -22,13 +23,19 @@ class MainActivity : BaseActivity<MainViewModel, ActivityMainBinding>(){
                 window.statusBarColor = fetchColor(R.color.primary_bg)
                 binding.navView.visible = true
             }
-            R.id.exerciseFragment,
+            R.id.exerciseFragment -> {
+                binding.navView.visible = false
+                setLightStatusBar(false)
+                window.statusBarColor = fetchColor(R.color.black)
+            }
             R.id.profileEditFragment,
             R.id.fragmentMyActivities -> {
                 binding.navView.visible = false
+                setLightStatusBar(true)
                 window.statusBarColor = fetchColor(R.color.white)
             }
             else -> {
+                setLightStatusBar(true)
                 window.statusBarColor = fetchColor(R.color.white)
                 binding.navView.visible = true
             }

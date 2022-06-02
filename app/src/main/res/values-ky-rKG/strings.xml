@@ -29,7 +29,7 @@
     <string name="hour_format">%1$02d</string>
     <string name="type_alarm_name">Конгуроонун атын териңиз</string>
     <string name="age">Жаш</string>
-    <string name="height">Бийиктик</string>
+    <string name="height">Бой</string>
     <string name="weight">Салмагы</string>
     <string name="exercises_format">%d көнүгүү</string>
     <string name="workouts">Машыгуулар</string>

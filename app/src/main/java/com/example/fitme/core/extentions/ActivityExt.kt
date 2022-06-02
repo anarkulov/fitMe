@@ -42,7 +42,7 @@ fun Activity.showSnackBar(message: String?) {
     val snackBar = Snackbar.make(window.decorView, message, Snackbar.LENGTH_LONG)
     val layoutParams = CoordinatorLayout.LayoutParams(snackBar.view.layoutParams)
     layoutParams.gravity = Gravity.TOP
-    layoutParams.topMargin = Utils.toDp(25f, this)
+    layoutParams.topMargin = Utils.toDp(40f, this)
     snackBar.view.layoutParams = layoutParams
     snackBar.setTextColor(fetchColor(R.color.white))
     snackBar.setActionTextColor(fetchColor(R.color.white))

@@ -6,6 +6,7 @@
         <entry key="../../../../../../layout/custom_preview.xml" value="0.2861111111111111" />
         <entry key="../../../../.gradle/caches/transforms-3/5bf6d67a4a227921f03143e4270ad6c0/transformed/appcompat-1.4.1/res/layout/support_simple_spinner_dropdown_item.xml" value="0.22735507246376813" />
         <entry key="../../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.3401268115942029" />
+        <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.3375" />
         <entry key="app/src/main/res/drawable/bg_border.xml" value="0.165" />
         <entry key="app/src/main/res/drawable/bg_bottom_nav_menu.xml" value="0.2984375" />
         <entry key="app/src/main/res/drawable/bg_bottom_sheet.xml" value="0.192" />
@@ -50,6 +51,7 @@
         <entry key="app/src/main/res/drawable/ic_home_inactive.xml" value="0.288" />
         <entry key="app/src/main/res/drawable/ic_inactive_rank.xml" value="0.394" />
         <entry key="app/src/main/res/drawable/ic_item_alarm.xml" value="0.2765" />
+        <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.3375" />
         <entry key="app/src/main/res/drawable/ic_lock.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_logo.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_logout.xml" value="0.184" />
@@ -80,6 +82,7 @@
         <entry key="app/src/main/res/layout/fragment_boarding.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_exercise.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_home.xml" value="0.47257569109258446" />
+        <entry key="app/src/main/res/layout/fragment_instruction_dialog.xml" value="0.3723958333333333" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.33" />
         <entry key="app/src/main/res/layout/fragment_my_activity.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_otp.xml" value="0.20742753623188406" />
@@ -93,6 +96,7 @@
         <entry key="app/src/main/res/layout/fragment_set_alarm.xml" value="0.3890625" />
         <entry key="app/src/main/res/layout/fragment_sign_up.xml" value="0.20742753623188406" />
         <entry key="app/src/main/res/layout/fragment_splash.xml" value="0.14" />
+        <entry key="app/src/main/res/layout/fragment_workout.xml" value="0.3390625" />
         <entry key="app/src/main/res/layout/fragment_workout_details.xml" value="0.165" />
         <entry key="app/src/main/res/layout/item_activity.xml" value="0.25" />
         <entry key="app/src/main/res/layout/item_alarm.xml" value="0.33" />
@@ -105,6 +109,8 @@
         <entry key="app/src/main/res/layout/item_workout.xml" value="0.375" />
         <entry key="app/src/main/res/layout/view_toolbar.xml" value="0.33" />
         <entry key="app/src/main/res/menu/main_bottom_nav_menu.xml" value="0.28229166666666666" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3375" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.3375" />
       </map>
     </option>
   </component>

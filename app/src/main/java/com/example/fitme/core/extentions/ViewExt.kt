@@ -14,6 +14,7 @@ import androidx.annotation.LayoutRes
 import androidx.annotation.MenuRes
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.example.fitme.core.utils.Log
 import com.google.android.material.textfield.TextInputLayout
 import com.squareup.picasso.Picasso
@@ -133,6 +134,19 @@ fun ImageView.loadUrl(url: String?) {
 
     Picasso.get()
         .load(url)
+        .into(this)
+}
+
+fun ImageView.loadGif(url: String?, placeholderResId: Int) {
+
+    if (url == null || url.isEmpty()) {
+        return
+    }
+
+    Glide.with(this.context)
+        .asGif()
+        .load(url)
+        .override(600, 600)
         .into(this)
 }
 
